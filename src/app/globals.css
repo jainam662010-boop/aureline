@@ -1,0 +1,317 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================================================
+   Aureline Studio design system — global styles
+   ========================================================================== */
+
+@layer base {
+  :root {
+    --mouse-x: 50%;
+    --mouse-y: 40%;
+  }
+
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    background: #08080a;
+    color: #e5e1e4;
+    overscroll-behavior-y: none;
+  }
+
+  body {
+    font-family: var(--font-inter), Inter, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  main > :first-child {
+    margin-top: 0 !important;
+  }
+  main > :last-child {
+    margin-bottom: 0 !important;
+  }
+
+  ::selection {
+    background: #ff5545;
+    color: #690003;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #08080a;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #2a2a2c;
+    border-radius: 9999px;
+    border: 2px solid #08080a;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #474649;
+  }
+
+  :focus-visible {
+    outline: 2px solid #ff5545;
+    outline-offset: 2px;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    text-wrap: balance;
+  }
+
+  input[type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+  }
+
+  .material-symbols-outlined {
+    font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+    font-size: 20px;
+    line-height: 1;
+    user-select: none;
+  }
+  .material-symbols-outlined.filled {
+    font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
+  }
+
+  /* Users who ask for less motion get a still page (interactivity preserved). */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* ---- Glass panels ---- */
+  .glass-panel {
+    @apply backdrop-blur-2xl bg-white/[0.04] border border-white/[0.12] rounded-3xl;
+  }
+  .glass-panel-sm {
+    @apply backdrop-blur-xl bg-white/[0.03] border border-white/[0.1] rounded-2xl;
+  }
+  .glass-card-hover {
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .glass-card-hover::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.18),
+      rgba(255, 59, 48, 0.3),
+      rgba(128, 38, 242, 0.2),
+      rgba(0, 224, 242, 0.15),
+      rgba(255, 255, 255, 0.03)
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    opacity: 0.35;
+    transition: opacity 0.4s ease;
+  }
+  .glass-card-hover:hover::before {
+    opacity: 0.9;
+  }
+  .glass-card-hover:hover {
+    transform: translateY(-4px) scale(1.008);
+    box-shadow: 0 20px 40px -15px rgba(255, 59, 48, 0.22), 0 0 35px 2px rgba(128, 38, 242, 0.16);
+  }
+
+  /* ---- Buttons ---- */
+  .btn-gradient {
+    @apply inline-flex items-center justify-center gap-space-xs rounded-full font-label-lg text-label-lg text-white 
+      bg-gradient-to-r from-volt-red via-volt-pink to-volt-violet 
+      shadow-[0_0_28px_rgba(255,13,123,0.45)] hover:shadow-[0_0_40px_rgba(0,224,242,0.5)] hover:brightness-110 
+      active:scale-95 transition-all duration-300 disabled:opacity-50 disabled:pointer-events-none;
+  }
+  .btn-glass {
+    @apply inline-flex items-center justify-center gap-space-xs rounded-full font-label-lg text-label-lg text-white
+      backdrop-blur-2xl bg-white/[0.05] border border-white/[0.14] hover:bg-white/[0.1] hover:border-white/30
+      active:scale-95 transition-all duration-300 disabled:opacity-50 disabled:pointer-events-none;
+  }
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-space-xs rounded-full font-label-lg text-label-lg text-white/80
+      bg-white/[0.06] border border-white/15 hover:bg-white/[0.12] hover:text-white
+      active:scale-95 transition-all disabled:opacity-50 disabled:pointer-events-none;
+  }
+
+  /* ---- Technical labels / chips ---- */
+  .pill-tech {
+    @apply font-label-technical text-label-technical uppercase tracking-widest inline-flex items-center gap-space-xs
+      px-3 py-1 rounded-full bg-white/[0.06] border border-white/10 backdrop-blur-md;
+  }
+  .chip {
+    @apply font-label-technical text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full bg-white/[0.06]
+      border border-white/10 text-white/75;
+  }
+  .text-gradient-fire {
+    background: linear-gradient(90deg, #ff3b30, #ff0d7b, #8026f2, #00e0f2);
+    background-size: 250% 250%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .text-gradient-warm {
+    background: linear-gradient(90deg, #ff3b30, #ff0d7b);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* ---- Form controls ---- */
+  .input-glass {
+    @apply w-full bg-white/[0.04] border border-white/[0.12] rounded-2xl px-4 py-3 text-body-md text-on-surface
+      placeholder:text-secondary/60 backdrop-blur-md transition-all
+      focus:outline-none focus:ring-2 focus:ring-[#FF3B30] focus:border-transparent;
+  }
+  .label-tech {
+    @apply font-label-technical text-label-technical uppercase tracking-widest text-white/50 block mb-space-xs;
+  }
+
+  /* ---- Decorative ---- */
+  .noise-grid {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .marquee-track {
+    display: flex;
+    width: 200%;
+    animation: marquee 24s linear infinite;
+  }
+  .skeleton-shimmer {
+    background: linear-gradient(90deg, #131315 25%, #201f22 50%, #131315 75%);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+  /* Mouse-tracing spotlight: follows the cursor across the whole viewport. */
+  .mouse-spotlight {
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    background: radial-gradient(
+      750px circle at var(--mouse-x, 50%) var(--mouse-y, 40%),
+      rgba(255, 59, 48, 0.08),
+      rgba(128, 38, 242, 0.045),
+      rgba(0, 224, 242, 0.02) 40%,
+      transparent 70%
+    );
+  }
+  .intro-exit {
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.75s ease;
+  }
+  .arch-frame {
+    border-radius: 9999px 9999px 1rem 1rem;
+  }
+
+  /* ---- Interactive extras ---- */
+  /* Cursor-tracked sheen: light sweep follows the pointer across a card. */
+  .sheen-hover {
+    position: relative;
+    overflow: hidden;
+  }
+  .sheen-hover::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    background: radial-gradient(
+      420px circle at var(--card-x, 50%) var(--card-y, 50%),
+      rgba(255, 255, 255, 0.07),
+      transparent 60%
+    );
+  }
+  .sheen-hover:hover::after {
+    opacity: 1;
+  }
+  /* Soft pulse used for "live" status dots. */
+  .live-dot {
+    position: relative;
+    display: inline-flex;
+    height: 0.5rem;
+    width: 0.5rem;
+  }
+  .live-dot::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    background: inherit;
+    animation: ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+}
+
+@layer utilities {
+  @keyframes marquee {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-50%); }
+  }
+  @keyframes shimmer {
+    100% { transform: translateX(100%); }
+  }
+  .animate-marquee {
+    display: flex;
+    width: 200%;
+    animation: marquee 24s linear infinite;
+  }
+  .animate-shimmer {
+    animation: shimmer 2s infinite;
+  }
+  .animate-gradient-flow {
+    background-size: 250% 250%;
+    animation: gradient-flow 6s ease infinite;
+  }
+  .animate-float-slow {
+    animation: float-slow 7s ease-in-out infinite;
+  }
+  .animate-float-reverse {
+    animation: float-reverse 8s ease-in-out infinite;
+  }
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+  /* Stagger helpers for reveal-on-mount groups */
+  .stagger-1 { animation-delay: 80ms; }
+  .stagger-2 { animation-delay: 160ms; }
+  .stagger-3 { animation-delay: 240ms; }
+  .stagger-4 { animation-delay: 320ms; }
+  .stagger-5 { animation-delay: 400ms; }
+}
+
+/* Print styles (invoice) */
+@media print {
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+}

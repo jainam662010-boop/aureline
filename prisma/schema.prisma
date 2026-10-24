@@ -1,0 +1,658 @@
+// ============================================================================
+// Aureline DTF Studio — Prisma schema
+// PostgreSQL · print-on-demand commerce · design editor · admin workflow
+// ============================================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider      = "sqlite"
+  url       = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Enums
+// ---------------------------------------------------------------------------
+
+enum Role {
+  USER
+  STAFF
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING_PAYMENT
+  PAYMENT_CONFIRMED
+  ARTWORK_REVIEW
+  IN_PRODUCTION
+  QUALITY_CHECK
+  PACKED
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUND_REQUESTED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  PENDING
+  AUTHORIZED
+  CAPTURED
+  FAILED
+  REFUNDED
+  PARTIALLY_REFUNDED
+}
+
+enum PaymentMethod {
+  UPI
+  CARD
+  NETBANKING
+  WALLET
+  EMI
+  OTHER
+}
+
+enum PrintSide {
+  FRONT
+  BACK
+}
+
+enum LayerType {
+  TEXT
+  IMAGE
+  CLIPART
+}
+
+enum CouponType {
+  PERCENTAGE
+  FIXED
+  FREE_SHIPPING
+}
+
+enum ShippingMethod {
+  STANDARD
+  EXPRESS
+  PICKUP
+}
+
+enum ProductStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+enum BulkEnquiryStatus {
+  NEW
+  CONTACTED
+  QUOTED
+  CONVERTED
+  CLOSED
+}
+
+// ---------------------------------------------------------------------------
+// Identity
+// ---------------------------------------------------------------------------
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  phone         String?
+  passwordHash  String?
+  image         String?
+  emailVerified DateTime?
+  role          Role      @default(USER)
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime?
+
+  addresses     Address[]
+  designs       Design[]
+  carts         Cart[]
+  orders        Order[]
+  bulkEnquiries BulkEnquiry[]
+  auditLogs     AuditLog[]
+  orderNotes    OrderNote[]
+
+  accounts      Account[]
+  sessions      Session[]
+  resetTokens   PasswordResetToken[]
+
+  @@index([role])
+  @@index([createdAt])
+}
+
+model Address {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  label     String   @default("Home")
+  fullName  String
+  phone     String
+  line1     String
+  line2     String?
+  city      String
+  state     String
+  pincode   String
+  country   String   @default("IN")
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  @@index([userId])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expires      DateTime
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  token     String    @unique
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+}
+
+// ---------------------------------------------------------------------------
+// Catalog
+// ---------------------------------------------------------------------------
+
+model Category {
+  id        String     @id @default(cuid())
+  name      String
+  slug      String     @unique
+  image     String?
+  description String?
+  parentId  String?
+  parent    Category?  @relation("CategoryTree", fields: [parentId], references: [id], onDelete: SetNull)
+  children  Category[] @relation("CategoryTree")
+  position  Int        @default(0)
+  isActive  Boolean    @default(true)
+  products  Product[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@index([parentId])
+  @@index([slug])
+}
+
+model Product {
+  id             String        @id @default(cuid())
+  name           String
+  slug           String        @unique
+  tagline        String?
+  description    String
+  fabric         String        @default("100% Combed Compact Cotton")
+  gsm            Int           @default(240)
+  fit            String?
+  careInstructions String?
+  categoryId     String
+  category       Category      @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+
+  basePrice      Decimal       
+  compareAtPrice Decimal?      
+  gstRate        Decimal       @default(18) 
+  weightGrams    Int           @default(300)
+
+  status         ProductStatus @default(ACTIVE)
+  isBestseller   Boolean       @default(false)
+  isNewArrival   Boolean       @default(false)
+  popularity     Int           @default(0)
+  /** Allowed print placement keys, e.g. ["front_chest","back_large"]. Empty = all. */
+  placementKeys  Json          
+
+  variants       ProductVariant[]
+  images         ProductImage[]
+  designs        Design[]
+  cartItems      CartItem[]
+  orderItems     OrderItem[]
+
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  deletedAt      DateTime?
+
+  @@index([categoryId, status])
+  @@index([status, popularity])
+  @@index([status, basePrice])
+  @@index([status, createdAt])
+}
+
+model ProductVariant {
+  id         String   @id @default(cuid())
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  size       String
+  colorName  String
+  colorHex   String
+  sku        String   @unique
+  stock      Int      @default(100)
+  priceDelta Decimal  @default(0) 
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  cartItems  CartItem[]
+  orderItems OrderItem[]
+
+  @@index([productId, colorHex])
+  @@index([productId, size])
+}
+
+model ProductImage {
+  id        String    @id @default(cuid())
+  productId String
+  product   Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url       String
+  alt       String?
+  side      PrintSide @default(FRONT)
+  /** When set, image is only shown for this variant color. */
+  colorHex  String?
+  position  Int       @default(0)
+  createdAt DateTime  @default(now())
+
+  @@index([productId, position])
+}
+
+// ---------------------------------------------------------------------------
+// Pricing rules (admin-editable, no code changes required)
+// ---------------------------------------------------------------------------
+
+model PrintPlacement {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  label     String
+  side      PrintSide
+  /** Printable area dimensions in inches. */
+  widthIn   Float
+  heightIn  Float
+  /** Mockup overlay position (percent of garment box) for live preview. */
+  topPct    Float    @default(20)
+  leftPct   Float    @default(25)
+  baseCost  Decimal  @default(0) 
+  surcharge Decimal  @default(0) 
+  isActive  Boolean  @default(true)
+  position  Int      @default(0)
+  /** [] = applies to every product, otherwise list of Product ids. */
+  productIds Json    
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([side, isActive])
+}
+
+model QuantityDiscount {
+  id         String   @id @default(cuid())
+  label      String
+  minQty     Int
+  maxQty     Int?
+  percentOff Decimal  
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([minQty])
+}
+
+model Setting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+}
+
+// ---------------------------------------------------------------------------
+// Design editor
+// ---------------------------------------------------------------------------
+
+model Design {
+  id         String        @id @default(cuid())
+  userId     String
+  user       User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId  String
+  product    Product       @relation(fields: [productId], references: [id], onDelete: Cascade)
+  name       String        @default("Untitled design")
+  /** Full editor state: { FRONT: { layers: [...] }, BACK: { layers: [...] } } */
+  state      Json          
+  canvasMeta Json?
+  thumbnailUrl String?
+  previewUrl   String?
+  /** { FRONT: dataUrl, BACK: dataUrl } — print-ready high-res exports. */
+  printReadyUrls Json?
+  isPublic   Boolean       @default(false)
+  lastEditedAt DateTime    @default(now())
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+  deletedAt  DateTime?
+
+  layers     DesignLayer[]
+  cartItems  CartItem[]
+  orderItems OrderItem[]
+
+  @@index([userId, updatedAt])
+  @@index([productId])
+}
+
+model DesignLayer {
+  id      String    @id @default(cuid())
+  designId String
+  design  Design    @relation(fields: [designId], references: [id], onDelete: Cascade)
+  side    PrintSide
+  type    LayerType
+  zIndex  Int       @default(0)
+  x       Float     @default(0)
+  y       Float     @default(0)
+  width   Float     @default(100)
+  height  Float     @default(100)
+  angle   Float     @default(0)
+  scaleX  Float     @default(1)
+  scaleY  Float     @default(1)
+  opacity Float     @default(1)
+  text       String?
+  fontFamily String?
+  fontSize   Float?
+  fill       String?
+  imageUrl   String?
+  clipartKey String?
+  extra      Json?
+
+  @@index([designId, side, zIndex])
+}
+
+// ---------------------------------------------------------------------------
+// Cart
+// ---------------------------------------------------------------------------
+
+model Cart {
+  id             String          @id @default(cuid())
+  userId         String?
+  user           User?           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessionKey     String?         @unique
+  couponCode     String?
+  couponDiscount Decimal         @default(0) 
+  shippingMethod ShippingMethod  @default(STANDARD)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  deletedAt      DateTime?
+
+  items          CartItem[]
+
+  @@index([userId])
+}
+
+model CartItem {
+  id         String   @id @default(cuid())
+  cartId     String
+  cart       Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  variantId  String
+  variant    ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  designId   String?
+  design     Design?  @relation(fields: [designId], references: [id], onDelete: SetNull)
+  side       PrintSide @default(FRONT)
+  placementKey String
+  quantity   Int      @default(1)
+  /** Frozen editor state snapshot at add-to-cart time. */
+  designJson Json?
+  thumbnailUrl String?
+  unitPrice  Decimal  
+  priceBreakdown Json?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([cartId])
+}
+
+// ---------------------------------------------------------------------------
+// Orders & payments
+// ---------------------------------------------------------------------------
+
+model Order {
+  id          String        @id @default(cuid())
+  orderNumber String        @unique
+  userId      String?
+  user        User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  status      OrderStatus   @default(PENDING_PAYMENT)
+  email       String
+  phone       String?
+  whatsappPhone String?
+
+  shippingFullName String
+  shippingLine1    String
+  shippingLine2    String?
+  shippingCity     String
+  shippingState    String
+  shippingPincode  String
+  shippingCountry  String     @default("IN")
+
+  subtotal        Decimal 
+  discountAmount  Decimal @default(0) 
+  shippingAmount  Decimal @default(0) 
+  taxAmount       Decimal @default(0) 
+  total           Decimal 
+  currency        String  @default("INR")
+  couponCode      String?
+  shippingMethod  ShippingMethod @default(STANDARD)
+
+  courier       String?
+  trackingNumber String?
+  trackingUrl   String?
+  etaDate       DateTime?
+  shippedAt     DateTime?
+  deliveredAt   DateTime?
+  cancelReason  String?
+
+  items     OrderItem[]
+  payments  Payment[]
+  notes     OrderNote[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  @@index([userId, createdAt])
+  @@index([status])
+  @@index([email])
+}
+
+model OrderItem {
+  id       String  @id @default(cuid())
+  orderId  String
+  order    Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String?
+  product  Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  variantId String?
+  variant  ProductVariant? @relation(fields: [variantId], references: [id], onDelete: SetNull)
+  productName String
+  variantSize  String
+  variantColor String
+  colorHex     String
+  placementKey String
+  side     PrintSide @default(FRONT)
+  designId String?
+  design   Design?   @relation(fields: [designId], references: [id], onDelete: SetNull)
+  designJson Json?
+  thumbnailUrl String?
+  printReadyUrl String?
+  quantity Int
+  unitPrice Decimal 
+  lineTotal Decimal 
+  priceBreakdown Json?
+
+  @@index([orderId])
+}
+
+model OrderNote {
+  id         String   @id @default(cuid())
+  orderId    String
+  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  authorId   String?
+  author     User?    @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  body       String
+  isInternal Boolean  @default(true)
+  createdAt  DateTime @default(now())
+
+  @@index([orderId])
+}
+
+model Payment {
+  id                 String        @id @default(cuid())
+  orderId            String
+  order              Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  userId             String?
+  razorpayOrderId    String        @unique
+  razorpayPaymentId  String?       @unique
+  razorpaySignature  String?
+  amount             Decimal       
+  currency           String        @default("INR")
+  status             PaymentStatus @default(PENDING)
+  method             PaymentMethod?
+  failureReason      String?
+  refundId           String?
+  refundAmount       Decimal?      
+  raw                Json?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+
+  @@index([razorpayPaymentId])
+  @@index([status])
+}
+
+// ---------------------------------------------------------------------------
+// Coupons & shipping
+// ---------------------------------------------------------------------------
+
+model Coupon {
+  id                 String      @id @default(cuid())
+  code               String      @unique
+  description        String?
+  type               CouponType
+  value              Decimal     
+  minOrderAmount     Decimal     @default(0) 
+  maxDiscountAmount  Decimal?    
+  startsAt           DateTime?
+  endsAt             DateTime?
+  usageLimit         Int?
+  usedCount          Int         @default(0)
+  perUserLimit       Int?
+  productIds         Json        
+  categoryIds        Json        
+  isActive           Boolean     @default(true)
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+  deletedAt          DateTime?
+
+  @@index([isActive])
+}
+
+model ShippingZone {
+  id        String         @id @default(cuid())
+  name      String
+  /** Exact pincodes or prefixes, e.g. ["110","122011"]. */
+  pincodes  Json           
+  isActive  Boolean        @default(true)
+  position  Int            @default(0)
+  rates     ShippingRate[]
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+}
+
+model ShippingRate {
+  id          String          @id @default(cuid())
+  zoneId      String
+  zone        ShippingZone    @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+  method      ShippingMethod
+  baseFee     Decimal         @default(0) 
+  perItemFee  Decimal         @default(0) 
+  freeAbove   Decimal?        
+  etaDays     Int             @default(5)
+  isActive    Boolean         @default(true)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@unique([zoneId, method])
+}
+
+// ---------------------------------------------------------------------------
+// Bulk enquiries & audit
+// ---------------------------------------------------------------------------
+
+model BulkEnquiry {
+  id         String            @id @default(cuid())
+  userId     String?
+  user       User?             @relation(fields: [userId], references: [id], onDelete: SetNull)
+  name       String
+  email      String
+  phone      String
+  company    String?
+  productName String?
+  productIds Json              
+  quantity   Int
+  deadline   DateTime?
+  message    String?
+  artworkUrl String?
+  status     BulkEnquiryStatus @default(NEW)
+  adminNotes String?
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String?
+  actor      User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
+  action     String
+  entityType String
+  entityId   String?
+  data       Json?
+  ip         String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@index([createdAt])
+}
