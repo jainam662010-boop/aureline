@@ -266,6 +266,8 @@ async function seedSettings() {
     { key: "defaultGstRate", value: Number(process.env.DEFAULT_GST_RATE ?? 18) },
     { key: "defaultShippingFee", value: Number(process.env.DEFAULT_SHIPPING_FEE ?? 79) },
     { key: "freeShippingThreshold", value: Number(process.env.FREE_SHIPPING_THRESHOLD ?? 1499) },
+    { key: "printRatePerSqIn", value: Number(process.env.PRINT_RATE_PER_SQ_IN ?? 1.35) },
+    { key: "printMinimum", value: Number(process.env.PRINT_MINIMUM_CHARGE ?? 99) },
   ];
   for (const row of rows) {
     await prisma.setting.upsert({

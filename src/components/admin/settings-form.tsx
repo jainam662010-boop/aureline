@@ -12,6 +12,8 @@ interface SiteSettings {
   defaultGstRate: number;
   defaultShippingFee: number;
   freeShippingThreshold: number;
+  printRatePerSqIn: number;
+  printMinimum: number;
 }
 
 export function SettingsForm({ settings }: { settings: SiteSettings }) {
@@ -19,6 +21,8 @@ export function SettingsForm({ settings }: { settings: SiteSettings }) {
     defaultGstRate: String(settings.defaultGstRate),
     defaultShippingFee: String(settings.defaultShippingFee),
     freeShippingThreshold: String(settings.freeShippingThreshold),
+    printRatePerSqIn: String(settings.printRatePerSqIn),
+    printMinimum: String(settings.printMinimum),
   });
   const [busy, setBusy] = React.useState(false);
 
@@ -29,6 +33,8 @@ export function SettingsForm({ settings }: { settings: SiteSettings }) {
       defaultGstRate: Number(form.defaultGstRate),
       defaultShippingFee: Number(form.defaultShippingFee),
       freeShippingThreshold: Number(form.freeShippingThreshold),
+      printRatePerSqIn: Number(form.printRatePerSqIn),
+      printMinimum: Number(form.printMinimum),
     });
     setBusy(false);
     if (result.ok) toast.success("Settings saved — pricing engine cache invalidated.");
@@ -68,6 +74,26 @@ export function SettingsForm({ settings }: { settings: SiteSettings }) {
         {field("defaultGstRate", "Default GST rate", "Applied to taxable orders unless a product overrides it.", "%", "0.5")}
         {field("defaultShippingFee", "Standard shipping fee", "Charged when the order is under the free threshold.", "₹")}
         {field("freeShippingThreshold", "Free shipping threshold", "Orders at or above this subtotal ship free.", "₹")}
+      </div>
+
+      <div className="mt-space-md pt-space-md border-t border-white/[0.06]">
+        <p className="font-label-technical text-[9px] uppercase tracking-widest text-white/45 mb-space-sm">
+          Per-square-inch print pricing
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-space-md">
+          {field(
+            "printRatePerSqIn",
+            "Print rate",
+            "Charged per square inch of the design's bounding box. Set 0 to go back to flat placement fees.",
+            "₹/in²",
+            "0.05",
+          )}
+          {field("printMinimum", "Minimum print charge", "Floor for a single print, however small the artwork.", "₹")}
+        </div>
+        <p className="font-body-sm text-body-sm text-white/45 mt-space-sm">
+          Studio lines are priced on the actual artwork area, clipped to the placement. Catalogue quick-adds with no
+          design keep the placement&apos;s flat fee.
+        </p>
       </div>
 
       <div className="flex justify-end mt-space-md">

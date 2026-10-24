@@ -5,7 +5,7 @@ import type { Prisma, PrintSide, ShippingMethod } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { ok, fail, type ApiResponse } from "@/lib/response";
 import { findCart, getOrCreateCart, cartItemCount } from "@/lib/cart";
-import { findCoupon, getPlacementsForProduct, getQuantityTiers, priceItem, resolveShipping } from "@/lib/commerce";
+import { findCoupon, getPlacementsForProduct, getQuantityTiers, getSettings, priceItem, resolveShipping } from "@/lib/commerce";
 import { validateCoupon } from "@/lib/pricing";
 import { num } from "@/lib/utils";
 import { auth } from "@/lib/auth";
@@ -43,7 +43,7 @@ export interface SerializedCartItem {
   designId: string | null;
   thumbnailUrl: string | null;
   garmentType: string;
-  priceBreakdown: { label: string; amount: number }[];
+  priceBreakdown: { label: string; amount: number; hint?: string }[];
 }
 
 export interface SerializedCart {
@@ -56,7 +56,7 @@ export interface SerializedCart {
 
 function serializeCart(
   cart: Awaited<ReturnType<typeof findCart>>,
-  breakdowns: Record<string, { label: string; amount: number }[]>,
+  breakdowns: Record<string, { label: string; amount: number; hint?: string }[]>,
 ): SerializedCart | null {
   if (!cart) return null;
   const items: SerializedCartItem[] = cart.items.map((item) => {
@@ -114,8 +114,9 @@ export async function recomputeCart(cartId: string) {
   const tiers = await getQuantityTiers();
   const coupon = await findCoupon(cart.couponCode);
   const shipping = await resolveShipping(cart.shippingMethod, null);
+  const settings = await getSettings();
 
-  const breakdowns: Record<string, { label: string; amount: number }[]> = {};
+  const breakdowns: Record<string, { label: string; amount: number; hint?: string }[]> = {};
   const couponLineIds: string[] = [];
 
   for (const item of cart.items) {
@@ -125,6 +126,9 @@ export async function recomputeCart(cartId: string) {
       product: item.product,
       variant: item.variant,
       placement,
+      designJson: item.designJson,
+      side: item.side,
+      settings,
       quantity: item.quantity,
       coupon,
       couponCode: cart.couponCode,
@@ -170,8 +174,9 @@ export async function getCartPayload(): Promise<ApiResponse<SerializedCart | nul
     const tiers = await getQuantityTiers();
     const coupon = await findCoupon(cart.couponCode);
     const shipping = await resolveShipping(cart.shippingMethod, null);
+    const settings = await getSettings();
 
-    const breakdowns: Record<string, { label: string; amount: number }[]> = {};
+    const breakdowns: Record<string, { label: string; amount: number; hint?: string }[]> = {};
     let subtotal = 0;
     let discount = 0;
     let tax = 0;
@@ -184,6 +189,9 @@ export async function getCartPayload(): Promise<ApiResponse<SerializedCart | nul
         product: item.product,
         variant: item.variant,
         placement,
+        designJson: item.designJson,
+        side: item.side,
+        settings,
         quantity: item.quantity,
         coupon,
         couponCode: cart.couponCode,
@@ -254,7 +262,16 @@ export async function addToCart(input: z.infer<typeof addToCartSchema>): Promise
     const tiers = await getQuantityTiers();
     const cart = await getOrCreateCart();
     const shipping = await resolveShipping(cart.shippingMethod, null);
-    const breakdown = await priceItem({ product, variant, placement, quantity, shipping, tiers });
+    const breakdown = await priceItem({
+      product,
+      variant,
+      placement,
+      designJson,
+      side,
+      quantity,
+      shipping,
+      tiers,
+    });
 
     const item = await prisma.cartItem.create({
       data: {

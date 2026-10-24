@@ -9,6 +9,7 @@ import { GarmentMockup, garmentTypeFromCategory, type GarmentType } from "@/comp
 import { Button } from "@/components/ui/button";
 import { addToCart } from "@/actions/cart";
 import { cn, formatINR } from "@/lib/utils";
+import { resolvePrintCost } from "@/lib/print-area";
 
 export interface SerializedVariant {
   id: string;
@@ -50,6 +51,7 @@ export interface SerializedProductDetail {
   images: { id: string; url: string; alt: string | null; side: string | null; colorHex: string | null }[];
   variants: SerializedVariant[];
   placements: SerializedPlacement[];
+  printPricing: { ratePerSqIn: number; minimum: number };
 }
 
 export function ProductDetailClient({ product }: { product: SerializedProductDetail }) {
@@ -90,7 +92,14 @@ export function ProductDetailClient({ product }: { product: SerializedProductDet
   const selectedVariant = sizes.find((v) => v.size === size) ?? null;
   const defaultPlacement = product.placements[0] ?? null;
   const priceDelta = selectedVariant?.priceDelta ?? 0;
-  const printCost = defaultPlacement ? defaultPlacement.baseCost + defaultPlacement.surcharge : 0;
+  const printCost = defaultPlacement
+    ? resolvePrintCost({
+        baseCost: defaultPlacement.baseCost,
+        surcharge: defaultPlacement.surcharge,
+        areaSqIn: defaultPlacement.widthIn * defaultPlacement.heightIn,
+        pricing: product.printPricing,
+      })
+    : 0;
   const unitPrice = product.basePrice + priceDelta + printCost;
 
   const image = product.images[activeImage] ?? null;
@@ -396,7 +405,9 @@ export function ProductDetailClient({ product }: { product: SerializedProductDet
                 Print area: {defaultPlacement.label} · {defaultPlacement.widthIn}″ × {defaultPlacement.heightIn}″
               </p>
               <p className="font-body-sm text-body-sm text-white/50">
-                Print charge {formatINR(printCost)} · front, back and sleeve placements available in the studio.
+                Print charge {formatINR(printCost)} · {product.printPricing.ratePerSqIn > 0
+                  ? `₹${product.printPricing.ratePerSqIn.toFixed(2)}/in² · min ₹${product.printPricing.minimum}`
+                  : "flat placement rate"} · studio prices your artwork&apos;s exact area.
               </p>
             </div>
             <Link

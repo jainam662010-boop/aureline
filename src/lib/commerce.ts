@@ -1,8 +1,10 @@
 import "server-only";
 import type { Prisma, Product, ProductVariant, PrintPlacement, Coupon, ShippingMethod } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import { computePricing, validateCoupon, type PriceBreakdown, type QuantityTier, type CouponInput, type ShippingInput } from "@/lib/pricing";
+import { computePricing, validateCoupon, type PriceBreakdown, type QuantityTier, type CouponInput, type ShippingInput, type PrintPricingInput } from "@/lib/pricing";
+import { designPrintArea } from "@/lib/print-area";
 import { num, parseJson } from "@/lib/utils";
+import type { DesignDocument, PrintSideKey } from "@/lib/editor-types";
 
 /* -------------------------------------------------------------------------- */
 /* Settings                                                                    */
@@ -12,18 +14,32 @@ export interface SiteSettings {
   defaultGstRate: number;
   defaultShippingFee: number;
   freeShippingThreshold: number;
+  /** ₹ per square inch of printed artwork. */
+  printRatePerSqIn: number;
+  /** ₹ floor for any single print. */
+  printMinimum: number;
 }
+
+const SETTING_KEYS = [
+  "defaultGstRate",
+  "defaultShippingFee",
+  "freeShippingThreshold",
+  "printRatePerSqIn",
+  "printMinimum",
+] as const;
 
 let settingsCache: { value: SiteSettings; at: number } | null = null;
 
 export async function getSettings(): Promise<SiteSettings> {
   if (settingsCache && Date.now() - settingsCache.at < 60_000) return settingsCache.value;
-  const rows = await prisma.setting.findMany({ where: { key: { in: ["defaultGstRate", "defaultShippingFee", "freeShippingThreshold"] } } });
+  const rows = await prisma.setting.findMany({ where: { key: { in: [...SETTING_KEYS] } } });
   const map = new Map(rows.map((r) => [r.key, r.value]));
   const value: SiteSettings = {
     defaultGstRate: Number(map.get("defaultGstRate") ?? process.env.DEFAULT_GST_RATE ?? 18),
     defaultShippingFee: Number(map.get("defaultShippingFee") ?? process.env.DEFAULT_SHIPPING_FEE ?? 79),
     freeShippingThreshold: Number(map.get("freeShippingThreshold") ?? process.env.FREE_SHIPPING_THRESHOLD ?? 1499),
+    printRatePerSqIn: Number(map.get("printRatePerSqIn") ?? process.env.PRINT_RATE_PER_SQ_IN ?? 1.35),
+    printMinimum: Number(map.get("printMinimum") ?? process.env.PRINT_MINIMUM_CHARGE ?? 99),
   };
   settingsCache = { value, at: Date.now() };
   return value;
@@ -129,6 +145,11 @@ export interface ItemPricingInput {
   product: { basePrice: Prisma.Decimal | number | string; gstRate: Prisma.Decimal | number | string };
   variant?: { priceDelta: Prisma.Decimal | number | string } | null;
   placement?: PrintPlacement | null;
+  /** Design document attached to the line (drives per-square-inch pricing). */
+  designJson?: unknown;
+  /** Which side of the design this line prints. */
+  side?: PrintSideKey | string | null;
+  settings?: SiteSettings;
   quantity: number;
   coupon?: (Coupon & { deletedAt: Date | null }) | null;
   couponCode?: string | null;
@@ -137,6 +158,7 @@ export interface ItemPricingInput {
 }
 
 export async function priceItem(input: ItemPricingInput): Promise<PriceBreakdown> {
+  const settings = input.settings ?? (await getSettings());
   let couponInput: CouponInput | null = null;
   if (input.coupon) {
     const check = validateCoupon(input.coupon, 0);
@@ -152,12 +174,33 @@ export async function priceItem(input: ItemPricingInput): Promise<PriceBreakdown
     }
   }
 
+  // Price by the artwork's bounding box when a design is attached. Catalogue
+  // quick-adds have no design, so they use the placement's full rectangle.
+  const side = (input.side ?? input.placement?.side ?? "FRONT") as PrintSideKey;
+  const placementWidthIn = input.placement ? num(input.placement.widthIn) : 0;
+  const placementHeightIn = input.placement ? num(input.placement.heightIn) : 0;
+  const printArea =
+    input.placement && placementWidthIn > 0 && placementHeightIn > 0
+      ? input.designJson
+        ? designPrintArea(input.designJson as DesignDocument, side, {
+            widthIn: placementWidthIn,
+            heightIn: placementHeightIn,
+          })
+        : { areaSqIn: placementWidthIn * placementHeightIn }
+      : null;
+
+  const printPricing: PrintPricingInput = {
+    ratePerSqIn: settings.printRatePerSqIn,
+    minimum: settings.printMinimum,
+  };
+
   return computePricing(
     {
       basePrice: num(input.product.basePrice),
       priceDelta: num(input.variant?.priceDelta ?? 0),
       placementBaseCost: num(input.placement?.baseCost ?? 0),
       placementSurcharge: num(input.placement?.surcharge ?? 0),
+      printAreaSqIn: printArea?.areaSqIn ?? null,
       gstRate: num(input.product.gstRate ?? 0),
       quantity: input.quantity,
     },
@@ -166,6 +209,7 @@ export async function priceItem(input: ItemPricingInput): Promise<PriceBreakdown
       couponCode: input.coupon?.code ?? null,
       shipping: input.shipping ?? null,
       tiers: input.tiers ?? [],
+      printPricing,
     },
   );
 }

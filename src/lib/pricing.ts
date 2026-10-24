@@ -24,8 +24,17 @@ export interface PricingItemInput {
   priceDelta: number;
   placementBaseCost: number;
   placementSurcharge: number;
+  /** Actual artwork bounding-box area inside the placement, in square inches. */
+  printAreaSqIn?: number | null;
   gstRate: number;
   quantity: number;
+}
+
+export interface PrintPricingInput {
+  /** ₹ per square inch of printed artwork; 0 disables area pricing. */
+  ratePerSqIn: number;
+  /** Floor in ₹ for any single print. */
+  minimum: number;
 }
 
 export interface CouponInput {
@@ -62,6 +71,10 @@ export interface PriceBreakdown {
   unitPrice: number;
   quantity: number;
   gross: number;
+  /** Printed area used for pricing (null = flat placement fee). */
+  printAreaSqIn: number | null;
+  printRatePerSqIn: number | null;
+  printMinimum: number | null;
   quantityDiscountPercent: number;
   quantityDiscount: number;
   couponCode: string | null;
@@ -79,6 +92,7 @@ export interface PricingContext {
   couponCode?: string | null;
   shipping?: ShippingInput | null;
   tiers?: QuantityTier[];
+  printPricing?: PrintPricingInput | null;
 }
 
 export function resolveQuantityTier(tiers: QuantityTier[], qty: number): QuantityTier | null {
@@ -131,7 +145,20 @@ export function computePricing(item: PricingItemInput, ctx: PricingContext = {})
   const qty = Math.max(1, Math.floor(item.quantity));
 
   const unitBase = round2(item.basePrice + item.priceDelta);
-  const unitPrint = round2(item.placementBaseCost + item.placementSurcharge);
+  const flatPrint = round2(item.placementBaseCost + item.placementSurcharge);
+
+  // Area pricing: charge for the artwork's actual bounding box, with a floor.
+  // No design attached (catalogue quick-add) → keep the placement's flat fee.
+  const printPricing = ctx.printPricing;
+  const areaSqIn =
+    item.printAreaSqIn != null && Number.isFinite(item.printAreaSqIn) && item.printAreaSqIn > 0
+      ? round2(item.printAreaSqIn)
+      : null;
+  const useAreaPricing = Boolean(printPricing && printPricing.ratePerSqIn > 0 && areaSqIn != null);
+  const unitPrint = useAreaPricing
+    ? round2(Math.max(printPricing!.minimum, areaSqIn! * printPricing!.ratePerSqIn))
+    : flatPrint;
+
   const unitPrice = round2(unitBase + unitPrint);
   const gross = round2(unitPrice * qty);
 
@@ -175,7 +202,13 @@ export function computePricing(item: PricingItemInput, ctx: PricingContext = {})
     { label: "Base product", amount: round2(unitBase * qty), hint: `₹${unitBase.toFixed(0)} × ${qty}` },
   ];
   if (unitPrint > 0) {
-    lines.push({ label: "Print cost", amount: round2(unitPrint * qty), hint: `₹${unitPrint.toFixed(0)} × ${qty}` });
+    lines.push({
+      label: "Print cost",
+      amount: round2(unitPrint * qty),
+      hint: useAreaPricing
+        ? `${areaSqIn!.toFixed(1)} in² × ₹${printPricing!.ratePerSqIn.toFixed(2)}/in²${printPricing!.minimum > 0 ? ` (min ₹${printPricing!.minimum})` : ""}`
+        : `₹${unitPrint.toFixed(0)} × ${qty}`,
+    });
   }
   if (quantityDiscountPercent > 0) {
     lines.push({
@@ -202,6 +235,9 @@ export function computePricing(item: PricingItemInput, ctx: PricingContext = {})
     unitPrice,
     quantity: qty,
     gross,
+    printAreaSqIn: areaSqIn,
+    printRatePerSqIn: useAreaPricing ? printPricing!.ratePerSqIn : null,
+    printMinimum: useAreaPricing ? printPricing!.minimum : null,
     quantityDiscountPercent,
     quantityDiscount,
     couponCode,

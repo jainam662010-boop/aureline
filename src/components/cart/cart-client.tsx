@@ -201,8 +201,13 @@ export function CartClient({ initialCart }: { initialCart: SerializedCart | null
           <span className="label-tech">Price transparency · first item</span>
           <ul className="flex flex-col gap-space-xs">
             {cart.items[0]?.priceBreakdown.map((line) => (
-              <li key={line.label} className="flex items-center justify-between font-body-md text-body-md">
-                <span className="text-white/60">{line.label}</span>
+              <li key={line.label} className="flex items-start justify-between gap-space-sm font-body-md text-body-md">
+                <span className="flex flex-col">
+                  <span className="text-white/60">{line.label}</span>
+                  {line.hint ? (
+                    <span className="font-label-technical text-[9px] tracking-wide text-white/35">{line.hint}</span>
+                  ) : null}
+                </span>
                 <span className={cn("tabular-nums", line.amount < 0 ? "text-[#7ef0a8]" : "text-white/85")}>
                   {formatINR(line.amount)}
                 </span>

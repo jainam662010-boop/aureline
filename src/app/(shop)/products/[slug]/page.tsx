@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProductBySlug, getRelatedProducts } from "@/lib/catalog";
-import { getPlacementsForProduct } from "@/lib/commerce";
+import { getPlacementsForProduct, getSettings } from "@/lib/commerce";
 import { ProductDetailClient } from "@/components/product/product-detail-client";
 import { ProductCard } from "@/components/product/product-card";
 import { num } from "@/lib/utils";
@@ -49,9 +49,10 @@ export default async function ProductDetailPage({ params }: Props) {
   const product = await getProductBySlug(slug);
   if (!product) notFound();
 
-  const [placements, related] = await Promise.all([
+  const [placements, related, settings] = await Promise.all([
     getPlacementsForProduct(product),
     getRelatedProducts(product.id, product.categoryId, 4),
+    getSettings(),
   ]);
 
   const serialized = {
@@ -90,6 +91,7 @@ export default async function ProductDetailPage({ params }: Props) {
       baseCost: num(p.baseCost),
       surcharge: num(p.surcharge),
     })),
+    printPricing: { ratePerSqIn: settings.printRatePerSqIn, minimum: settings.printMinimum },
   };
 
   return (

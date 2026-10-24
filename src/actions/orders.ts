@@ -8,7 +8,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { ok, fail, type ApiResponse } from "@/lib/response";
 import { findCart } from "@/lib/cart";
-import { findCoupon, getPlacementsForProduct, getQuantityTiers, priceItem, resolveShipping } from "@/lib/commerce";
+import { findCoupon, getPlacementsForProduct, getQuantityTiers, getSettings, priceItem, resolveShipping } from "@/lib/commerce";
 import { validateCoupon, type PriceBreakdown } from "@/lib/pricing";
 import { createRazorpayOrder, razorpayEnabled, verifyPaymentSignature } from "@/lib/razorpay";
 import { sendEmail, orderConfirmationEmail, orderStatusEmail } from "@/lib/mail";
@@ -99,6 +99,7 @@ export async function startCheckout(input: z.infer<typeof checkoutSchema>): Prom
 
     const tiers = await getQuantityTiers();
     const coupon = await findCoupon(cart.couponCode);
+    const settings = await getSettings();
     if (coupon) {
       const subtotal = cart.items.reduce((s, i) => s + num(i.unitPrice) * i.quantity, 0);
       const check = validateCoupon(coupon, subtotal);
@@ -128,6 +129,9 @@ export async function startCheckout(input: z.infer<typeof checkoutSchema>): Prom
         product: item.product,
         variant: item.variant,
         placement,
+        designJson: item.designJson,
+        side: item.side,
+        settings,
         quantity: item.quantity,
         coupon,
         couponCode: cart.couponCode,

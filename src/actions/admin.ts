@@ -77,6 +77,8 @@ const settingsSchema = z.object({
   defaultGstRate: z.number().min(0).max(40),
   defaultShippingFee: z.number().min(0).max(10000),
   freeShippingThreshold: z.number().min(0).max(1000000),
+  printRatePerSqIn: z.number().min(0).max(100),
+  printMinimum: z.number().min(0).max(10000),
 });
 
 /* -------------------------------------------------------------------------- */
@@ -462,6 +464,8 @@ export async function adminSaveSettings(input: z.infer<typeof settingsSchema>): 
       ["defaultGstRate", parsed.data.defaultGstRate],
       ["defaultShippingFee", parsed.data.defaultShippingFee],
       ["freeShippingThreshold", parsed.data.freeShippingThreshold],
+      ["printRatePerSqIn", parsed.data.printRatePerSqIn],
+      ["printMinimum", parsed.data.printMinimum],
     ];
     await prisma.$transaction(
       entries.map(([key, value]) =>

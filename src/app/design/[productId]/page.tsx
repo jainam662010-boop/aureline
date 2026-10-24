@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { getPlacementsForProduct } from "@/lib/commerce";
+import { getPlacementsForProduct, getSettings } from "@/lib/commerce";
 import { DesignStudio } from "@/components/editor/design-studio";
 import { createEmptyDesign, type DesignDocument } from "@/lib/editor-types";
 import { num } from "@/lib/utils";
@@ -112,9 +112,16 @@ export default async function DesignPage({ params, searchParams }: Props) {
 
     const placements = await getPlacementsForProduct(product as never);
     const serialized = serializeStudioProduct(product, placements as never);
+    const settings = await getSettings();
 
     return (
-      <DesignStudio product={serialized} initialDoc={createEmptyDesign()} initialDesignId={null} isLoggedIn={false} />
+      <DesignStudio
+        product={serialized}
+        initialDoc={createEmptyDesign()}
+        initialDesignId={null}
+        isLoggedIn={false}
+        printPricing={{ ratePerSqIn: settings.printRatePerSqIn, minimum: settings.printMinimum }}
+      />
     );
   }
 
@@ -149,6 +156,7 @@ export default async function DesignPage({ params, searchParams }: Props) {
   }
 
   const serialized = serializeStudioProduct(product, placements);
+  const settings = await getSettings();
 
   return (
     <DesignStudio
@@ -156,6 +164,7 @@ export default async function DesignPage({ params, searchParams }: Props) {
       initialDoc={initialDoc}
       initialDesignId={initialDesignId}
       isLoggedIn={Boolean(session?.user?.id)}
+      printPricing={{ ratePerSqIn: settings.printRatePerSqIn, minimum: settings.printMinimum }}
     />
   );
 }

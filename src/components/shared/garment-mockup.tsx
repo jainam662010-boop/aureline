@@ -14,12 +14,20 @@ export interface GarmentMockupProps {
   /** Overlay content (design preview) positioned in % of the garment box. */
   overlay?: React.ReactNode;
   overlayStyle?: React.CSSProperties;
+  /**
+   * Percentages of the mockup box where the print sits. When provided the
+   * overlay is clipped to the garment silhouette, so prints never bleed onto
+   * sleeves/background.
+   */
+  overlayBox?: { topPct: number; leftPct: number; widthPct: number; heightPct: number };
   showGuides?: boolean;
   /** Rendered behind the garment (glow). */
   glow?: boolean;
   /** Disable the fabric shading layer that sits above the print. */
   flat?: boolean;
 }
+
+const VIEWBOX = GARMENT_VIEWBOX;
 
 /**
  * Vector garment mockup used across catalog, product page, cart thumbnails and
@@ -41,6 +49,7 @@ export function GarmentMockup({
   className,
   overlay,
   overlayStyle,
+  overlayBox,
   showGuides = false,
   glow = false,
   flat = false,
@@ -193,7 +202,28 @@ export function GarmentMockup({
       </svg>
 
       {/* ---------------------------------------------------------------- 2. THE PRINT */}
-      {overlay ? (
+      {overlay && overlayBox ? (
+        <svg
+          viewBox={`0 0 ${VIEWBOX.width} ${VIEWBOX.height}`}
+          className="pointer-events-none absolute inset-0 h-full w-full"
+          aria-hidden
+        >
+          <defs>
+            <clipPath id={`${uid}-print-clip`}>
+              <path d={body} />
+            </clipPath>
+          </defs>
+          <foreignObject
+            x={(Math.max(0, overlayBox.leftPct) / 100) * VIEWBOX.width}
+            y={(Math.max(0, overlayBox.topPct) / 100) * VIEWBOX.height}
+            width={(Math.min(100, overlayBox.widthPct) / 100) * VIEWBOX.width}
+            height={(Math.min(100, overlayBox.heightPct) / 100) * VIEWBOX.height}
+            clipPath={`url(#${uid}-print-clip)`}
+          >
+            <div className="flex h-full w-full items-center justify-center">{overlay}</div>
+          </foreignObject>
+        </svg>
+      ) : overlay ? (
         <div className="absolute" style={overlayStyle}>
           {overlay}
         </div>

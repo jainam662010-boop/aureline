@@ -3,6 +3,7 @@ import { ArrowRight, LayoutGrid, Zap, Infinity as InfinityIcon, BadgeCheck, Laye
 import { KineticIntro } from "@/components/home/kinetic-intro";
 import { Marquee, HowItWorks, Testimonials, FaqSection, BottomCta, StatsBand, ShowcaseGallery } from "@/components/home/sections";
 import { StudioDemo } from "@/components/home/studio-demo";
+import { LifestyleGallery } from "@/components/home/lifestyle-gallery";
 import { ProductCard } from "@/components/product/product-card";
 import { GarmentMockup, garmentTypeFromCategory } from "@/components/shared/garment-mockup";
 import { getFeaturedProducts, listCategories } from "@/lib/catalog";
@@ -162,6 +163,7 @@ export default async function HomePage() {
       <Marquee />
       <StatsBand />
       <StudioDemo />
+      <LifestyleGallery />
       <ShowcaseGallery />
 
       {/* FEATURED PRODUCTS */}

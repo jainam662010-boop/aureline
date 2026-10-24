@@ -13,11 +13,15 @@ import {
   type StaticPlacement,
 } from "@/lib/static-catalog";
 import { computePricing, round2 } from "@/lib/pricing";
+import { designPrintArea } from "@/lib/print-area";
+import type { DesignDocument, PrintSideKey } from "@/lib/editor-types";
 
 export interface CommerceSettings {
   defaultGstRate: number;
   defaultShippingFee: number;
   freeShippingThreshold: number;
+  printRatePerSqIn: number;
+  printMinimum: number;
 }
 
 export async function getSettings(): Promise<CommerceSettings> {
@@ -91,8 +95,12 @@ export async function findCoupon(code: string | null | undefined) {
  */
 export async function priceItem(input: {
   product?: { basePrice: number | string | { toNumber(): number }; gstRate: number | string | { toNumber(): number }; priceDelta?: number | string | { toNumber(): number } };
-  placement?: { baseCost: number | string | { toNumber(): number }; surcharge: number | string | { toNumber(): number } };
+  placement?: { baseCost: number | string | { toNumber(): number }; surcharge: number | string | { toNumber(): number }; widthIn?: number; heightIn?: number };
   variant?: { priceDelta: number | string | { toNumber(): number } };
+  /** Design attached to the line — drives per-square-inch pricing. */
+  designJson?: unknown;
+  side?: string | null;
+  settings?: CommerceSettings;
   quantity: number;
   coupon?: { type: "PERCENTAGE" | "FIXED" | "FREE_SHIPPING"; value: number | string | { toNumber(): number }; minOrderAmount: number | string | { toNumber(): number }; maxDiscountAmount: number | string | { toNumber(): number } | null } | null;
   couponCode?: string | null;
@@ -107,12 +115,23 @@ export async function priceItem(input: {
 }) {
   // Decimal-like columns only reach this shim in static builds, where data is
   // already numeric — normalise everything through Number().
+  const settings = input.settings ?? SETTINGS;
+  const widthIn = Number(input.placement?.widthIn ?? 0);
+  const heightIn = Number(input.placement?.heightIn ?? 0);
+  const printArea =
+    widthIn > 0 && heightIn > 0
+      ? input.designJson
+        ? designPrintArea(input.designJson as DesignDocument, (input.side ?? "FRONT") as PrintSideKey, { widthIn, heightIn })
+        : { areaSqIn: widthIn * heightIn }
+      : null;
+
   return computePricing(
     {
       basePrice: round2(Number(input.product?.basePrice ?? input.basePrice ?? 0)),
       priceDelta: round2(Number(input.variant?.priceDelta ?? input.priceDelta ?? 0)),
       placementBaseCost: round2(Number(input.placement?.baseCost ?? input.placementBaseCost ?? 0)),
       placementSurcharge: round2(Number(input.placement?.surcharge ?? input.placementSurcharge ?? 0)),
+      printAreaSqIn: printArea?.areaSqIn ?? null,
       gstRate: Number(input.product?.gstRate ?? input.gstRate ?? SETTINGS.defaultGstRate),
       quantity: input.quantity,
     },
@@ -135,6 +154,7 @@ export async function priceItem(input: {
           }
         : null,
       tiers: input.tiers ?? QUANTITY_TIERS,
+      printPricing: { ratePerSqIn: settings.printRatePerSqIn, minimum: settings.printMinimum },
     },
   );
 }

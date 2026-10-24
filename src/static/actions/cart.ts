@@ -7,8 +7,10 @@
  * Guest checkout/auth has no backend in a static export, but browsing,
  * designing and carting demonstrably work end-to-end.
  */
-import { PRODUCTS, PLACEMENTS, COUPONS, QUANTITY_TIERS } from "@/lib/static-catalog";
+import { PRODUCTS, PLACEMENTS, COUPONS, QUANTITY_TIERS, SETTINGS } from "@/lib/static-catalog";
 import { computePricing, sumBreakdowns, couponDiscountFor, validateCoupon } from "@/lib/pricing";
+import { designPrintArea } from "@/lib/print-area";
+import type { DesignDocument } from "@/lib/editor-types";
 import { STATIC_SHIPPING } from "@/lib/static-shipping";
 
 /* ---------------------------------------------------------------- types -- */
@@ -33,7 +35,7 @@ export interface SerializedCartItem {
   designId: string | null;
   thumbnailUrl: string | null;
   garmentType: string;
-  priceBreakdown: { label: string; amount: number }[];
+  priceBreakdown: { label: string; amount: number; hint?: string }[];
 }
 
 export interface SerializedCart {
@@ -55,6 +57,8 @@ interface StoredItem {
   side: PrintSideAlias;
   quantity: number;
   designId: string | null;
+  /** Sanitised design (image data URLs stripped) used for area pricing. */
+  designJson?: unknown;
   thumbnailUrl: string | null;
 }
 
@@ -105,6 +109,25 @@ function placementFor(key: string) {
   return PLACEMENTS.find((p) => p.key === key) ?? null;
 }
 
+/**
+ * Image sources can be data URLs in the static demo; strip them before writing
+ * the design to localStorage. Pricing only needs geometry (x/y/w/h/angle).
+ */
+function compactDesign(doc: unknown): unknown {
+  if (!doc || typeof doc !== "object") return null;
+  const sides = ["FRONT", "BACK", "SLEEVE"] as const;
+  const out: Record<string, { layers: Record<string, unknown>[] }> = {};
+  for (const side of sides) {
+    const layers = (doc as Record<string, { layers?: Record<string, unknown>[] } | undefined>)[side]?.layers;
+    out[side] = {
+      layers: Array.isArray(layers)
+        ? layers.map(({ src: _src, ...rest }) => rest)
+        : [],
+    };
+  }
+  return out;
+}
+
 type CouponShape = { code: string; type: "PERCENTAGE" | "FIXED" | "FREE_SHIPPING"; value: number; minOrderAmount: number; maxDiscountAmount: number | null };
 
 function activeCoupon(): (CouponShape & { code: string }) | null {
@@ -120,12 +143,16 @@ function buildItem(stored: StoredItem) {
   if (!product || !variant || !placement) return null;
 
   const coupon = activeCoupon();
+  const printArea = stored.designJson
+    ? designPrintArea(stored.designJson as DesignDocument, stored.side, placement)
+    : { areaSqIn: placement.widthIn * placement.heightIn };
   const breakdown = computePricing(
     {
       basePrice: product.basePrice,
       priceDelta: variant.priceDelta,
       placementBaseCost: placement.baseCost,
       placementSurcharge: placement.surcharge,
+      printAreaSqIn: printArea?.areaSqIn ?? null,
       gstRate: product.gstRate,
       quantity: stored.quantity,
     },
@@ -134,6 +161,7 @@ function buildItem(stored: StoredItem) {
       couponCode: coupon?.code ?? null,
       shipping: STATIC_SHIPPING(stored.shippingMethod ?? "STANDARD"),
       tiers: QUANTITY_TIERS,
+      printPricing: { ratePerSqIn: SETTINGS.printRatePerSqIn, minimum: SETTINGS.printMinimum },
     },
   );
 
@@ -155,7 +183,7 @@ function buildItem(stored: StoredItem) {
     designId: stored.designId,
     thumbnailUrl: stored.thumbnailUrl,
     garmentType: product.category.slug,
-    priceBreakdown: breakdown.lines.map((l) => ({ label: l.label, amount: l.amount })),
+    priceBreakdown: breakdown.lines.map((l) => ({ label: l.label, amount: l.amount, hint: l.hint })),
   };
   return { item, breakdown };
 }
@@ -217,6 +245,7 @@ export async function addToCart(input: {
     side: input.side,
     quantity: Math.max(1, Math.floor(input.quantity)),
     designId: null,
+    designJson: compactDesign(input.designJson),
     thumbnailUrl: thumbnail,
   };
   stored.items.push(item);

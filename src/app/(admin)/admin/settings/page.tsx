@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getSettings } from "@/lib/commerce";
 import { prisma } from "@/lib/prisma";
 import { SettingsForm } from "@/components/admin/settings-form";
+import { placementRatePerSqIn } from "@/lib/print-area";
 
 export const metadata: Metadata = { title: "Settings" };
 export const dynamic = "force-dynamic";
@@ -25,8 +26,8 @@ export default async function AdminSettingsPage() {
         <span className="label-tech">Pricing engine inputs</span>
         <h1 className="font-headline-xl text-headline-xl text-white font-bold tracking-tight">Settings</h1>
         <p className="font-body-md text-body-md text-white/55 mt-space-xs max-w-2xl">
-          These values feed the pricing engine directly: base price + print placement + quantity tier − coupon + shipping
-          + GST. Edits take effect on the next request.
+          These values feed the pricing engine directly: base price + print (actual artwork area × rate, floored at the
+          minimum) + quantity tier − coupon + shipping + GST. Edits take effect on the next request.
         </p>
       </header>
 
@@ -39,7 +40,7 @@ export default async function AdminSettingsPage() {
             <table className="w-full text-left">
               <thead>
                 <tr className="border-b border-white/[0.08]">
-                  {["Key", "Label", "Side", "Size", "Base"].map((head) => (
+                  {["Key", "Label", "Side", "Size", "Base", "₹/in²"].map((head) => (
                     <th key={head} className="py-2 pr-space-sm font-label-technical text-[9px] uppercase tracking-widest text-white/40">
                       {head}
                     </th>
@@ -60,11 +61,20 @@ export default async function AdminSettingsPage() {
                     <td className="py-2 pr-space-sm font-body-sm text-body-sm text-[#7ef0a8] tabular-nums">
                       ₹{Number(placement.baseCost)}
                     </td>
+                    <td className="py-2 pr-space-sm font-body-sm text-body-sm text-white/45 tabular-nums">
+                      ₹
+                      {placementRatePerSqIn(
+                        Number(placement.baseCost),
+                        Number(placement.surcharge),
+                        Number(placement.widthIn),
+                        Number(placement.heightIn),
+                      ).toFixed(2)}
+                    </td>
                   </tr>
                 ))}
                 {placements.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="py-5 text-center font-body-sm text-body-sm text-white/40">
+                    <td colSpan={6} className="py-5 text-center font-body-sm text-body-sm text-white/40">
                       No placements — run the seed script.
                     </td>
                   </tr>

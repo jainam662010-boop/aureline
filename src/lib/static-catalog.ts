@@ -359,7 +359,13 @@ export const COUPONS: { code: string; type: "PERCENTAGE" | "FIXED" | "FREE_SHIPP
   { code: "FREESHIP", type: "FREE_SHIPPING", value: 0, minOrderAmount: 0, maxDiscountAmount: null },
 ];
 
-export const SETTINGS = { defaultGstRate: 18, defaultShippingFee: 79, freeShippingThreshold: 1499 };
+export const SETTINGS = {
+  defaultGstRate: 18,
+  defaultShippingFee: 79,
+  freeShippingThreshold: 1499,
+  printRatePerSqIn: 1.35,
+  printMinimum: 99,
+};
 
 /* -------------------------------------------------------- catalog API ---- */
 

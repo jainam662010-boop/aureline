@@ -128,7 +128,7 @@ interface ShowcaseEntry {
   alt: string;
   garment: GarmentType;
   color: string;
-  placement: { top: string; left: string; width: string; height: string };
+  placement: { topPct: number; leftPct: number; widthPct: number; heightPct: number };
   title: string;
   story: string;
   blank: string;
@@ -140,7 +140,7 @@ const SHOWCASE_BASE: ShowcaseEntry[] = [
     alt: "Black hole artwork printed on an oversized tee",
     garment: "oversized",
     color: "#111111",
-    placement: { top: "26%", left: "26%", width: "48%", height: "46%" },
+    placement: { topPct: 26, leftPct: 26, widthPct: 48, heightPct: 46 },
     title: "Event horizon · 12″ front",
     story: "Customer artwork · Vintage Washed Oversized",
     blank: "/products/vintage-washed-oversized",
@@ -150,7 +150,7 @@ const SHOWCASE_BASE: ShowcaseEntry[] = [
     alt: "Sunflower field illustration printed on a hoodie",
     garment: "hoodie",
     color: "#3D4035",
-    placement: { top: "28%", left: "27%", width: "46%", height: "38%" },
+    placement: { topPct: 28, leftPct: 27, widthPct: 46, heightPct: 38 },
     title: "Sunflower study · chest print",
     story: "Customer artwork · French Terry Hoodie",
     blank: "/products/french-terry-hoodie",
@@ -160,7 +160,7 @@ const SHOWCASE_BASE: ShowcaseEntry[] = [
     alt: "Anime drift car illustration printed on a heavyweight tee",
     garment: "tee",
     color: "#F4F4F4",
-    placement: { top: "27%", left: "26%", width: "48%", height: "46%" },
+    placement: { topPct: 27, leftPct: 26, widthPct: 48, heightPct: 46 },
     title: "Tunnel drift · full front",
     story: "Customer artwork · Heavyweight Box Tee",
     blank: "/products/heavyweight-box-tee",
@@ -170,7 +170,7 @@ const SHOWCASE_BASE: ShowcaseEntry[] = [
     alt: "Developer icon set printed on a canvas tote",
     garment: "tote",
     color: "#E6DEC8",
-    placement: { top: "40%", left: "26%", width: "48%", height: "42%" },
+    placement: { topPct: 40, leftPct: 26, widthPct: 48, heightPct: 42 },
     title: "Dev icons · tote face",
     story: "Customer artwork · Raw Canvas Merch Tote",
     blank: "/products/raw-canvas-merch-tote",
@@ -229,11 +229,11 @@ export function ShowcaseGallery() {
                       className="w-full h-full object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.45)]"
                     />
                   }
-                  overlayStyle={{
-                    top: item.placement.top,
-                    left: item.placement.left,
-                    width: item.placement.width,
-                    height: item.placement.height,
+                  overlayBox={{
+                    topPct: item.placement.topPct,
+                    leftPct: item.placement.leftPct,
+                    widthPct: item.placement.widthPct,
+                    heightPct: item.placement.heightPct,
                   }}
                 />
               </Link>

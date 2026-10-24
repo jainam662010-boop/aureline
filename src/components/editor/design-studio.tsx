@@ -41,6 +41,7 @@ import {
   type PlacementInfo,
 } from "@/components/editor/editor-utils";
 import { createEmptyDesign, type DesignDocument, type DesignLayerState } from "@/lib/editor-types";
+import { designPrintArea, resolvePrintCost, type PrintPricing } from "@/lib/print-area";
 import { EDITOR_FONT_FAMILIES, CLIPART } from "@/lib/constants";
 import { saveDesign } from "@/actions/design";
 import { addToCart } from "@/actions/cart";
@@ -59,9 +60,11 @@ interface DesignStudioProps {
   initialDoc: DesignDocument | null;
   initialDesignId: string | null;
   isLoggedIn: boolean;
+  /** ₹/in² print pricing from Admin → Settings. */
+  printPricing: PrintPricing;
 }
 
-export function DesignStudio({ product, initialDoc, initialDesignId, isLoggedIn }: DesignStudioProps) {
+export function DesignStudio({ product, initialDoc, initialDesignId, isLoggedIn, printPricing }: DesignStudioProps) {
   const router = useRouter();
   const stageRef = React.useRef<Konva.Stage>(null);
   const transformerRef = React.useRef<Konva.Transformer>(null);
@@ -111,6 +114,12 @@ export function DesignStudio({ product, initialDoc, initialDesignId, isLoggedIn 
   const activePlacement: PlacementInfo =
     sidePlacements.find((p) => p.key === placementKeys[activeSide]) ?? sidePlacements[0] ?? product.placements[0]!;
   const canvas = React.useMemo(() => canvasSize(activePlacement), [activePlacement]);
+
+  /** Square inches the artwork actually covers on the active side. */
+  const printArea = React.useMemo(
+    () => designPrintArea(doc, activeSide, activePlacement),
+    [doc, activeSide, activePlacement],
+  );
 
   const layers = doc[activeSide]?.layers ?? [];
   const selected = layers.find((l) => l.id === selectedId) ?? null;
@@ -331,9 +340,11 @@ export function DesignStudio({ product, initialDoc, initialDesignId, isLoggedIn 
   React.useEffect(() => {
     if (previewTimer.current) clearTimeout(previewTimer.current);
     previewTimer.current = setTimeout(() => {
-      const url = exportSide(activeSide, 1);
-      if (url) setPreviews((prev) => ({ ...prev, [activeSide]: url }));
-    }, 400);
+      // 2× the editor resolution keeps the panel preview crisp on retina
+      // displays without paying the full 300-DPI export cost.
+      const url = exportSide(activeSide, 2);
+      setPreviews((prev) => (prev[activeSide] === url ? prev : { ...prev, [activeSide]: url }));
+    }, 250);
     return () => {
       if (previewTimer.current) clearTimeout(previewTimer.current);
     };
@@ -492,11 +503,18 @@ export function DesignStudio({ product, initialDoc, initialDesignId, isLoggedIn 
 
   const sizesForColor = product.variants.filter((v) => v.colorHex === colorHex);
   const selectedVariant = sizesForColor.find((v) => v.size === cartSize) ?? null;
+  const fullPlacementArea = activePlacement.widthIn * activePlacement.heightIn;
+  const billedAreaSqIn = printArea?.areaSqIn ?? fullPlacementArea;
+  const printCost = resolvePrintCost({
+    baseCost: activePlacement.baseCost,
+    surcharge: activePlacement.surcharge,
+    areaSqIn: billedAreaSqIn,
+    pricing: printPricing,
+  });
   const unitPrice =
     product.basePrice +
     (selectedVariant?.priceDelta ?? 0) +
-    activePlacement.baseCost +
-    activePlacement.surcharge;
+    printCost;
 
   const handleAddToCart = async () => {
     if (!selectedVariant) {
@@ -569,7 +587,7 @@ export function DesignStudio({ product, initialDoc, initialDesignId, isLoggedIn 
       y: layer.y,
       rotation: layer.angle,
       opacity: layer.opacity,
-      draggable: activeSide === activeSide,
+      draggable: true,
       onPointerDown: () => setSelectedId(layer.id),
       onDragMove: (e: Konva.KonvaEventObject<DragEvent>) => handleDragMove(e, layer),
       onDragEnd: (e: Konva.KonvaEventObject<DragEvent>) => handleDragEnd(e, layer),
@@ -853,6 +871,7 @@ export function DesignStudio({ product, initialDoc, initialDesignId, isLoggedIn 
             <span className="font-label-technical text-label-technical text-[#FF0D7B] font-bold">PRINT AREA:</span>
             <span className="font-label-technical text-label-technical text-white uppercase tracking-widest">
               {activePlacement.label} · {activePlacement.widthIn}&quot; × {activePlacement.heightIn}&quot;
+              {printArea ? ` · used ${printArea.widthIn}″ × ${printArea.heightIn}″` : ""}
             </span>
           </div>
         </main>
@@ -887,11 +906,11 @@ export function DesignStudio({ product, initialDoc, initialDesignId, isLoggedIn 
                     ) : null}
                   </div>
                 }
-                overlayStyle={{
-                  top: `${activePlacement.topPct}%`,
-                  left: `${activePlacement.leftPct}%`,
-                  width: `${(activePlacement.widthIn / 20) * 100}%`,
-                  height: `${(activePlacement.heightIn / 26) * 100}%`,
+                overlayBox={{
+                  topPct: activePlacement.topPct,
+                  leftPct: activePlacement.leftPct,
+                  widthPct: (activePlacement.widthIn / 20) * 100,
+                  heightPct: (activePlacement.heightIn / 26) * 100,
                 }}
               />
 
@@ -922,17 +941,33 @@ export function DesignStudio({ product, initialDoc, initialDesignId, isLoggedIn 
           </div>
 
           {/* Quick price */}
-          <div className="px-space-sm py-space-xs border-b border-white/[0.06] flex items-center justify-between">
+          <div className="px-space-sm py-space-xs border-b border-white/[0.06] flex items-start justify-between gap-space-sm">
             <span className="flex flex-col">
               <span className="font-label-technical text-label-technical uppercase tracking-widest text-white/50">
                 Est. per piece
               </span>
               <span className="font-headline-md text-headline-md font-bold text-white">{formatINR(unitPrice)}</span>
+              <span className="font-label-technical text-[9px] text-white/40 mt-0.5">
+                {printArea
+                  ? `${printArea.widthIn}″ × ${printArea.heightIn}″ printed`
+                  : `Full ${activePlacement.widthIn}″ × ${activePlacement.heightIn}″ placement`}
+              </span>
             </span>
             <span className="font-label-technical text-[9px] text-white/40 text-right leading-4">
               Blank {formatINR(product.basePrice)}
               <br />
-              Print {formatINR(activePlacement.baseCost + activePlacement.surcharge)}
+              Print {formatINR(printCost)}
+              <br />
+              {printPricing.ratePerSqIn > 0 ? (
+                <span className={billedAreaSqIn * printPricing.ratePerSqIn < printPricing.minimum ? "text-[#FF8C26]" : "text-[#7ef0a8]"}>
+                  {billedAreaSqIn.toFixed(1)} in² @ ₹{printPricing.ratePerSqIn.toFixed(2)}/in²
+                  {billedAreaSqIn * printPricing.ratePerSqIn < printPricing.minimum
+                    ? ` · min ₹${printPricing.minimum}`
+                    : ""}
+                </span>
+              ) : (
+                <span>{activePlacement.label} · flat rate</span>
+              )}
             </span>
           </div>
 
@@ -1083,6 +1118,16 @@ export function DesignStudio({ product, initialDoc, initialDesignId, isLoggedIn 
               </span>
               <span className="font-headline-lg text-headline-lg font-bold text-white">
                 {formatINR(unitPrice * cartQty)}
+              </span>
+            </div>
+
+            <div className="flex items-center justify-between font-label-technical text-[9px] uppercase tracking-widest text-white/40">
+              <span>
+                Print {formatINR(printCost)} / piece
+                {printArea ? ` · ${printArea.areaSqIn.toFixed(1)} in²` : ""}
+              </span>
+              <span>
+                {printPricing.ratePerSqIn > 0 ? `₹${printPricing.ratePerSqIn.toFixed(2)}/in² · min ₹${printPricing.minimum}` : "Flat placement rate"}
               </span>
             </div>
 

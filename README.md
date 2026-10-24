@@ -66,6 +66,7 @@ The code itself is provider-agnostic (no raw SQL, no SQLite-only features). The 
 | `RESEND_API_KEY` / `EMAIL_FROM` | optional | Transactional email — **absent ⇒ console fallback** |
 | `WHATSAPP_TOKEN` / `WHATSAPP_PHONE_ID` | optional | WhatsApp Cloud API notify when a request is accepted — **absent ⇒ console log + `wa.me` deep link + one-click admin button** |
 | `DEFAULT_GST_RATE`, `DEFAULT_SHIPPING_FEE`, `FREE_SHIPPING_THRESHOLD` | optional | Initial pricing defaults (admins override these live in `/admin/settings`) |
+| `PRINT_RATE_PER_SQ_IN`, `PRINT_MINIMUM_CHARGE` | optional | Initial per-square-inch print pricing (defaults ₹1.35/in², ₹99 floor) |
 
 Every optional integration degrades gracefully — the app is fully usable in development with only the required keys.
 
@@ -76,7 +77,7 @@ Every optional integration degrades gracefully — the app is fully usable in de
 ### Storefront `(shop)`
 | Route | Description |
 | --- | --- |
-| `/` | Hero, arch runway, stats band, marquee, categories, print showcase gallery, testimonials, FAQ |
+| `/` | Hero, arch runway, stats band, marquee, studio demo, lifestyle photo strip, print showcase gallery, testimonials, FAQ |
 | `/products` | Catalog with filters (`?q=`, `?category=`, `?fabric=`, `?size=`, `?color=`) |
 | `/products/[slug]` | Detail: colour/size pickers, live price, print-area info, add-to-cart / start designing |
 | `/design/[productId]` | Full-screen design studio (no shop chrome) |
@@ -109,20 +110,22 @@ Every optional integration degrades gracefully — the app is fully usable in de
 - **Undo/redo** history (60 steps), keyboard shortcuts (`Ctrl/Cmd+Z`, `Shift+Ctrl+Z`, `Delete`, `Ctrl+D`), `Ctrl+scroll` zoom, zoom/pan controls.
 - **Center-based coordinates:** layer `x/y` is the layer centre; nodes render with `offsetX/offsetY = width/2`, so rotation and transformer bounds stay symmetric. `clampLayer` keeps centres within `[w/2, canvas.width − w/2]`.
 - **Canvas scale:** 30 px/inch for editing; export multiplies by 10 ⇒ **300 DPI print-ready PNGs** (`stage.toDataURL({ pixelRatio })`), with a DPI warning per layer if the source image is too small.
-- **Live mockup:** debounced (400 ms) exported thumbnail per side composited over the vector garment mockup using the placement's `topPct/leftPct`.
+- **Live mockup:** debounced (250 ms) exported thumbnail per side composited over the vector garment mockup. The print is rendered through an SVG `foreignObject` clipped to the garment silhouette, so artwork never bleeds onto sleeves or background, and the 2× export keeps the panel crisp on retina screens.
 - **Persistence:** design JSON + thumbnail saved server-side (`saveDesign`), resumed via `/design/[productId]?design=<id>`.
 
 ## Pricing engine
 
-`base price + print placement + (− quantity tier%) − coupon + shipping + GST`
+`base price + print cost (actual artwork area × ₹/in², floored at the minimum) + (− quantity tier%) − coupon + shipping + GST`
 
 All inputs are DB-driven and edited live in `/admin/settings`:
 
 - `PrintPlacement` (key, side, inches, `baseCost`, `surcharge`, mockup overlay %)
 - `QuantityDiscount` tiers (`minQty/maxQty/percentOff`, applied to print charges)
 - `Coupon` (percentage / fixed / free-shipping, min order, cap, usage limits, window)
-- `Setting` rows: `defaultGstRate`, `defaultShippingFee`, `freeShippingThreshold`
+- `Setting` rows: `defaultGstRate`, `defaultShippingFee`, `freeShippingThreshold`, `printRatePerSqIn`, `printMinimum`
 - Shipping resolved from `ShippingZone` + `ShippingRate` by PIN prefix + method
+
+**Per-square-inch printing.** `src/lib/print-area.ts` computes the union bounding box (rotation-aware) of every layer on the printed side, clips it to the placement, and converts it to square inches. The price is `max(printMinimum, areaSqIn × printRatePerSqIn)`; catalogue quick-adds with no design use the placement's full rectangle. Set the rate to `0` to fall back to flat placement fees. The studio shows the live area, ₹/in², and when the minimum kicked in.
 
 Math lives in `src/lib/pricing.ts`; DB resolution in `src/lib/commerce.ts`. The **server re-prices every cart line and the whole cart on read** — the client store is a cache only, never a source of truth. Money columns are Prisma `Decimal`; always convert through `num()` from `src/lib/utils.ts`.
 
