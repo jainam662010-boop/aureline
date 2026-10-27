@@ -9,14 +9,14 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "text-white bg-gradient-to-r from-volt-red via-volt-pink to-volt-violet shadow-[0_0_24px_rgba(255,13,123,0.4)] hover:shadow-[0_0_36px_rgba(0,224,242,0.5)] hover:brightness-110",
+          "text-white bg-gradient-to-r from-volt-red via-volt-pink to-volt-violet shadow-[0_0_24px_rgba(14,165,233,0.4)] hover:shadow-[0_0_36px_rgba(6,182,212,0.5)] hover:brightness-110",
         glass:
-          "text-white backdrop-blur-2xl bg-white/[0.05] border border-white/[0.14] hover:bg-white/[0.1] hover:border-white/30",
+          "text-slate-900 backdrop-blur-2xl bg-slate-900/[0.05] border border-slate-900/[0.1] hover:bg-slate-900/[0.08] hover:border-slate-900/[0.1]",
         outline:
-          "text-white/85 bg-white/[0.06] border border-white/15 hover:bg-white/[0.12] hover:text-white",
-        ghost: "text-white/70 hover:text-white hover:bg-white/[0.08]",
+          "text-slate-800 bg-slate-900/[0.05] border border-slate-900/[0.1] hover:bg-slate-900/[0.09] hover:text-slate-900",
+        ghost: "text-slate-700 hover:text-slate-900 hover:bg-slate-900/[0.06]",
         danger:
-          "text-white bg-gradient-to-r from-[#93000a] to-[#c0000a] hover:brightness-110 shadow-[0_0_18px_rgba(192,0,10,0.35)]",
+          "text-white bg-gradient-to-r from-[#E11D48] to-[#BE123C] hover:brightness-110 shadow-[0_0_18px_rgba(192,0,10,0.35)]",
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {

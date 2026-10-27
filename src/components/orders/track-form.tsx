@@ -39,7 +39,7 @@ export function TrackForm() {
     <div>
       <form onSubmit={submit} className="flex flex-col sm:flex-row gap-space-sm">
         <div className="relative flex-1">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-white/40 pointer-events-none" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-slate-500 pointer-events-none" />
           <Input
             value={identifier}
             onChange={(e) => setIdentifier(e.target.value)}
@@ -55,9 +55,9 @@ export function TrackForm() {
       </form>
 
       {notFound ? (
-        <div className="mt-space-md rounded-2xl border border-[#93000a]/50 bg-[#93000a]/20 p-space-md">
-          <p className="font-label-lg text-label-lg text-[#ff9d95]">Order not found</p>
-          <p className="font-body-sm text-body-sm text-white/60 mt-1">{notFound}</p>
+        <div className="mt-space-md rounded-2xl border border-[#E11D48]/50 bg-[#E11D48]/20 p-space-md">
+          <p className="font-label-lg text-label-lg text-[#BE123C]">Order not found</p>
+          <p className="font-body-sm text-body-sm text-slate-600 mt-1">{notFound}</p>
         </div>
       ) : null}
 
@@ -66,18 +66,18 @@ export function TrackForm() {
           <div className="flex items-start justify-between gap-space-sm flex-wrap mb-space-md">
             <div>
               <div className="flex items-center gap-space-sm flex-wrap">
-                <span className="font-headline-md text-headline-md font-bold text-white">{order.orderNumber}</span>
+                <span className="font-headline-md text-headline-md font-bold text-slate-900">{order.orderNumber}</span>
                 <StatusBadge status={order.status} />
               </div>
-              <p className="font-body-sm text-body-sm text-white/50 mt-1">
+              <p className="font-body-sm text-body-sm text-slate-500 mt-1">
                 Placed {formatDateTime(order.createdAt)} · {order.items.length} item(s)
               </p>
             </div>
             <div className="text-right">
-              <span className="font-headline-md text-headline-md font-bold text-white tabular-nums">
+              <span className="font-headline-md text-headline-md font-bold text-slate-900 tabular-nums">
                 {formatINR(order.total, true)}
               </span>
-              <p className="font-label-technical text-[9px] uppercase tracking-widest text-white/40">
+              <p className="font-label-technical text-[9px] uppercase tracking-widest text-slate-500">
                 {order.shippingMethod.toLowerCase()} shipping
               </p>
             </div>
@@ -91,7 +91,7 @@ export function TrackForm() {
 
               <div className="glass-panel-sm p-space-sm">
                 <p className="label-tech mb-0">Shipping to</p>
-                <p className="font-body-sm text-body-sm text-white/70 leading-relaxed">
+                <p className="font-body-sm text-body-sm text-slate-700 leading-relaxed">
                   {order.shippingFullName} · {order.shippingLine1}
                   {order.shippingLine2 ? `, ${order.shippingLine2}` : ""}, {order.shippingCity},{" "}
                   {order.shippingState} {order.shippingPincode}
@@ -101,13 +101,13 @@ export function TrackForm() {
               {order.trackingNumber ? (
                 <div className="glass-panel-sm p-space-sm">
                   <p className="label-tech mb-0">{order.courier ?? "Courier"} tracking</p>
-                  <p className="font-label-lg text-label-lg text-white">{order.trackingNumber}</p>
+                  <p className="font-label-lg text-label-lg text-slate-900">{order.trackingNumber}</p>
                   {order.trackingUrl ? (
                     <a
                       href={order.trackingUrl}
                       target="_blank"
                       rel="noreferrer noopener"
-                      className="font-label-md text-label-md text-[#00E0F2] hover:underline"
+                      className="font-label-md text-label-md text-[#0891B2] hover:underline"
                     >
                       Track on courier site →
                     </a>

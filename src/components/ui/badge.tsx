@@ -7,14 +7,14 @@ const badgeVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-white/[0.06] border-white/10 text-white/80",
-        brand: "bg-[#FF3B30]/12 border-[#FF3B30]/40 text-[#FF6B62]",
-        pink: "bg-[#FF0D7B]/12 border-[#FF0D7B]/40 text-[#FF6BC0]",
-        violet: "bg-[#8026F2]/15 border-[#8026F2]/40 text-[#B08CFF]",
-        cyan: "bg-[#00E0F2]/12 border-[#00E0F2]/40 text-[#66EFFA]",
-        success: "bg-[#22c55e]/12 border-[#22c55e]/40 text-[#7ef0a8]",
-        warning: "bg-[#FF8C26]/12 border-[#FF8C26]/40 text-[#FFC084]",
-        danger: "bg-[#93000a]/25 border-[#ff5545]/40 text-[#ff9d95]",
+        default: "bg-slate-900/[0.05] border-slate-900/[0.1] text-slate-800",
+        brand: "bg-[#2563EB]/12 border-[#2563EB]/40 text-[#2563EB]",
+        pink: "bg-[#0EA5E9]/12 border-[#0EA5E9]/40 text-[#0284C7]",
+        violet: "bg-[#7C3AED]/15 border-[#7C3AED]/40 text-[#6D28D9]",
+        cyan: "bg-[#0891B2]/12 border-[#0891B2]/40 text-[#0E7490]",
+        success: "bg-[#22c55e]/12 border-[#22c55e]/40 text-[#047857]",
+        warning: "bg-[#D97706]/12 border-[#D97706]/40 text-[#B45309]",
+        danger: "bg-[#E11D48]/25 border-[#F43F5E]/40 text-[#BE123C]",
         solid: "bg-white text-black border-transparent",
       },
       size: {

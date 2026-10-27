@@ -60,17 +60,17 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
     <div className="flex flex-col gap-space-lg">
       <header className="flex items-start justify-between gap-space-sm flex-wrap">
         <div>
-          <Link href="/admin/orders" className="label-tech hover:text-white transition-colors">
+          <Link href="/admin/orders" className="label-tech hover:text-slate-900 transition-colors">
             ← All orders
           </Link>
-          <h1 className="font-headline-xl text-headline-xl text-white font-bold tracking-tight">{order.orderNumber}</h1>
-          <p className="font-body-sm text-body-sm text-white/50 mt-1">Placed {formatDateTime(order.createdAt)}</p>
+          <h1 className="font-headline-xl text-headline-xl text-slate-900 font-bold tracking-tight">{order.orderNumber}</h1>
+          <p className="font-body-sm text-body-sm text-slate-500 mt-1">Placed {formatDateTime(order.createdAt)}</p>
         </div>
         <div className="glass-panel px-space-md py-space-sm text-right">
-          <p className="font-headline-md text-headline-md font-bold text-white tabular-nums">
+          <p className="font-headline-md text-headline-md font-bold text-slate-900 tabular-nums">
             {formatINR(num(order.total), true)}
           </p>
-          <p className="font-label-technical text-[9px] uppercase tracking-widest text-white/45">
+          <p className="font-label-technical text-[9px] uppercase tracking-widest text-slate-500">
             {order.shippingMethod.toLowerCase()} · {order.currency}
           </p>
         </div>
@@ -79,12 +79,12 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
       <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_360px] gap-space-md">
         <div className="flex flex-col gap-space-md min-w-0">
           <section className="glass-panel p-space-md">
-            <h2 className="font-headline-md text-headline-md font-bold text-white mb-space-sm">Items</h2>
+            <h2 className="font-headline-md text-headline-md font-bold text-slate-900 mb-space-sm">Items</h2>
             <OrderItemsTable items={serializedItems} />
           </section>
 
           <section className="glass-panel p-space-md">
-            <h2 className="font-headline-md text-headline-md font-bold text-white mb-space-sm">Progress</h2>
+            <h2 className="font-headline-md text-headline-md font-bold text-slate-900 mb-space-sm">Progress</h2>
             <StatusTimeline
               status={order.status}
               shippedAt={order.shippedAt?.toISOString() ?? null}
@@ -93,11 +93,11 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
           </section>
 
           <section className="glass-panel p-space-md">
-            <h2 className="font-headline-md text-headline-md font-bold text-white mb-space-sm">Fulfilment</h2>
+            <h2 className="font-headline-md text-headline-md font-bold text-slate-900 mb-space-sm">Fulfilment</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-space-sm">
               <div className="glass-panel-sm p-space-sm">
                 <p className="label-tech mb-0">Ship to</p>
-                <p className="font-body-sm text-body-sm text-white/70 leading-relaxed">
+                <p className="font-body-sm text-body-sm text-slate-700 leading-relaxed">
                   {order.shippingFullName}
                   <br />
                   {order.shippingLine1}
@@ -110,7 +110,7 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
               </div>
               <div className="glass-panel-sm p-space-sm">
                 <p className="label-tech mb-0">Payment</p>
-                <p className="font-body-sm text-body-sm text-white/70 leading-relaxed">
+                <p className="font-body-sm text-body-sm text-slate-700 leading-relaxed">
                   {payment ? (
                     <>
                       {payment.method ?? "Online"} · {payment.status}
@@ -119,7 +119,7 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
                       {payment.failureReason ? (
                         <>
                           <br />
-                          <span className="text-[#ff9d95]">{payment.failureReason}</span>
+                          <span className="text-[#BE123C]">{payment.failureReason}</span>
                         </>
                       ) : null}
                     </>

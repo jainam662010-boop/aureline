@@ -173,7 +173,7 @@ export function CheckoutClient({
           email: values.email,
           contact: `+91${values.phone}`,
         },
-        theme: { color: "#FF0D7B", backdrop_color: "#08080a" },
+        theme: { color: "#0EA5E9", backdrop_color: "#F4F7FB" },
         modal: {
           ondismiss: async () => {
             await recordPaymentFailure({ razorpay_order_id: razorpayOrderId, description: "Customer cancelled" });
@@ -206,7 +206,7 @@ export function CheckoutClient({
   if (cart.items.length === 0) {
     return (
       <div className="glass-panel p-space-lg text-center">
-        <p className="font-headline-md text-headline-md text-white">Your cart is empty</p>
+        <p className="font-headline-md text-headline-md text-slate-900">Your cart is empty</p>
         <Link href="/products" className="btn-gradient mt-space-md inline-flex px-space-lg py-space-sm">
           Browse blanks
         </Link>
@@ -219,7 +219,7 @@ export function CheckoutClient({
       <div className="lg:col-span-7 flex flex-col gap-space-md">
         {/* Contact */}
         <section className="glass-panel p-space-md flex flex-col gap-space-md">
-          <h2 className="font-headline-md text-headline-md font-semibold text-white">Contact details</h2>
+          <h2 className="font-headline-md text-headline-md font-semibold text-slate-900">Contact details</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-space-sm">
             <div className="flex flex-col gap-space-xs">
               <Label htmlFor="email">Email</Label>
@@ -234,7 +234,7 @@ export function CheckoutClient({
             <div className="flex flex-col gap-space-xs sm:col-span-2">
               <Label htmlFor="whatsappPhone">WhatsApp number for updates</Label>
               <div className="flex items-center gap-space-xs">
-                <span className="flex-shrink-0 flex size-11 items-center justify-center rounded-2xl bg-[#22c55e]/12 border border-[#22c55e]/30 text-[#7ef0a8]">
+                <span className="flex-shrink-0 flex size-11 items-center justify-center rounded-2xl bg-[#22c55e]/12 border border-[#22c55e]/30 text-[#047857]">
                   <MessageCircle className="size-4" />
                 </span>
                 <Input
@@ -245,16 +245,16 @@ export function CheckoutClient({
                   className="flex-1"
                 />
               </div>
-              <p className="font-body-sm text-body-sm text-white/45">
+              <p className="font-body-sm text-body-sm text-slate-500">
                 We&apos;ll message you here the moment your request is accepted. Leave blank to use your mobile number.
               </p>
               <FieldError message={errors.whatsappPhone?.message} />
             </div>
           </div>
           {!isLoggedIn ? (
-            <p className="font-body-sm text-body-sm text-white/40">
+            <p className="font-body-sm text-body-sm text-slate-500">
               Guest checkout works fine —{" "}
-              <Link href="/login?callbackUrl=/checkout" className="text-[#00E0F2] hover:underline">
+              <Link href="/login?callbackUrl=/checkout" className="text-[#0891B2] hover:underline">
                 sign in
               </Link>{" "}
               to track orders and save designs.
@@ -264,12 +264,12 @@ export function CheckoutClient({
 
         {/* Shipping address */}
         <section className="glass-panel p-space-md flex flex-col gap-space-md">
-          <h2 className="font-headline-md text-headline-md font-semibold text-white">
+          <h2 className="font-headline-md text-headline-md font-semibold text-slate-900">
             {shippingMethod === "PICKUP" ? "Pickup contact" : "Shipping address"}
           </h2>
 
           {shippingMethod === "PICKUP" ? (
-            <p className="font-body-sm text-body-sm text-white/60 leading-relaxed">
+            <p className="font-body-sm text-body-sm text-slate-600 leading-relaxed">
               Collect from the Aureline counter at {PICKUP_LABEL}. We only need your contact details below; the
               pickup-ready WhatsApp will tell you when to come.
             </p>
@@ -282,7 +282,7 @@ export function CheckoutClient({
                   key={address.id}
                   type="button"
                   onClick={() => applyAddress(address)}
-                  className="px-space-sm py-space-xs rounded-full bg-white/[0.05] border border-white/10 font-label-md text-label-md text-white/80 hover:border-white/30 hover:text-white transition-all"
+                  className="px-space-sm py-space-xs rounded-full bg-slate-900/[0.05] border border-slate-900/[0.1] font-label-md text-label-md text-slate-800 hover:border-slate-900/[0.1] hover:text-slate-900 transition-all"
                 >
                   {address.label} · {address.city}
                 </button>
@@ -326,8 +326,8 @@ export function CheckoutClient({
             ) : null}
             {isLoggedIn ? (
               <label className="flex items-end gap-space-xs pb-2 cursor-pointer">
-                <input type="checkbox" className="accent-[#FF3B30] w-4 h-4" {...register("saveAddress")} />
-                <span className="font-body-sm text-body-sm text-white/70">Save to my addresses</span>
+                <input type="checkbox" className="accent-[#2563EB] w-4 h-4" {...register("saveAddress")} />
+                <span className="font-body-sm text-body-sm text-slate-700">Save to my addresses</span>
               </label>
             ) : null}
           </div>
@@ -335,7 +335,7 @@ export function CheckoutClient({
 
         {/* Delivery method */}
         <section className="glass-panel p-space-md flex flex-col gap-space-md">
-          <h2 className="font-headline-md text-headline-md font-semibold text-white">Delivery method</h2>
+          <h2 className="font-headline-md text-headline-md font-semibold text-slate-900">Delivery method</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-space-sm">
             <DeliveryOption
               active={shippingMethod === "STANDARD"}
@@ -362,10 +362,10 @@ export function CheckoutClient({
 
           {shippingMethod === "PICKUP" ? (
             <div className="rounded-2xl border border-[#22c55e]/35 bg-[#22c55e]/10 p-space-sm">
-              <p className="font-label-lg text-label-lg text-[#7ef0a8] flex items-center gap-space-xs">
+              <p className="font-label-lg text-label-lg text-[#047857] flex items-center gap-space-xs">
                 <MapPin className="size-4" /> Free collection in Pune
               </p>
-              <p className="font-body-sm text-body-sm text-white/70 mt-1 leading-relaxed">
+              <p className="font-body-sm text-body-sm text-slate-700 mt-1 leading-relaxed">
                 Collect your order from the {PICKUP_STORE.name} at {PICKUP_STORE.mall}, {PICKUP_STORE.area},{" "}
                 {PICKUP_STORE.city}. We&apos;ll message you on WhatsApp the moment it&apos;s packed and ready, and hold
                 it for 7 days. No address needed below.
@@ -383,20 +383,20 @@ export function CheckoutClient({
       {/* Summary */}
       <aside className="lg:col-span-5">
         <div className="glass-panel p-space-md lg:sticky lg:top-24 flex flex-col gap-space-md">
-          <h2 className="font-headline-md text-headline-md font-semibold text-white">Order summary</h2>
+          <h2 className="font-headline-md text-headline-md font-semibold text-slate-900">Order summary</h2>
 
           <ul className="flex flex-col gap-space-sm max-h-72 overflow-y-auto hide-scrollbar">
             {cart.items.map((item) => (
               <li key={item.id} className="flex items-center justify-between gap-space-sm">
                 <span className="flex flex-col min-w-0">
-                  <span className="font-label-md text-label-md text-white truncate">
+                  <span className="font-label-md text-label-md text-slate-900 truncate">
                     {item.productName} × {item.quantity}
                   </span>
-                  <span className="font-body-sm text-body-sm text-white/45 truncate">
+                  <span className="font-body-sm text-body-sm text-slate-500 truncate">
                     {item.colorName} · {item.size} · {item.side.toLowerCase()}
                   </span>
                 </span>
-                <span className="font-label-md text-label-md text-white/85 tabular-nums whitespace-nowrap">
+                <span className="font-label-md text-label-md text-slate-800 tabular-nums whitespace-nowrap">
                   {formatINR(item.lineTotal)}
                 </span>
               </li>
@@ -407,32 +407,32 @@ export function CheckoutClient({
 
           <dl className="flex flex-col gap-space-xs font-body-md text-body-md">
             <div className="flex justify-between">
-              <dt className="text-white/60">Subtotal</dt>
-              <dd className="tabular-nums text-white/85">{formatINR(cart.totals.subtotal)}</dd>
+              <dt className="text-slate-600">Subtotal</dt>
+              <dd className="tabular-nums text-slate-800">{formatINR(cart.totals.subtotal)}</dd>
             </div>
             {cart.totals.discount > 0 ? (
               <div className="flex justify-between">
-                <dt className="text-white/60">Discounts</dt>
-                <dd className="tabular-nums text-[#7ef0a8]">− {formatINR(cart.totals.discount)}</dd>
+                <dt className="text-slate-600">Discounts</dt>
+                <dd className="tabular-nums text-[#047857]">− {formatINR(cart.totals.discount)}</dd>
               </div>
             ) : null}
             <div className="flex justify-between">
-              <dt className="text-white/60">Shipping</dt>
-              <dd className="tabular-nums text-white/85">
+              <dt className="text-slate-600">Shipping</dt>
+              <dd className="tabular-nums text-slate-800">
                 {cart.totals.shipping > 0 ? formatINR(cart.totals.shipping) : "Free"}
               </dd>
             </div>
             <div className="flex justify-between">
-              <dt className="text-white/60">GST</dt>
-              <dd className="tabular-nums text-white/85">{formatINR(cart.totals.tax)}</dd>
+              <dt className="text-slate-600">GST</dt>
+              <dd className="tabular-nums text-slate-800">{formatINR(cart.totals.tax)}</dd>
             </div>
           </dl>
 
           <Separator />
 
           <div className="flex items-center justify-between">
-            <span className="font-label-lg text-label-lg text-white">Total payable</span>
-            <span className="font-headline-lg text-headline-lg font-bold text-white tabular-nums">
+            <span className="font-label-lg text-label-lg text-slate-900">Total payable</span>
+            <span className="font-headline-lg text-headline-lg font-bold text-slate-900 tabular-nums">
               {formatINR(cart.totals.total)}
             </span>
           </div>
@@ -442,13 +442,13 @@ export function CheckoutClient({
             {busy ? "Sending request…" : `Request now · ${formatINR(cart.totals.total)}`}
           </Button>
 
-          <p className="font-body-sm text-body-sm text-white/55 leading-relaxed">
+          <p className="font-body-sm text-body-sm text-slate-600 leading-relaxed">
             Sending a request is free. Our team reviews your items and messages you on WhatsApp with the final
             confirmation before any payment is taken.
           </p>
 
-          <p className="flex items-center gap-space-xs font-body-sm text-body-sm text-white/45">
-            <ShieldCheck className="size-4 text-[#7ef0a8] flex-shrink-0" />
+          <p className="flex items-center gap-space-xs font-body-sm text-body-sm text-slate-500">
+            <ShieldCheck className="size-4 text-[#047857] flex-shrink-0" />
             Payments processed securely by Razorpay. We never store card details.
           </p>
         </div>
@@ -477,13 +477,13 @@ function DeliveryOption({
       aria-pressed={active}
       className={cn(
         "flex items-center gap-space-sm p-space-sm rounded-2xl border text-left transition-all",
-        active ? "border-[#FF0D7B]/70 bg-white/[0.08]" : "border-white/10 bg-white/[0.03] hover:border-white/30",
+        active ? "border-[#0EA5E9]/70 bg-slate-900/[0.06]" : "border-slate-900/[0.1] bg-slate-900/[0.03] hover:border-slate-900/[0.1]",
       )}
     >
-      <span className={cn("flex-shrink-0", active ? "text-[#FF0D7B]" : "text-white/50")}>{icon}</span>
+      <span className={cn("flex-shrink-0", active ? "text-[#0EA5E9]" : "text-slate-500")}>{icon}</span>
       <span className="flex flex-col">
-        <span className="font-label-lg text-label-lg text-white">{title}</span>
-        <span className="font-body-sm text-body-sm text-white/50">{subtitle}</span>
+        <span className="font-label-lg text-label-lg text-slate-900">{title}</span>
+        <span className="font-body-sm text-body-sm text-slate-500">{subtitle}</span>
       </span>
     </button>
   );
@@ -491,5 +491,5 @@ function DeliveryOption({
 
 function FieldError({ message }: { message?: string }) {
   if (!message) return null;
-  return <span className="font-body-sm text-body-sm text-[#ff9d95]">{message}</span>;
+  return <span className="font-body-sm text-body-sm text-[#BE123C]">{message}</span>;
 }

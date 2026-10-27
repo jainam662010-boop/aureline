@@ -23,10 +23,10 @@ export default async function AccountPage({
     return (
       <div className="max-w-6xl mx-auto px-gutter lg:px-gutter-lg py-space-xl">
         <div className="mb-space-lg">
-          <span className="font-label-technical text-label-technical uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-[#FF3B30] to-[#FF0D7B] block mb-space-xs font-black">
+          <span className="font-label-technical text-label-technical uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-[#2563EB] to-[#0EA5E9] block mb-space-xs font-black">
             Your atelier profile
           </span>
-          <h1 className="font-headline-xl text-headline-xl text-white font-bold tracking-tight">Account</h1>
+          <h1 className="font-headline-xl text-headline-xl text-slate-900 font-bold tracking-tight">Account</h1>
         </div>
         <StaticNotice
           title="Accounts need the live backend"
@@ -91,13 +91,13 @@ export default async function AccountPage({
     <div className="max-w-6xl mx-auto px-gutter lg:px-gutter-lg py-space-xl">
       <div className="mb-space-lg flex items-end justify-between gap-space-md flex-wrap">
         <div>
-          <span className="font-label-technical text-label-technical uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-[#FF3B30] to-[#FF0D7B] block mb-space-xs font-black">
+          <span className="font-label-technical text-label-technical uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-[#2563EB] to-[#0EA5E9] block mb-space-xs font-black">
             Your atelier profile
           </span>
-          <h1 className="font-headline-xl text-headline-xl text-white font-bold tracking-tight">
+          <h1 className="font-headline-xl text-headline-xl text-slate-900 font-bold tracking-tight">
             {user.name ?? "Account"}
           </h1>
-          <p className="font-body-md text-body-md text-white/60 mt-space-xs">
+          <p className="font-body-md text-body-md text-slate-600 mt-space-xs">
             {user.email} · member since {new Date(user.createdAt).getFullYear()}
           </p>
         </div>
@@ -109,8 +109,8 @@ export default async function AccountPage({
             { label: "Lifetime spend", value: `₹${Math.round(totalSpend).toLocaleString("en-IN")}` },
           ].map((stat) => (
             <div key={stat.label} className="glass-panel-sm px-space-md py-space-sm text-center min-w-24">
-              <p className="font-headline-md text-headline-md font-bold text-white tabular-nums">{stat.value}</p>
-              <p className="font-label-technical text-[9px] uppercase tracking-widest text-white/45">{stat.label}</p>
+              <p className="font-headline-md text-headline-md font-bold text-slate-900 tabular-nums">{stat.value}</p>
+              <p className="font-label-technical text-[9px] uppercase tracking-widest text-slate-500">{stat.label}</p>
             </div>
           ))}
         </div>

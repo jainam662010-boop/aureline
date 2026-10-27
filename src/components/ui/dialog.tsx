@@ -16,7 +16,7 @@ const DialogOverlay = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Overlay
     ref={ref}
-    className={cn("fixed inset-0 z-[80] bg-black/70 backdrop-blur-sm", className)}
+    className={cn("fixed inset-0 z-[80] bg-slate-900/40 backdrop-blur-sm", className)}
     {...props}
   />
 ));
@@ -32,14 +32,14 @@ const DialogContent = React.forwardRef<
       ref={ref}
       className={cn(
         "fixed left-1/2 top-1/2 z-[81] w-[calc(100vw-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2",
-        "glass-panel border-white/[0.16] bg-[#131315]/95 p-space-lg shadow-[0_24px_80px_rgba(0,0,0,0.7)]",
+        "glass-panel border-slate-900/[0.12] bg-[#FFFFFF]/95 p-space-lg shadow-[0_24px_80px_rgba(15,23,42,0.16)]",
         "focus:outline-none",
         className,
       )}
       {...props}
     >
       {children}
-      <DialogPrimitive.Close className="absolute right-4 top-4 rounded-full p-2 text-white/60 transition-colors hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-[#FF3B30]">
+      <DialogPrimitive.Close className="absolute right-4 top-4 rounded-full p-2 text-slate-600 transition-colors hover:bg-slate-900/[0.05] hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#2563EB]">
         <X className="size-4" />
         <span className="sr-only">Close</span>
       </DialogPrimitive.Close>
@@ -64,7 +64,7 @@ const DialogTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Title
     ref={ref}
-    className={cn("font-headline-md text-headline-md font-semibold text-white", className)}
+    className={cn("font-headline-md text-headline-md font-semibold text-slate-900", className)}
     {...props}
   />
 ));
@@ -74,7 +74,7 @@ const DialogDescription = React.forwardRef<
   React.ComponentRef<typeof DialogPrimitive.Description>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
 >(({ className, ...props }, ref) => (
-  <DialogPrimitive.Description ref={ref} className={cn("font-body-md text-body-md text-white/60", className)} {...props} />
+  <DialogPrimitive.Description ref={ref} className={cn("font-body-md text-body-md text-slate-600", className)} {...props} />
 ));
 DialogDescription.displayName = DialogPrimitive.Description.displayName;
 

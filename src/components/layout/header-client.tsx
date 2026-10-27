@@ -71,8 +71,8 @@ export function HeaderClient({ session, cartCount, isAdmin }: HeaderClientProps)
     const className = cn(
       "px-space-md min-h-11 rounded-full font-label-lg text-label-lg transition-all inline-flex items-center gap-1.5",
       active
-        ? "bg-white/[0.12] text-white border border-white/20 shadow-[0_0_15px_rgba(255,255,255,0.1)]"
-        : "text-secondary hover:text-white hover:bg-white/[0.08] border border-transparent",
+        ? "bg-slate-900/[0.09] text-slate-900 border border-slate-900/[0.1] shadow-[0_0_15px_rgba(255,255,255,0.1)]"
+        : "text-secondary hover:text-slate-900 hover:bg-slate-900/[0.06] border border-transparent",
     );
     if (link.external) {
       return (
@@ -98,7 +98,7 @@ export function HeaderClient({ session, cartCount, isAdmin }: HeaderClientProps)
 
   return (
     <div className="flex items-center gap-space-sm">
-      <nav className="hidden xl:flex items-center gap-space-xs bg-white/[0.04] p-1.5 rounded-full border border-white/[0.08] backdrop-blur-xl">
+      <nav className="hidden xl:flex items-center gap-space-xs bg-slate-900/[0.04] p-1.5 rounded-full border border-slate-900/[0.08] backdrop-blur-xl">
         {NAV_LINKS.map((link) => renderNavLink(link))}
       </nav>
 
@@ -108,7 +108,7 @@ export function HeaderClient({ session, cartCount, isAdmin }: HeaderClientProps)
           onClick={() => setNavOpen((v) => !v)}
           aria-expanded={navOpen}
           aria-label={navOpen ? "Close navigation menu" : "Open navigation menu"}
-          className="size-11 rounded-full bg-white/[0.05] border border-white/[0.1] hover:bg-white/[0.1] text-on-surface flex items-center justify-center transition-all backdrop-blur-md"
+          className="size-11 rounded-full bg-slate-900/[0.05] border border-slate-900/[0.08] hover:bg-slate-900/[0.08] text-slate-900 flex items-center justify-center transition-all backdrop-blur-md"
         >
           {navOpen ? <X className="size-5" aria-hidden /> : <Menu className="size-5" aria-hidden />}
         </button>
@@ -118,9 +118,9 @@ export function HeaderClient({ session, cartCount, isAdmin }: HeaderClientProps)
             <button className="fixed inset-0 z-40 cursor-default" aria-label="Close navigation menu" onClick={() => setNavOpen(false)} />
             <nav
               aria-label="Primary"
-              className="absolute right-0 mt-2 w-[min(18rem,calc(100vw-2rem))] z-50 glass-panel border-white/[0.16] bg-[#131315]/95 p-space-xs flex flex-col shadow-[0_20px_60px_rgba(0,0,0,0.6)]"
+              className="absolute right-0 mt-2 w-[min(18rem,calc(100vw-2rem))] z-50 glass-panel border-slate-900/[0.12] bg-[#FFFFFF]/95 p-space-xs flex flex-col shadow-[0_20px_60px_rgba(15,23,42,0.14)]"
             >
-              <form onSubmit={submitSearch} className="flex items-center bg-white/[0.05] border border-white/[0.1] px-space-sm py-2 rounded-full mb-space-xs focus-within:ring-2 focus-within:ring-[#FF3B30]">
+              <form onSubmit={submitSearch} className="flex items-center bg-slate-900/[0.05] border border-slate-900/[0.08] px-space-sm py-2 rounded-full mb-space-xs focus-within:ring-2 focus-within:ring-[#2563EB]">
                 <Search className="text-secondary mr-space-xs size-[16px]" aria-hidden />
                 <label htmlFor="mobile-search" className="sr-only">
                   Search blanks
@@ -129,7 +129,7 @@ export function HeaderClient({ session, cartCount, isAdmin }: HeaderClientProps)
                   id="mobile-search"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  className="bg-transparent border-0 outline-none w-full text-on-surface placeholder:text-secondary text-body-sm font-body-sm"
+                  className="bg-transparent border-0 outline-none w-full text-slate-900 placeholder:text-secondary text-body-sm font-body-sm"
                   placeholder="Search blanks, GSM, mesh..."
                   type="search"
                 />
@@ -140,7 +140,7 @@ export function HeaderClient({ session, cartCount, isAdmin }: HeaderClientProps)
         ) : null}
       </div>
 
-      <form onSubmit={submitSearch} className="hidden md:flex items-center bg-white/[0.04] border border-white/[0.1] px-space-md py-space-sm rounded-full w-48 lg:w-60 focus-within:ring-2 focus-within:ring-[#FF3B30] backdrop-blur-md transition-all">
+      <form onSubmit={submitSearch} className="hidden md:flex items-center bg-slate-900/[0.04] border border-slate-900/[0.08] px-space-md py-space-sm rounded-full w-48 lg:w-60 focus-within:ring-2 focus-within:ring-[#2563EB] backdrop-blur-md transition-all">
         <Search className="text-secondary text-[18px] mr-space-xs size-[18px]" aria-hidden />
         <label htmlFor="header-search" className="sr-only">
           Search blanks
@@ -149,7 +149,7 @@ export function HeaderClient({ session, cartCount, isAdmin }: HeaderClientProps)
           id="header-search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="bg-transparent border-0 outline-none w-full text-on-surface placeholder:text-secondary text-body-sm font-body-sm"
+          className="bg-transparent border-0 outline-none w-full text-slate-900 placeholder:text-secondary text-body-sm font-body-sm"
           placeholder="Search blanks, GSM, mesh..."
           type="search"
         />
@@ -158,11 +158,11 @@ export function HeaderClient({ session, cartCount, isAdmin }: HeaderClientProps)
       <Link
         href="/cart"
         aria-label={`Cart, ${shownCartCount} items`}
-        className="relative size-11 rounded-full bg-white/[0.05] border border-white/[0.1] hover:bg-white/[0.1] text-on-surface flex items-center justify-center transition-all backdrop-blur-md group"
+        className="relative size-11 rounded-full bg-slate-900/[0.05] border border-slate-900/[0.08] hover:bg-slate-900/[0.08] text-slate-900 flex items-center justify-center transition-all backdrop-blur-md group"
       >
         <ShoppingBag className="size-5 group-hover:scale-110 transition-transform" aria-hidden />
         {shownCartCount > 0 ? (
-          <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-gradient-to-tr from-[#FF3B30] to-[#FF0D7B] text-white flex items-center justify-center font-label-technical text-[9px] font-bold shadow-[0_0_14px_rgba(255,13,123,0.8)]">
+          <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-gradient-to-tr from-[#2563EB] to-[#0EA5E9] text-white flex items-center justify-center font-label-technical text-[9px] font-bold shadow-[0_0_14px_rgba(14,165,233,0.8)]">
             {shownCartCount > 99 ? "99+" : shownCartCount}
           </span>
         ) : null}
@@ -175,9 +175,9 @@ export function HeaderClient({ session, cartCount, isAdmin }: HeaderClientProps)
           aria-expanded={menuOpen}
           aria-haspopup="menu"
           aria-label="Account menu"
-          className="size-11 rounded-full bg-gradient-to-tr from-[#8026F2] to-[#FF0D7B] p-[1px] flex items-center justify-center flex-shrink-0 shadow-[0_0_12px_rgba(128,38,242,0.5)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF3B30]"
+          className="size-11 rounded-full bg-gradient-to-tr from-[#7C3AED] to-[#0EA5E9] p-[1px] flex items-center justify-center flex-shrink-0 shadow-[0_0_12px_rgba(124,58,237,0.5)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563EB]"
         >
-          <span className="w-full h-full rounded-full bg-[#121216] flex items-center justify-center text-primary font-label-technical text-[11px] font-bold">
+          <span className="w-full h-full rounded-full bg-[#FFFFFF] flex items-center justify-center text-primary font-label-technical text-[11px] font-bold">
             {session?.user?.image ? (
               <Image src={session.user.image} alt="" width={32} height={32} className="rounded-full" unoptimized />
             ) : (
@@ -189,12 +189,12 @@ export function HeaderClient({ session, cartCount, isAdmin }: HeaderClientProps)
         {menuOpen ? (
           <>
             <button className="fixed inset-0 z-40 cursor-default" aria-label="Close menu" onClick={() => setMenuOpen(false)} />
-            <div role="menu" className="absolute right-0 mt-2 w-56 z-50 glass-panel border-white/[0.16] bg-[#131315]/95 p-space-xs shadow-[0_20px_60px_rgba(0,0,0,0.6)]">
+            <div role="menu" className="absolute right-0 mt-2 w-56 z-50 glass-panel border-slate-900/[0.12] bg-[#FFFFFF]/95 p-space-xs shadow-[0_20px_60px_rgba(15,23,42,0.14)]">
               {session ? (
                 <>
                   <div className="px-space-sm py-space-xs">
-                    <p className="font-label-lg text-label-lg text-white truncate">{session.user.name ?? "Account"}</p>
-                    <p className="font-body-sm text-body-sm text-white/50 truncate">{session.user.email}</p>
+                    <p className="font-label-lg text-label-lg text-slate-900 truncate">{session.user.name ?? "Account"}</p>
+                    <p className="font-body-sm text-body-sm text-slate-500 truncate">{session.user.email}</p>
                   </div>
                   <MenuLink href="/account" icon={<UserIcon className="size-4" />} onClick={() => setMenuOpen(false)}>
                     Profile
@@ -213,7 +213,7 @@ export function HeaderClient({ session, cartCount, isAdmin }: HeaderClientProps)
                   <button
                     type="button"
                     onClick={() => signOut({ callbackUrl: "/" })}
-                    className="w-full flex items-center gap-space-xs px-space-sm min-h-11 rounded-xl font-label-md text-label-md text-[#ff9d95] hover:bg-[#93000a]/25 transition-colors"
+                    className="w-full flex items-center gap-space-xs px-space-sm min-h-11 rounded-xl font-label-md text-label-md text-[#BE123C] hover:bg-[#E11D48]/25 transition-colors"
                   >
                     <LogOut className="size-4" /> Sign out
                   </button>
@@ -233,7 +233,7 @@ export function HeaderClient({ session, cartCount, isAdmin }: HeaderClientProps)
         ) : null}
       </div>
 
-      <Link href="/products" className="hidden lg:flex items-center gap-space-xs px-space-lg py-space-sm rounded-full bg-gradient-to-r from-[#FF3B30] via-[#FF0D7B] to-[#8026F2] text-white font-label-lg text-label-lg shadow-[0_0_28px_rgba(255,13,123,0.5)] hover:shadow-[0_0_36px_rgba(0,224,242,0.6)] hover:brightness-110 active:scale-95 transition-all">
+      <Link href="/products" className="hidden lg:flex items-center gap-space-xs px-space-lg py-space-sm rounded-full bg-gradient-to-r from-[#2563EB] via-[#0EA5E9] to-[#7C3AED] text-white font-label-lg text-label-lg shadow-[0_0_28px_rgba(14,165,233,0.5)] hover:shadow-[0_0_36px_rgba(6,182,212,0.6)] hover:brightness-110 active:scale-95 transition-all">
         Launch Studio
       </Link>
     </div>
@@ -256,7 +256,7 @@ function MenuLink({
       href={href}
       onClick={onClick}
       role="menuitem"
-      className="w-full flex items-center gap-space-xs px-space-sm min-h-11 rounded-xl font-label-md text-label-md text-white/80 hover:bg-white/[0.08] hover:text-white transition-colors"
+      className="w-full flex items-center gap-space-xs px-space-sm min-h-11 rounded-xl font-label-md text-label-md text-slate-800 hover:bg-slate-900/[0.06] hover:text-slate-900 transition-colors"
     >
       {icon}
       {children}

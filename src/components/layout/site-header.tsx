@@ -22,13 +22,13 @@ export async function SiteHeader() {
 
   return (
     <header className="fixed top-0 inset-x-0 z-50">
-      <div className="backdrop-blur-2xl bg-[#0a0a0d]/75 border-b border-white/[0.08]">
+      <div className="backdrop-blur-2xl bg-[#FFFFFF]/75 border-b border-slate-900/[0.08]">
         <div className="max-w-7xl mx-auto px-gutter lg:px-gutter-lg h-20 flex items-center justify-between gap-space-sm">
           <Link href="/" className="flex items-center gap-space-xs flex-shrink-0 group" aria-label={`${APP_NAME} home`}>
-            <span className="font-headline-lg text-headline-lg font-black tracking-tight uppercase text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-[#FF3B30] group-hover:to-[#FF0D7B] transition-all">
+            <span className="font-headline-lg text-headline-lg font-black tracking-tight uppercase text-slate-900 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-[#2563EB] group-hover:to-[#0EA5E9] transition-all">
               {APP_NAME.split(" ")[0]}
             </span>
-            <span className="hidden sm:inline font-label-technical text-label-technical uppercase tracking-widest text-[#FF0D7B] px-2 py-0.5 rounded-full bg-white/[0.08] border border-white/10 backdrop-blur-md">
+            <span className="hidden sm:inline font-label-technical text-label-technical uppercase tracking-widest text-[#0EA5E9] px-2 py-0.5 rounded-full bg-slate-900/[0.06] border border-slate-900/[0.1] backdrop-blur-md">
               Atelier
             </span>
           </Link>

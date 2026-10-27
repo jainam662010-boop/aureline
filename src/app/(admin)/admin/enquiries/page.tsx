@@ -36,7 +36,7 @@ export default async function AdminEnquiriesPage() {
     <div className="flex flex-col gap-space-md">
       <header>
         <span className="label-tech">{enquiries.length} enquiries</span>
-        <h1 className="font-headline-xl text-headline-xl text-white font-bold tracking-tight">Bulk enquiries</h1>
+        <h1 className="font-headline-xl text-headline-xl text-slate-900 font-bold tracking-tight">Bulk enquiries</h1>
       </header>
 
       <EnquiriesManager enquiries={serialized} />

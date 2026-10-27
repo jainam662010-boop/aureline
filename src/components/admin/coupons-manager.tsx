@@ -124,9 +124,9 @@ export function CouponsManager({ coupons }: { coupons: CouponRow[] }) {
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead>
-              <tr className="border-b border-white/[0.08]">
+              <tr className="border-b border-slate-900/[0.08]">
                 {["Code", "Discount", "Conditions", "Used", "Expires", "State", ""].map((head) => (
-                  <th key={head} className="px-space-md py-3 font-label-technical text-[9px] uppercase tracking-widest text-white/40">
+                  <th key={head} className="px-space-md py-3 font-label-technical text-[9px] uppercase tracking-widest text-slate-500">
                     {head}
                   </th>
                 ))}
@@ -136,31 +136,31 @@ export function CouponsManager({ coupons }: { coupons: CouponRow[] }) {
               {coupons.map((coupon) => {
                 const expired = coupon.endsAt ? new Date(coupon.endsAt) < new Date() : false;
                 return (
-                  <tr key={coupon.id} className="border-b border-white/[0.05] hover:bg-white/[0.03] transition-colors">
+                  <tr key={coupon.id} className="border-b border-slate-900/[0.05] hover:bg-slate-900/[0.03] transition-colors">
                     <td className="px-space-md py-3">
-                      <span className="inline-flex items-center gap-1.5 font-label-lg text-label-lg text-white">
-                        <TicketPercent className="size-3.5 text-[#FF6BC0]" />
+                      <span className="inline-flex items-center gap-1.5 font-label-lg text-label-lg text-slate-900">
+                        <TicketPercent className="size-3.5 text-[#0284C7]" />
                         {coupon.code}
                       </span>
                       {coupon.description ? (
-                        <p className="font-body-sm text-body-sm text-white/45 truncate max-w-52">{coupon.description}</p>
+                        <p className="font-body-sm text-body-sm text-slate-500 truncate max-w-52">{coupon.description}</p>
                       ) : null}
                     </td>
-                    <td className="px-space-md py-3 font-label-md text-label-md text-[#7ef0a8]">
+                    <td className="px-space-md py-3 font-label-md text-label-md text-[#047857]">
                       {coupon.type === "PERCENTAGE" ? `−${coupon.value}%` : coupon.type === "FIXED" ? formatINR(coupon.value, true) : "Free shipping"}
                     </td>
-                    <td className="px-space-md py-3 font-body-sm text-body-sm text-white/55">
+                    <td className="px-space-md py-3 font-body-sm text-body-sm text-slate-600">
                       {coupon.minOrderAmount > 0 ? `Min ${formatINR(coupon.minOrderAmount, true)}` : "No minimum"}
                       {coupon.maxDiscountAmount !== null ? ` · cap ${formatINR(coupon.maxDiscountAmount, true)}` : ""}
                       {coupon.usageLimit !== null ? ` · limit ${coupon.usageLimit}` : ""}
                     </td>
-                    <td className="px-space-md py-3 font-body-sm text-body-sm text-white/55 tabular-nums">
+                    <td className="px-space-md py-3 font-body-sm text-body-sm text-slate-600 tabular-nums">
                       {coupon.redemptions}
                       {coupon.usedCount > 0 ? ` (+${coupon.usedCount} sync)` : ""}
                     </td>
-                    <td className="px-space-md py-3 font-body-sm text-body-sm text-white/55 whitespace-nowrap">
+                    <td className="px-space-md py-3 font-body-sm text-body-sm text-slate-600 whitespace-nowrap">
                       {coupon.endsAt ? (
-                        <span className={expired ? "text-[#ff9d95]" : undefined}>{new Date(coupon.endsAt).toLocaleDateString("en-IN")}</span>
+                        <span className={expired ? "text-[#BE123C]" : undefined}>{new Date(coupon.endsAt).toLocaleDateString("en-IN")}</span>
                       ) : (
                         "Never"
                       )}
@@ -170,8 +170,8 @@ export function CouponsManager({ coupons }: { coupons: CouponRow[] }) {
                         className={cn(
                           "inline-flex rounded-full border px-3 py-1 font-label-technical text-[9px] uppercase tracking-widest",
                           coupon.isActive && !expired
-                            ? "border-[#22c55e]/40 bg-[#22c55e]/10 text-[#7ef0a8]"
-                            : "border-white/15 bg-white/[0.05] text-white/50",
+                            ? "border-[#22c55e]/40 bg-[#22c55e]/10 text-[#047857]"
+                            : "border-slate-900/[0.1] bg-slate-900/[0.05] text-slate-500",
                         )}
                       >
                         {coupon.isActive ? (expired ? "Expired" : "Active") : "Off"}
@@ -183,7 +183,7 @@ export function CouponsManager({ coupons }: { coupons: CouponRow[] }) {
                           type="button"
                           onClick={() => openEdit(coupon)}
                           aria-label={`Edit ${coupon.code}`}
-                          className="w-8 h-8 rounded-full flex items-center justify-center text-white/60 hover:text-white hover:bg-white/[0.1] transition-all"
+                          className="w-8 h-8 rounded-full flex items-center justify-center text-slate-600 hover:text-slate-900 hover:bg-slate-900/[0.08] transition-all"
                         >
                           <Pencil className="size-3.5" />
                         </button>
@@ -191,7 +191,7 @@ export function CouponsManager({ coupons }: { coupons: CouponRow[] }) {
                           type="button"
                           onClick={() => toggle(coupon)}
                           aria-label={`${coupon.isActive ? "Deactivate" : "Activate"} ${coupon.code}`}
-                          className="w-8 h-8 rounded-full flex items-center justify-center text-white/60 hover:text-white hover:bg-white/[0.1] transition-all"
+                          className="w-8 h-8 rounded-full flex items-center justify-center text-slate-600 hover:text-slate-900 hover:bg-slate-900/[0.08] transition-all"
                         >
                           <Power className="size-3.5" />
                         </button>
@@ -202,7 +202,7 @@ export function CouponsManager({ coupons }: { coupons: CouponRow[] }) {
               })}
               {coupons.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-space-md py-10 text-center font-body-sm text-body-sm text-white/40">
+                  <td colSpan={7} className="px-space-md py-10 text-center font-body-sm text-body-sm text-slate-500">
                     No coupons yet — create your first one.
                   </td>
                 </tr>
@@ -238,11 +238,11 @@ export function CouponsManager({ coupons }: { coupons: CouponRow[] }) {
                   id="coupon-type"
                   value={form.type}
                   onChange={(e) => setForm((f) => ({ ...f, type: e.target.value as FormState["type"] }))}
-                  className="w-full h-11 px-space-sm rounded-2xl bg-white/[0.05] border border-white/[0.14] text-body-md text-white focus:outline-none focus:ring-2 focus:ring-[#FF3B30]"
+                  className="w-full h-11 px-space-sm rounded-2xl bg-slate-900/[0.05] border border-slate-900/[0.1] text-body-md text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
                 >
-                  <option value="PERCENTAGE" className="bg-[#101014]">Percentage off</option>
-                  <option value="FIXED" className="bg-[#101014]">Fixed ₹ off</option>
-                  <option value="FREE_SHIPPING" className="bg-[#101014]">Free shipping</option>
+                  <option value="PERCENTAGE" className="bg-[#FFFFFF]">Percentage off</option>
+                  <option value="FIXED" className="bg-[#FFFFFF]">Fixed ₹ off</option>
+                  <option value="FREE_SHIPPING" className="bg-[#FFFFFF]">Free shipping</option>
                 </select>
               </div>
             </div>
@@ -324,9 +324,9 @@ export function CouponsManager({ coupons }: { coupons: CouponRow[] }) {
                   type="checkbox"
                   checked={form.isActive}
                   onChange={(e) => setForm((f) => ({ ...f, isActive: e.target.checked }))}
-                  className="accent-[#FF3B30] w-4 h-4"
+                  className="accent-[#2563EB] w-4 h-4"
                 />
-                <span className="font-body-sm text-body-sm text-white/70">Active immediately</span>
+                <span className="font-body-sm text-body-sm text-slate-700">Active immediately</span>
               </label>
             </div>
 

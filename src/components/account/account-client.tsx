@@ -135,8 +135,8 @@ export function AccountClient({
             className={cn(
               "flex items-center gap-space-xs px-space-sm py-2.5 rounded-2xl font-label-lg text-label-lg whitespace-nowrap transition-all text-left",
               tab === item.key
-                ? "bg-white/[0.1] text-white border border-white/15"
-                : "text-white/55 hover:text-white hover:bg-white/[0.05] border border-transparent",
+                ? "bg-slate-900/[0.08] text-slate-900 border border-slate-900/[0.1]"
+                : "text-slate-600 hover:text-slate-900 hover:bg-slate-900/[0.05] border border-transparent",
             )}
           >
             <item.icon className="size-4 flex-shrink-0" />
@@ -152,10 +152,10 @@ export function AccountClient({
         {tab === "orders" ? (
           <div className="glass-panel p-space-md flex items-center justify-between gap-space-sm">
             <div>
-              <p className="font-label-lg text-label-lg text-white">
+              <p className="font-label-lg text-label-lg text-slate-900">
                 {orderCount} {orderCount === 1 ? "order" : "orders"} placed
               </p>
-              <p className="font-body-sm text-body-sm text-white/55">
+              <p className="font-body-sm text-body-sm text-slate-600">
                 Track production status, download invoices or reorder.
               </p>
             </div>
@@ -215,13 +215,13 @@ function ProfileTab({ user }: { user: { name: string; email: string; phone: stri
   return (
     <div className="flex flex-col gap-space-md">
       <section className="glass-panel p-space-md">
-        <h2 className="font-headline-md text-headline-md font-bold text-white mb-space-sm">Profile details</h2>
+        <h2 className="font-headline-md text-headline-md font-bold text-slate-900 mb-space-sm">Profile details</h2>
         <form onSubmit={submitProfile(onProfile)} className="grid grid-cols-1 sm:grid-cols-2 gap-space-sm">
           <div className="flex flex-col gap-space-xs">
             <Label htmlFor="profile-name">Name</Label>
             <Input id="profile-name" {...registerProfile("name")} />
             {profileErrors.name ? (
-              <span className="font-body-sm text-body-sm text-[#ff9d95]">{profileErrors.name.message}</span>
+              <span className="font-body-sm text-body-sm text-[#BE123C]">{profileErrors.name.message}</span>
             ) : null}
           </div>
           <div className="flex flex-col gap-space-xs">
@@ -232,7 +232,7 @@ function ProfileTab({ user }: { user: { name: string; email: string; phone: stri
             <Label htmlFor="profile-phone">Mobile</Label>
             <Input id="profile-phone" inputMode="numeric" placeholder="9876543210" {...registerProfile("phone")} />
             {profileErrors.phone ? (
-              <span className="font-body-sm text-body-sm text-[#ff9d95]">{profileErrors.phone.message}</span>
+              <span className="font-body-sm text-body-sm text-[#BE123C]">{profileErrors.phone.message}</span>
             ) : null}
           </div>
           <div className="flex items-end">
@@ -245,8 +245,8 @@ function ProfileTab({ user }: { user: { name: string; email: string; phone: stri
       </section>
 
       <section className="glass-panel p-space-md">
-        <h2 className="font-headline-md text-headline-md font-bold text-white mb-1">Change password</h2>
-        <p className="font-body-sm text-body-sm text-white/55 mb-space-sm">
+        <h2 className="font-headline-md text-headline-md font-bold text-slate-900 mb-1">Change password</h2>
+        <p className="font-body-sm text-body-sm text-slate-600 mb-space-sm">
           Minimum 8 characters with at least one letter and one number.
         </p>
         <form onSubmit={submitPassword(onPassword)} className="grid grid-cols-1 sm:grid-cols-2 gap-space-sm">
@@ -254,14 +254,14 @@ function ProfileTab({ user }: { user: { name: string; email: string; phone: stri
             <Label htmlFor="current-password">Current password</Label>
             <Input id="current-password" type="password" autoComplete="current-password" {...registerPassword("currentPassword")} />
             {passwordErrors.currentPassword ? (
-              <span className="font-body-sm text-body-sm text-[#ff9d95]">{passwordErrors.currentPassword.message}</span>
+              <span className="font-body-sm text-body-sm text-[#BE123C]">{passwordErrors.currentPassword.message}</span>
             ) : null}
           </div>
           <div className="flex flex-col gap-space-xs">
             <Label htmlFor="new-password">New password</Label>
             <Input id="new-password" type="password" autoComplete="new-password" {...registerPassword("newPassword")} />
             {passwordErrors.newPassword ? (
-              <span className="font-body-sm text-body-sm text-[#ff9d95]">{passwordErrors.newPassword.message}</span>
+              <span className="font-body-sm text-body-sm text-[#BE123C]">{passwordErrors.newPassword.message}</span>
             ) : null}
           </div>
           <div className="sm:col-span-2">
@@ -353,8 +353,8 @@ function AddressesTab({ addresses }: { addresses: AccountAddress[] }) {
   return (
     <div className="flex flex-col gap-space-sm">
       <div className="flex items-center justify-between">
-        <h2 className="font-headline-md text-headline-md font-bold text-white">
-          Saved addresses <span className="text-white/40 font-normal">({addresses.length})</span>
+        <h2 className="font-headline-md text-headline-md font-bold text-slate-900">
+          Saved addresses <span className="text-slate-500 font-normal">({addresses.length})</span>
         </h2>
         <Button variant="glass" size="sm" onClick={openNew}>
           <Plus className="size-4" /> Add address
@@ -372,14 +372,14 @@ function AddressesTab({ addresses }: { addresses: AccountAddress[] }) {
           {addresses.map((address) => (
             <div key={address.id} className="glass-panel p-space-sm relative">
               <div className="flex items-center gap-space-xs mb-1">
-                <span className="font-label-lg text-label-lg text-white">{address.label}</span>
+                <span className="font-label-lg text-label-lg text-slate-900">{address.label}</span>
                 {address.isDefault ? (
-                  <span className="rounded-full bg-[#00E0F2]/15 border border-[#00E0F2]/40 px-2 py-0.5 font-label-technical text-[9px] uppercase tracking-widest text-[#66EFFA]">
+                  <span className="rounded-full bg-[#0891B2]/15 border border-[#0891B2]/40 px-2 py-0.5 font-label-technical text-[9px] uppercase tracking-widest text-[#0E7490]">
                     Default
                   </span>
                 ) : null}
               </div>
-              <p className="font-body-sm text-body-sm text-white/65 leading-relaxed">
+              <p className="font-body-sm text-body-sm text-slate-600 leading-relaxed">
                 {address.fullName} · {address.line1}
                 {address.line2 ? `, ${address.line2}` : ""}
                 <br />
@@ -391,7 +391,7 @@ function AddressesTab({ addresses }: { addresses: AccountAddress[] }) {
                 <button
                   type="button"
                   onClick={() => openEdit(address)}
-                  className="inline-flex items-center gap-1 px-3 h-8 rounded-full bg-white/[0.06] border border-white/10 font-label-md text-label-md text-white/80 hover:bg-white/[0.12] transition-all"
+                  className="inline-flex items-center gap-1 px-3 h-8 rounded-full bg-slate-900/[0.05] border border-slate-900/[0.1] font-label-md text-label-md text-slate-800 hover:bg-slate-900/[0.09] transition-all"
                 >
                   <Pencil className="size-3.5" /> Edit
                 </button>
@@ -399,7 +399,7 @@ function AddressesTab({ addresses }: { addresses: AccountAddress[] }) {
                   type="button"
                   onClick={() => remove(address.id)}
                   disabled={busyId === address.id}
-                  className="inline-flex items-center gap-1 px-3 h-8 rounded-full bg-white/[0.04] border border-white/10 font-label-md text-label-md text-[#ff9d95] hover:bg-[#93000a]/30 transition-all disabled:opacity-50"
+                  className="inline-flex items-center gap-1 px-3 h-8 rounded-full bg-slate-900/[0.04] border border-slate-900/[0.1] font-label-md text-label-md text-[#BE123C] hover:bg-[#E11D48]/30 transition-all disabled:opacity-50"
                 >
                   <Trash2 className="size-3.5" /> Remove
                 </button>
@@ -424,17 +424,17 @@ function AddressesTab({ addresses }: { addresses: AccountAddress[] }) {
             <div className="col-span-2 sm:col-span-1">
               <Label htmlFor="addr-name">Recipient</Label>
               <Input id="addr-name" placeholder="Priya Sharma" {...register("fullName")} />
-              {errors.fullName ? <span className="font-body-sm text-body-sm text-[#ff9d95]">{errors.fullName.message}</span> : null}
+              {errors.fullName ? <span className="font-body-sm text-body-sm text-[#BE123C]">{errors.fullName.message}</span> : null}
             </div>
             <div className="col-span-2">
               <Label htmlFor="addr-phone">Mobile</Label>
               <Input id="addr-phone" inputMode="numeric" placeholder="9876543210" {...register("phone")} />
-              {errors.phone ? <span className="font-body-sm text-body-sm text-[#ff9d95]">{errors.phone.message}</span> : null}
+              {errors.phone ? <span className="font-body-sm text-body-sm text-[#BE123C]">{errors.phone.message}</span> : null}
             </div>
             <div className="col-span-2">
               <Label htmlFor="addr-line1">Address line 1</Label>
               <Input id="addr-line1" placeholder="Flat / House no., Street" {...register("line1")} />
-              {errors.line1 ? <span className="font-body-sm text-body-sm text-[#ff9d95]">{errors.line1.message}</span> : null}
+              {errors.line1 ? <span className="font-body-sm text-body-sm text-[#BE123C]">{errors.line1.message}</span> : null}
             </div>
             <div className="col-span-2">
               <Label htmlFor="addr-line2">Address line 2 (optional)</Label>
@@ -443,21 +443,21 @@ function AddressesTab({ addresses }: { addresses: AccountAddress[] }) {
             <div>
               <Label htmlFor="addr-city">City</Label>
               <Input id="addr-city" placeholder="Bengaluru" {...register("city")} />
-              {errors.city ? <span className="font-body-sm text-body-sm text-[#ff9d95]">{errors.city.message}</span> : null}
+              {errors.city ? <span className="font-body-sm text-body-sm text-[#BE123C]">{errors.city.message}</span> : null}
             </div>
             <div>
               <Label htmlFor="addr-state">State</Label>
               <Input id="addr-state" placeholder="Karnataka" {...register("state")} />
-              {errors.state ? <span className="font-body-sm text-body-sm text-[#ff9d95]">{errors.state.message}</span> : null}
+              {errors.state ? <span className="font-body-sm text-body-sm text-[#BE123C]">{errors.state.message}</span> : null}
             </div>
             <div>
               <Label htmlFor="addr-pincode">PIN code</Label>
               <Input id="addr-pincode" inputMode="numeric" placeholder="560001" {...register("pincode")} />
-              {errors.pincode ? <span className="font-body-sm text-body-sm text-[#ff9d95]">{errors.pincode.message}</span> : null}
+              {errors.pincode ? <span className="font-body-sm text-body-sm text-[#BE123C]">{errors.pincode.message}</span> : null}
             </div>
             <label className="flex items-center gap-space-xs self-end pb-2 cursor-pointer">
-              <input type="checkbox" className="accent-[#FF3B30] w-4 h-4" {...register("isDefault")} />
-              <span className="font-body-sm text-body-sm text-white/70">Set as default</span>
+              <input type="checkbox" className="accent-[#2563EB] w-4 h-4" {...register("isDefault")} />
+              <span className="font-body-sm text-body-sm text-slate-700">Set as default</span>
             </label>
 
             <DialogFooter className="col-span-2">
@@ -509,8 +509,8 @@ function DesignsTab({ designs }: { designs: AccountDesign[] }) {
 
   return (
     <div className="flex flex-col gap-space-sm">
-      <h2 className="font-headline-md text-headline-md font-bold text-white">
-        My designs <span className="text-white/40 font-normal">({designs.length})</span>
+      <h2 className="font-headline-md text-headline-md font-bold text-slate-900">
+        My designs <span className="text-slate-500 font-normal">({designs.length})</span>
       </h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-space-sm">
@@ -518,7 +518,7 @@ function DesignsTab({ designs }: { designs: AccountDesign[] }) {
           <article key={design.id} className="glass-panel p-space-sm flex flex-col">
             <Link
               href={`/design/${design.productId}?design=${design.id}`}
-              className="rounded-2xl bg-white/[0.02] overflow-hidden flex items-center justify-center h-40 group"
+              className="rounded-2xl bg-slate-900/[0.02] overflow-hidden flex items-center justify-center h-40 group"
             >
               {design.thumbnailUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -529,14 +529,14 @@ function DesignsTab({ designs }: { designs: AccountDesign[] }) {
                   draggable={false}
                 />
               ) : (
-                <GarmentMockup type={garmentTypeFromCategory(design.productName.toLowerCase())} color="#141418" className="h-full w-auto" />
+                <GarmentMockup type={garmentTypeFromCategory(design.productName.toLowerCase())} color="#EEF3FA" className="h-full w-auto" />
               )}
             </Link>
 
             <div className="mt-space-xs flex-1">
-              <p className="font-label-lg text-label-lg text-white truncate">{design.name}</p>
-              <p className="font-body-sm text-body-sm text-white/50 truncate">{design.productName}</p>
-              <p className="font-label-technical text-[9px] uppercase tracking-widest text-white/35 mt-0.5">
+              <p className="font-label-lg text-label-lg text-slate-900 truncate">{design.name}</p>
+              <p className="font-body-sm text-body-sm text-slate-500 truncate">{design.productName}</p>
+              <p className="font-label-technical text-[9px] uppercase tracking-widest text-slate-400 mt-0.5">
                 Updated {formatDate(design.updatedAt)}
               </p>
             </div>
@@ -550,7 +550,7 @@ function DesignsTab({ designs }: { designs: AccountDesign[] }) {
                 onClick={() => remove(design.id)}
                 disabled={busyId === design.id}
                 aria-label={`Delete ${design.name}`}
-                className="w-9 h-9 rounded-full flex items-center justify-center text-[#ff9d95] hover:bg-[#93000a]/35 transition-all disabled:opacity-40 flex-shrink-0"
+                className="w-9 h-9 rounded-full flex items-center justify-center text-[#BE123C] hover:bg-[#E11D48]/35 transition-all disabled:opacity-40 flex-shrink-0"
               >
                 <Trash2 className="size-4" />
               </button>

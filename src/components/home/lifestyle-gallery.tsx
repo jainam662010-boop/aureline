@@ -79,14 +79,14 @@ function PhotoTile({ shot, priority }: { shot: LifestyleShot; priority: boolean 
   const [failed, setFailed] = React.useState(false);
 
   return (
-    <figure className="group relative overflow-hidden rounded-[2rem] border border-white/[0.08] bg-[#0d0d10]">
+    <figure className="group relative overflow-hidden rounded-[2rem] border border-slate-900/[0.08] bg-[#FFFFFF]">
       <Link href={shot.href} className="relative block aspect-[4/5] w-full">
         {/* Fallback is always mounted underneath; the photo fades in over it. */}
         <div
           className="absolute inset-0 flex items-center justify-center px-8 pt-10"
           style={{
             background:
-              "radial-gradient(circle at 30% 15%, rgba(255,13,123,0.16), transparent 55%), radial-gradient(circle at 80% 85%, rgba(0,224,242,0.12), transparent 55%), #0d0d10",
+              "radial-gradient(circle at 30% 15%, rgba(14,165,233,0.16), transparent 55%), radial-gradient(circle at 80% 85%, rgba(6,182,212,0.12), transparent 55%), #FFFFFF",
           }}
         >
           <GarmentMockup
@@ -100,7 +100,7 @@ function PhotoTile({ shot, priority }: { shot: LifestyleShot; priority: boolean 
             }
             overlayBox={shot.placement}
           />
-          <span className="absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-black/60 px-3 py-1 font-label-technical text-[9px] tracking-wide text-white/60 backdrop-blur-xl">
+          <span className="absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full border border-slate-900/10 bg-white/85 px-3 py-1 font-label-technical text-[9px] tracking-wide text-slate-700 backdrop-blur-xl shadow-sm">
             <Camera className="size-3" aria-hidden /> Photo slot · {shot.file}
           </span>
         </div>
@@ -120,14 +120,14 @@ function PhotoTile({ shot, priority }: { shot: LifestyleShot; priority: boolean 
           />
         ) : null}
 
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#08080a] via-[#08080a]/10 to-transparent opacity-90" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#F4F7FB] via-[#F4F7FB]/10 to-transparent opacity-90" />
 
         <figcaption className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-space-sm p-space-md">
           <span className="flex flex-col gap-0.5">
-            <span className="font-headline-md text-headline-md font-bold text-white">{shot.title}</span>
-            <span className="font-label-technical text-[9px] uppercase tracking-widest text-white/50">{shot.meta}</span>
+            <span className="font-headline-md text-headline-md font-bold text-slate-900">{shot.title}</span>
+            <span className="font-label-technical text-[9px] uppercase tracking-widest text-slate-500">{shot.meta}</span>
           </span>
-          <span className="flex size-9 flex-shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/[0.08] text-white/80 backdrop-blur-xl transition-all group-hover:bg-white/[0.16] group-hover:text-white">
+          <span className="flex size-9 flex-shrink-0 items-center justify-center rounded-full border border-slate-900/[0.1] bg-slate-900/[0.06] text-slate-800 backdrop-blur-xl transition-all group-hover:bg-slate-900/[0.1] group-hover:text-slate-900">
             <ArrowUpRight className="size-4" aria-hidden />
           </span>
         </figcaption>
@@ -138,19 +138,19 @@ function PhotoTile({ shot, priority }: { shot: LifestyleShot; priority: boolean 
 
 export function LifestyleGallery() {
   return (
-    <section id="worn" className="relative w-full bg-[#08080a] py-space-xl">
-      <div className="pointer-events-none absolute top-1/3 right-0 h-[420px] w-[420px] rounded-full bg-[#FF0D7B]/10 blur-[140px]" />
+    <section id="worn" className="relative w-full bg-[#F4F7FB] py-space-xl">
+      <div className="pointer-events-none absolute top-1/3 right-0 h-[420px] w-[420px] rounded-full bg-[#0EA5E9]/10 blur-[140px]" />
       <div className="relative z-10 mx-auto max-w-7xl px-gutter lg:px-gutter-lg">
         <div className="mb-space-xl flex flex-col justify-between gap-space-md md:flex-row md:items-end">
           <div>
-            <span className="mb-space-xs block font-label-technical text-label-technical uppercase tracking-widest text-[#00E0F2] font-black">
+            <span className="mb-space-xs block font-label-technical text-label-technical uppercase tracking-widest text-[#0891B2] font-black">
               Worn in the wild
             </span>
-            <h2 className="font-headline-xl text-headline-xl font-bold tracking-tight text-white">
+            <h2 className="font-headline-xl text-headline-xl font-bold tracking-tight text-slate-900">
               Real people, real prints
             </h2>
-            <p className="mt-space-sm max-w-xl font-body-md text-body-md text-white/60">
-              Single-piece orders shipped across India. Tag <span className="text-white">@aureline.atelier</span> and
+            <p className="mt-space-sm max-w-xl font-body-md text-body-md text-slate-600">
+              Single-piece orders shipped across India. Tag <span className="text-slate-900">@aureline.atelier</span> and
               your fit may land here next.
             </p>
           </div>

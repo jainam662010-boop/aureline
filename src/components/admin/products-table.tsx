@@ -36,9 +36,9 @@ export function ProductsTable({ products }: { products: AdminProduct[] }) {
       <div className="overflow-x-auto">
         <table className="w-full text-left">
           <thead>
-            <tr className="border-b border-white/[0.08]">
+            <tr className="border-b border-slate-900/[0.08]">
               {["Product", "Category", "Base price", "Sold", "Status", "Flags"].map((head) => (
-                <th key={head} className="px-space-md py-3 font-label-technical text-[9px] uppercase tracking-widest text-white/40">
+                <th key={head} className="px-space-md py-3 font-label-technical text-[9px] uppercase tracking-widest text-slate-500">
                   {head}
                 </th>
               ))}
@@ -47,7 +47,7 @@ export function ProductsTable({ products }: { products: AdminProduct[] }) {
           <tbody>
             {products.map((product) => (
               <React.Fragment key={product.id}>
-                <tr className="border-b border-white/[0.05] hover:bg-white/[0.03] transition-colors">
+                <tr className="border-b border-slate-900/[0.05] hover:bg-slate-900/[0.03] transition-colors">
                   <td className="px-space-md py-3">
                     <button
                       type="button"
@@ -57,23 +57,23 @@ export function ProductsTable({ products }: { products: AdminProduct[] }) {
                     >
                       <ChevronDown
                         className={cn(
-                          "size-4 text-white/40 transition-transform",
-                          expanded === product.id && "rotate-180 text-[#FF0D7B]",
+                          "size-4 text-slate-500 transition-transform",
+                          expanded === product.id && "rotate-180 text-[#0EA5E9]",
                         )}
                       />
                       <span>
-                        <span className="font-label-lg text-label-lg text-white group-hover:text-[#FF6BC0] transition-colors block">
+                        <span className="font-label-lg text-label-lg text-slate-900 group-hover:text-[#0284C7] transition-colors block">
                           {product.name}
                         </span>
-                        <span className="font-body-sm text-body-sm text-white/40">{product.slug}</span>
+                        <span className="font-body-sm text-body-sm text-slate-500">{product.slug}</span>
                       </span>
                     </button>
                   </td>
-                  <td className="px-space-md py-3 font-body-sm text-body-sm text-white/60">{product.categoryName}</td>
+                  <td className="px-space-md py-3 font-body-sm text-body-sm text-slate-600">{product.categoryName}</td>
                   <td className="px-space-md py-3">
                     <PriceEditor product={product} />
                   </td>
-                  <td className="px-space-md py-3 font-body-sm text-body-sm text-white/55 tabular-nums">{product.unitsSold}</td>
+                  <td className="px-space-md py-3 font-body-sm text-body-sm text-slate-600 tabular-nums">{product.unitsSold}</td>
                   <td className="px-space-md py-3">
                     <StatusSelect product={product} />
                   </td>
@@ -104,13 +104,13 @@ export function ProductsTable({ products }: { products: AdminProduct[] }) {
                 </tr>
 
                 {expanded === product.id ? (
-                  <tr className="border-b border-white/[0.05] bg-white/[0.02]">
+                  <tr className="border-b border-slate-900/[0.05] bg-slate-900/[0.02]">
                     <td colSpan={6} className="px-space-md py-space-sm">
                       <div className="flex items-center justify-between mb-space-xs">
                         <span className="label-tech">Inventory · {product.variants.length} variants</span>
                         <Link
                           href={`/products/${product.slug}`}
-                          className="font-label-md text-label-md text-[#00E0F2] hover:underline"
+                          className="font-label-md text-label-md text-[#0891B2] hover:underline"
                         >
                           View in store →
                         </Link>
@@ -135,8 +135,8 @@ export function ProductsTable({ products }: { products: AdminProduct[] }) {
             ))}
             {products.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-space-md py-10 text-center font-body-sm text-body-sm text-white/40">
-                  No products — run <code className="text-[#00E0F2]">npm run db:seed</code> to load the catalog.
+                <td colSpan={6} className="px-space-md py-10 text-center font-body-sm text-body-sm text-slate-500">
+                  No products — run <code className="text-[#0891B2]">npm run db:seed</code> to load the catalog.
                 </td>
               </tr>
             ) : null}
@@ -167,7 +167,7 @@ function PriceEditor({ product }: { product: AdminProduct }) {
 
   return (
     <div className="flex items-center gap-1.5">
-      <span className="font-body-sm text-body-sm text-white/45">₹</span>
+      <span className="font-body-sm text-body-sm text-slate-500">₹</span>
       <input
         value={price}
         onChange={(e) => setPrice(e.target.value)}
@@ -175,11 +175,11 @@ function PriceEditor({ product }: { product: AdminProduct }) {
         onKeyDown={(e) => e.key === "Enter" && save()}
         aria-label={`Base price for ${product.name}`}
         inputMode="decimal"
-        className="w-20 h-9 px-2 rounded-xl bg-white/[0.05] border border-white/10 font-label-md text-label-md text-white tabular-nums focus:outline-none focus:ring-2 focus:ring-[#FF3B30]"
+        className="w-20 h-9 px-2 rounded-xl bg-slate-900/[0.05] border border-slate-900/[0.1] font-label-md text-label-md text-slate-900 tabular-nums focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
       />
-      {busy ? <Loader2 className="size-3.5 text-white/50 animate-spin" /> : null}
+      {busy ? <Loader2 className="size-3.5 text-slate-500 animate-spin" /> : null}
       {product.basePrice >= 999 ? (
-        <span className="font-label-technical text-[8px] uppercase tracking-widest text-white/30">incl. print</span>
+        <span className="font-label-technical text-[8px] uppercase tracking-widest text-slate-400">incl. print</span>
       ) : null}
       <span className="sr-only">{formatINR(product.basePrice)}</span>
     </div>
@@ -204,10 +204,10 @@ function StatusSelect({ product }: { product: AdminProduct }) {
 
   const tone =
     status === "ACTIVE"
-      ? "border-[#22c55e]/40 bg-[#22c55e]/10 text-[#7ef0a8]"
+      ? "border-[#22c55e]/40 bg-[#22c55e]/10 text-[#047857]"
       : status === "DRAFT"
-        ? "border-[#FF8C26]/40 bg-[#FF8C26]/10 text-[#FFC084]"
-        : "border-white/15 bg-white/[0.05] text-white/55";
+        ? "border-[#D97706]/40 bg-[#D97706]/10 text-[#B45309]"
+        : "border-slate-900/[0.1] bg-slate-900/[0.05] text-slate-600";
 
   return (
     <div className="relative inline-flex items-center">
@@ -217,18 +217,18 @@ function StatusSelect({ product }: { product: AdminProduct }) {
         onChange={(e) => change(e.target.value as AdminProduct["status"])}
         aria-label={`Status for ${product.name}`}
         className={cn(
-          "appearance-none h-8 pl-3 pr-7 rounded-full border font-label-technical text-[9px] uppercase tracking-widest bg-transparent focus:outline-none focus:ring-2 focus:ring-[#FF3B30]",
+          "appearance-none h-8 pl-3 pr-7 rounded-full border font-label-technical text-[9px] uppercase tracking-widest bg-transparent focus:outline-none focus:ring-2 focus:ring-[#2563EB]",
           tone,
         )}
       >
         {(["ACTIVE", "DRAFT", "ARCHIVED"] as const).map((value) => (
-          <option key={value} value={value} className="bg-[#101014] text-white">
+          <option key={value} value={value} className="bg-[#FFFFFF] text-slate-900">
             {value}
           </option>
         ))}
       </select>
       <ChevronDown className="absolute right-2 size-3 pointer-events-none opacity-60" />
-      {busy ? <Loader2 className="ml-1.5 size-3 text-white/50 animate-spin" /> : null}
+      {busy ? <Loader2 className="ml-1.5 size-3 text-slate-500 animate-spin" /> : null}
     </div>
   );
 }
@@ -265,8 +265,8 @@ function FlagToggle({
       className={cn(
         "inline-flex items-center gap-1 h-7 px-2.5 rounded-full border font-label-technical text-[9px] uppercase tracking-widest transition-all",
         state
-          ? "border-[#FF0D7B]/50 bg-[#FF0D7B]/15 text-[#FF6BC0]"
-          : "border-white/10 bg-white/[0.03] text-white/40 hover:text-white hover:border-white/25",
+          ? "border-[#0EA5E9]/50 bg-[#0EA5E9]/15 text-[#0284C7]"
+          : "border-slate-900/[0.1] bg-slate-900/[0.03] text-slate-500 hover:text-slate-900 hover:border-slate-900/[0.1]",
         busy && "opacity-50",
       )}
     >
@@ -298,10 +298,10 @@ function StockStepper({
     <div
       className={cn(
         "inline-flex items-center gap-1.5 rounded-full border px-2 h-8",
-        stock === 0 ? "border-[#ff5545]/40 bg-[#93000a]/20" : stock <= 5 ? "border-[#FF8C26]/40 bg-[#FF8C26]/10" : "border-white/10 bg-white/[0.03]",
+        stock === 0 ? "border-[#F43F5E]/40 bg-[#E11D48]/20" : stock <= 5 ? "border-[#D97706]/40 bg-[#D97706]/10" : "border-slate-900/[0.1] bg-slate-900/[0.03]",
       )}
     >
-      <span className="font-body-sm text-body-sm text-white/70 whitespace-nowrap">
+      <span className="font-body-sm text-body-sm text-slate-700 whitespace-nowrap">
         {variant.colorName} {variant.size}
       </span>
       <button
@@ -309,21 +309,21 @@ function StockStepper({
         aria-label={`Decrease stock for ${variant.colorName} ${variant.size}`}
         onClick={() => apply(stock - 1)}
         disabled={busy || stock === 0}
-        className="w-5 h-5 rounded-full bg-white/[0.08] text-white/70 text-xs leading-none hover:bg-white/[0.16] disabled:opacity-40"
+        className="w-5 h-5 rounded-full bg-slate-900/[0.06] text-slate-700 text-xs leading-none hover:bg-slate-900/[0.1] disabled:opacity-40"
       >
         −
       </button>
-      <span className="font-label-md text-label-md text-white tabular-nums w-7 text-center">{stock}</span>
+      <span className="font-label-md text-label-md text-slate-900 tabular-nums w-7 text-center">{stock}</span>
       <button
         type="button"
         aria-label={`Increase stock for ${variant.colorName} ${variant.size}`}
         onClick={() => apply(stock + 1)}
         disabled={busy}
-        className="w-5 h-5 rounded-full bg-white/[0.08] text-white/70 text-xs leading-none hover:bg-white/[0.16] disabled:opacity-40"
+        className="w-5 h-5 rounded-full bg-slate-900/[0.06] text-slate-700 text-xs leading-none hover:bg-slate-900/[0.1] disabled:opacity-40"
       >
         +
       </button>
-      {busy ? <Loader2 className="size-3 text-white/50 animate-spin" /> : null}
+      {busy ? <Loader2 className="size-3 text-slate-500 animate-spin" /> : null}
     </div>
   );
 }

@@ -70,8 +70,8 @@ export async function sendContactMessage(input: z.infer<typeof contactSchema>): 
     subject: "We received your message",
     html: emailShell(
       "Thanks for reaching out",
-      `<p style="color:#cfc9cd;">Hi ${parsed.data.name.split(" ")[0]}, our team will get back to you within one working day.</p>
-       <p style="color:#8b8b90;font-size:13px;">Your message: ${parsed.data.message.replace(/</g, "&lt;")}</p>`,
+      `<p style="color:#475569;">Hi ${parsed.data.name.split(" ")[0]}, our team will get back to you within one working day.</p>
+       <p style="color:#64748B;font-size:13px;">Your message: ${parsed.data.message.replace(/</g, "&lt;")}</p>`,
     ),
   });
   return ok({ sent: true });

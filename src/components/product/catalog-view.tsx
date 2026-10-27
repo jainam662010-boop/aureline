@@ -164,7 +164,7 @@ export function CatalogView({ initialResult, categories, facets, filters, client
       <aside className={cn("lg:col-span-3", mobileOpen ? "block" : "hidden lg:block")}>
         <div className="glass-panel p-space-md lg:sticky lg:top-24 flex flex-col gap-space-md max-h-[calc(100vh-8rem)] overflow-y-auto hide-scrollbar">
           <div className="flex items-center justify-between">
-            <span className="font-label-lg text-label-lg font-bold text-white">Filters</span>
+            <span className="font-label-lg text-label-lg font-bold text-slate-900">Filters</span>
             {activeFilterCount > 0 ? (
               <Button
                 variant="ghost"
@@ -223,7 +223,7 @@ export function CatalogView({ initialResult, categories, facets, filters, client
                 className="h-10"
                 aria-label="Minimum price"
               />
-              <span className="text-white/40">—</span>
+              <span className="text-slate-500">—</span>
               <Input
                 inputMode="numeric"
                 value={max}
@@ -252,7 +252,7 @@ export function CatalogView({ initialResult, categories, facets, filters, client
                     onClick={() => update({ color: active ? undefined : color.hex })}
                     className={cn(
                       "w-8 h-8 rounded-full border-2 transition-all",
-                      active ? "border-[#FF3B30] scale-110 shadow-[0_0_12px_rgba(255,59,48,0.5)]" : "border-white/20 hover:border-white/50",
+                      active ? "border-[#2563EB] scale-110 shadow-[0_0_12px_rgba(37,99,235,0.5)]" : "border-slate-900/[0.1] hover:border-slate-900/[0.1]",
                     )}
                     style={{ backgroundColor: color.hex }}
                   />
@@ -274,8 +274,8 @@ export function CatalogView({ initialResult, categories, facets, filters, client
                     className={cn(
                       "px-3 py-1.5 rounded-full font-label-md text-label-md border transition-all",
                       active
-                        ? "bg-white/[0.15] border-white/30 text-white"
-                        : "bg-white/[0.04] border-white/10 text-white/60 hover:text-white hover:border-white/30",
+                        ? "bg-slate-900/[0.1] border-slate-900/[0.1] text-slate-900"
+                        : "bg-slate-900/[0.04] border-slate-900/[0.1] text-slate-600 hover:text-slate-900 hover:border-slate-900/[0.1]",
                     )}
                   >
                     {size}
@@ -316,7 +316,7 @@ export function CatalogView({ initialResult, categories, facets, filters, client
       {/* Results */}
       <div className="lg:col-span-9">
         <div className="flex items-center justify-between gap-space-sm mb-space-md flex-wrap">
-          <span className="font-label-technical text-label-technical uppercase tracking-widest text-white/50">
+          <span className="font-label-technical text-label-technical uppercase tracking-widest text-slate-500">
             {current.total} products
           </span>
 
@@ -372,8 +372,8 @@ export function CatalogView({ initialResult, categories, facets, filters, client
                       className={cn(
                         "min-w-10 h-10 px-3 rounded-full font-label-lg text-label-lg transition-all",
                         active
-                          ? "bg-gradient-to-r from-[#FF3B30] to-[#FF0D7B] text-white shadow-[0_0_18px_rgba(255,13,123,0.4)]"
-                          : "bg-white/[0.05] border border-white/10 text-white/70 hover:bg-white/[0.1]",
+                          ? "bg-gradient-to-r from-[#2563EB] to-[#0EA5E9] text-white shadow-[0_0_18px_rgba(14,165,233,0.4)]"
+                          : "bg-slate-900/[0.05] border border-slate-900/[0.1] text-slate-700 hover:bg-slate-900/[0.08]",
                       )}
                     >
                       {page}
@@ -391,7 +391,7 @@ export function CatalogView({ initialResult, categories, facets, filters, client
 
 function FilterGroup({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <fieldset className="flex flex-col gap-space-xs border-t border-white/[0.06] pt-space-md">
+    <fieldset className="flex flex-col gap-space-xs border-t border-slate-900/[0.06] pt-space-md">
       <legend className="label-tech mb-space-xs">{title}</legend>
       {children}
     </fieldset>
@@ -402,7 +402,7 @@ function FilterRow({ label, checked, onChange }: { label: string; checked: boole
   return (
     <label className="flex items-center gap-space-xs cursor-pointer group py-1">
       <Checkbox checked={checked} onCheckedChange={onChange} />
-      <span className={cn("font-body-md text-body-md transition-colors", checked ? "text-white" : "text-white/60 group-hover:text-white/90")}>
+      <span className={cn("font-body-md text-body-md transition-colors", checked ? "text-slate-900" : "text-slate-600 group-hover:text-slate-900/90")}>
         {label}
       </span>
     </label>

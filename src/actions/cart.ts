@@ -42,6 +42,7 @@ export interface SerializedCartItem {
   side: PrintSide;
   designId: string | null;
   thumbnailUrl: string | null;
+  hasDesign: boolean;
   garmentType: string;
   priceBreakdown: { label: string; amount: number; hint?: string }[];
 }
@@ -79,6 +80,7 @@ function serializeCart(
       side: item.side,
       designId: item.designId,
       thumbnailUrl: item.thumbnailUrl,
+      hasDesign: Boolean(item.designJson),
       garmentType: item.product.category.slug,
       priceBreakdown: bd ?? [],
     };

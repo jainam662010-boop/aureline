@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { addToCart } from "@/actions/cart";
 import { cn, formatINR } from "@/lib/utils";
 import { resolvePrintCost } from "@/lib/print-area";
+import { blankPriceRows, blankUnitPrice, qtyBreakIndex } from "@/lib/price-list";
 
 export interface SerializedVariant {
   id: string;
@@ -100,7 +101,10 @@ export function ProductDetailClient({ product }: { product: SerializedProductDet
         pricing: product.printPricing,
       })
     : 0;
-  const unitPrice = product.basePrice + priceDelta + printCost;
+  const blankPrice = blankUnitPrice(product.slug, quantity, product.basePrice);
+  const unitPrice = blankPrice + priceDelta + printCost;
+  const priceRows = blankPriceRows(product.slug, product.basePrice);
+  const activeBreak = qtyBreakIndex(quantity);
 
   const image = product.images[activeImage] ?? null;
 
@@ -139,7 +143,7 @@ export function ProductDetailClient({ product }: { product: SerializedProductDet
       id: "details",
       title: "Blank details",
       body: (
-        <div className="flex flex-col gap-space-xs font-body-sm text-body-sm text-white/60">
+        <div className="flex flex-col gap-space-xs font-body-sm text-body-sm text-slate-600">
           <p>{product.description}</p>
           <ul className="flex flex-col gap-1 mt-space-xs">
             <li>Fabric: {product.fabric} · {product.gsm} GSM</li>
@@ -154,7 +158,7 @@ export function ProductDetailClient({ product }: { product: SerializedProductDet
       id: "printing",
       title: "Printing & turnaround",
       body: (
-        <p className="font-body-sm text-body-sm text-white/60">
+        <p className="font-body-sm text-body-sm text-slate-600">
           Your design is reviewed by our print team within 12 hours, then produced in 2–3 working days. Standard
           shipping takes 5–7 days; express air lands in 2–3. Every order ships with tracking on your orders page.
         </p>
@@ -164,7 +168,7 @@ export function ProductDetailClient({ product }: { product: SerializedProductDet
       id: "care",
       title: "Care instructions",
       body: (
-        <p className="font-body-sm text-body-sm text-white/60">
+        <p className="font-body-sm text-body-sm text-slate-600">
           {product.careInstructions ??
             "Machine wash cold, inside out, with like colours. Do not iron directly on the print. Tumble dry low."}
         </p>
@@ -174,7 +178,7 @@ export function ProductDetailClient({ product }: { product: SerializedProductDet
       id: "returns",
       title: "Returns & guarantees",
       body: (
-        <p className="font-body-sm text-body-sm text-white/60">
+        <p className="font-body-sm text-body-sm text-slate-600">
           Custom-printed items can&apos;t be returned for change of mind, but any print defect is re-printed free.
           Unused plain blanks can be returned within 7 days. Wrong size? One free size exchange per order.
         </p>
@@ -196,7 +200,7 @@ export function ProductDetailClient({ product }: { product: SerializedProductDet
               draggable={false}
             />
           ) : (
-            <div className="h-[420px] flex items-center justify-center rounded-2xl bg-white/[0.02]">
+            <div className="h-[420px] flex items-center justify-center rounded-2xl bg-slate-900/[0.02]">
               <GarmentMockup type={garmentType} color={activeColor?.hex ?? "#111111"} className="h-full w-auto" glow />
             </div>
           )}
@@ -213,7 +217,7 @@ export function ProductDetailClient({ product }: { product: SerializedProductDet
                 aria-pressed={activeImage === index}
                 className={cn(
                   "w-20 h-20 rounded-xl overflow-hidden border-2 flex-shrink-0 transition-all",
-                  activeImage === index ? "border-[#FF0D7B]" : "border-white/10 hover:border-white/30",
+                  activeImage === index ? "border-[#0EA5E9]" : "border-slate-900/[0.1] hover:border-slate-900/[0.1]",
                 )}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -229,36 +233,36 @@ export function ProductDetailClient({ product }: { product: SerializedProductDet
         <div>
           <div className="flex items-center gap-space-xs flex-wrap mb-space-xs">
             {product.isBestseller ? (
-              <span className="rounded-full bg-gradient-to-r from-[#FF3B30] to-[#FF0D7B] px-3 py-1 font-label-technical text-[9px] uppercase tracking-wider text-white">
+              <span className="rounded-full bg-gradient-to-r from-[#2563EB] to-[#0EA5E9] px-3 py-1 font-label-technical text-[9px] uppercase tracking-wider text-white">
                 Bestseller
               </span>
             ) : null}
             {product.isNewArrival ? (
-              <span className="rounded-full bg-[#00E0F2]/90 px-3 py-1 font-label-technical text-[9px] uppercase tracking-wider text-black">
+              <span className="rounded-full bg-[#0891B2]/90 px-3 py-1 font-label-technical text-[9px] uppercase tracking-wider text-black">
                 New arrival
               </span>
             ) : null}
             <Link
               href={`/products?category=${product.category.slug}`}
-              className="font-label-technical text-[9px] uppercase tracking-widest text-white/45 hover:text-white transition-colors"
+              className="font-label-technical text-[9px] uppercase tracking-widest text-slate-500 hover:text-slate-900 transition-colors"
             >
               {product.category.name}
             </Link>
           </div>
 
-          <h1 className="font-headline-xl text-headline-xl font-bold tracking-tight text-white">{product.name}</h1>
-          {product.tagline ? <p className="font-body-md text-body-md text-white/55 mt-space-xs">{product.tagline}</p> : null}
+          <h1 className="font-headline-xl text-headline-xl font-bold tracking-tight text-slate-900">{product.name}</h1>
+          {product.tagline ? <p className="font-body-md text-body-md text-slate-600 mt-space-xs">{product.tagline}</p> : null}
 
           <div className="flex items-baseline gap-space-sm mt-space-sm">
-            <span className="font-headline-lg text-headline-lg font-bold text-white tabular-nums">
+            <span className="font-headline-lg text-headline-lg font-bold text-slate-900 tabular-nums">
               {formatINR(unitPrice)}
             </span>
             {product.compareAtPrice && product.compareAtPrice > unitPrice ? (
-              <span className="font-body-md text-body-md text-white/40 line-through tabular-nums">
+              <span className="font-body-md text-body-md text-slate-500 line-through tabular-nums">
                 {formatINR(product.compareAtPrice)}
               </span>
             ) : null}
-            <span className="font-label-technical text-[9px] uppercase tracking-widest text-white/40">
+            <span className="font-label-technical text-[9px] uppercase tracking-widest text-slate-500">
               incl. print · +{product.gstRate}% GST at checkout
             </span>
           </div>
@@ -268,7 +272,7 @@ export function ProductDetailClient({ product }: { product: SerializedProductDet
         <div>
           <div className="flex items-center justify-between mb-space-xs">
             <span className="label-tech mb-0">Colour · {activeColor?.name}</span>
-            <span className="font-label-technical text-[9px] uppercase tracking-widest text-white/40">
+            <span className="font-label-technical text-[9px] uppercase tracking-widest text-slate-500">
               {colors.length} colourways
             </span>
           </div>
@@ -283,7 +287,7 @@ export function ProductDetailClient({ product }: { product: SerializedProductDet
                 onClick={() => setColorHex(color.hex)}
                 className={cn(
                   "w-9 h-9 rounded-full border-2 transition-all hover:scale-110",
-                  colorHex === color.hex ? "border-[#FF3B30] ring-2 ring-[#FF3B30]/40 scale-110" : "border-white/20",
+                  colorHex === color.hex ? "border-[#2563EB] ring-2 ring-[#2563EB]/40 scale-110" : "border-slate-900/[0.1]",
                 )}
                 style={{ backgroundColor: color.hex }}
               />
@@ -295,7 +299,7 @@ export function ProductDetailClient({ product }: { product: SerializedProductDet
         <div>
           <div className="flex items-center justify-between mb-space-xs">
             <span className="label-tech mb-0">Size</span>
-            <span className="font-label-technical text-[9px] uppercase tracking-widest text-white/40">Size guide</span>
+            <span className="font-label-technical text-[9px] uppercase tracking-widest text-slate-500">Size guide</span>
           </div>
           <div className="flex flex-wrap gap-space-xs">
             {sizes.map((variant) => (
@@ -308,20 +312,20 @@ export function ProductDetailClient({ product }: { product: SerializedProductDet
                 className={cn(
                   "min-w-12 h-11 px-3 rounded-2xl font-label-lg text-label-lg border transition-all relative",
                   size === variant.size
-                    ? "bg-white/[0.14] border-white/30 text-white"
-                    : "bg-white/[0.04] border-white/10 text-white/70 hover:border-white/30",
+                    ? "bg-slate-900/[0.1] border-slate-900/[0.1] text-slate-900"
+                    : "bg-slate-900/[0.04] border-slate-900/[0.1] text-slate-700 hover:border-slate-900/[0.1]",
                   variant.stock <= 0 && "opacity-30 line-through cursor-not-allowed",
                 )}
               >
                 {variant.size}
                 {variant.stock > 0 && variant.stock <= 3 ? (
-                  <span className="absolute -top-1.5 -right-1.5 w-2 h-2 rounded-full bg-[#FF8C26]" title={`Only ${variant.stock} left`} />
+                  <span className="absolute -top-1.5 -right-1.5 w-2 h-2 rounded-full bg-[#D97706]" title={`Only ${variant.stock} left`} />
                 ) : null}
               </button>
             ))}
           </div>
           {selectedVariant && selectedVariant.stock > 0 ? (
-            <p className="font-body-sm text-body-sm text-white/45 mt-space-xs">
+            <p className="font-body-sm text-body-sm text-slate-500 mt-space-xs">
               {selectedVariant.stock} in stock · ships in 2–3 working days after artwork approval
             </p>
           ) : null}
@@ -329,21 +333,21 @@ export function ProductDetailClient({ product }: { product: SerializedProductDet
 
         {/* Quantity + CTAs */}
         <div className="flex items-center gap-space-sm flex-wrap">
-          <div className="flex items-center rounded-full bg-white/[0.05] border border-white/10">
+          <div className="flex items-center rounded-full bg-slate-900/[0.05] border border-slate-900/[0.1]">
             <button
               type="button"
               aria-label="Decrease quantity"
               onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-              className="w-11 h-11 rounded-full text-white/70 hover:text-white transition-colors"
+              className="w-11 h-11 rounded-full text-slate-700 hover:text-slate-900 transition-colors"
             >
               <Minus className="size-4 mx-auto" />
             </button>
-            <span className="w-10 text-center font-label-lg text-label-lg text-white tabular-nums">{quantity}</span>
+            <span className="w-10 text-center font-label-lg text-label-lg text-slate-900 tabular-nums">{quantity}</span>
             <button
               type="button"
               aria-label="Increase quantity"
               onClick={() => setQuantity((q) => Math.min(500, q + 1))}
-              className="w-11 h-11 rounded-full text-white/70 hover:text-white transition-colors"
+              className="w-11 h-11 rounded-full text-slate-700 hover:text-slate-900 transition-colors"
             >
               <Plus className="size-4 mx-auto" />
             </button>
@@ -358,6 +362,36 @@ export function ProductDetailClient({ product }: { product: SerializedProductDet
           </Button>
         </div>
 
+        {/* Blank price by quantity — print is quoted separately by print area. */}
+        <div className="rounded-2xl bg-white/70 border border-slate-900/10 p-space-sm shadow-[0_12px_30px_-24px_rgba(15,23,42,0.45)]">
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <span className="label-tech mb-0">Blank price by quantity</span>
+            <span className="font-label-technical text-[9px] uppercase tracking-widest text-slate-400">
+              print added separately
+            </span>
+          </div>
+          <div className="grid grid-cols-4 sm:grid-cols-7 gap-1">
+            {priceRows.map((row, index) => (
+              <div
+                key={row.label}
+                className={cn(
+                  "rounded-xl px-1.5 py-1.5 text-center border transition-colors",
+                  index === activeBreak
+                    ? "border-[#2563EB]/45 bg-[#2563EB]/[0.08]"
+                    : "border-transparent bg-slate-900/[0.03]",
+                )}
+              >
+                <span className="block font-label-technical text-[9px] uppercase tracking-wider text-slate-500">
+                  {row.label}
+                </span>
+                <span className="block font-label-md text-label-md font-bold text-slate-900 tabular-nums">
+                  {formatINR(row.price)}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
         <div className="grid grid-cols-3 gap-space-xs">
           {[
             { icon: Truck, label: "Free ship", hint: "above ₹1,499" },
@@ -365,9 +399,9 @@ export function ProductDetailClient({ product }: { product: SerializedProductDet
             { icon: ShieldCheck, label: "Print guarantee", hint: "defects re-printed" },
           ].map((perk) => (
             <div key={perk.label} className="glass-panel-sm p-space-sm text-center">
-              <perk.icon className="size-4 text-[#00E0F2] mx-auto mb-1" />
-              <p className="font-label-md text-label-md text-white">{perk.label}</p>
-              <p className="font-body-sm text-body-sm text-white/45">{perk.hint}</p>
+              <perk.icon className="size-4 text-[#0891B2] mx-auto mb-1" />
+              <p className="font-label-md text-label-md text-slate-900">{perk.label}</p>
+              <p className="font-body-sm text-body-sm text-slate-500">{perk.hint}</p>
             </div>
           ))}
         </div>
@@ -382,16 +416,16 @@ export function ProductDetailClient({ product }: { product: SerializedProductDet
                 aria-expanded={openAccordion === item.id}
                 className="w-full flex items-center justify-between gap-space-sm px-space-md py-space-sm text-left"
               >
-                <span className="font-label-lg text-label-lg text-white">{item.title}</span>
+                <span className="font-label-lg text-label-lg text-slate-900">{item.title}</span>
                 <ChevronDown
                   className={cn(
-                    "size-4 text-white/50 transition-transform",
-                    openAccordion === item.id && "rotate-180 text-[#FF0D7B]",
+                    "size-4 text-slate-500 transition-transform",
+                    openAccordion === item.id && "rotate-180 text-[#0EA5E9]",
                   )}
                 />
               </button>
               {openAccordion === item.id ? (
-                <div className="px-space-md pb-space-sm border-t border-white/[0.06] pt-space-sm">{item.body}</div>
+                <div className="px-space-md pb-space-sm border-t border-slate-900/[0.06] pt-space-sm">{item.body}</div>
               ) : null}
             </div>
           ))}
@@ -399,12 +433,12 @@ export function ProductDetailClient({ product }: { product: SerializedProductDet
 
         {defaultPlacement ? (
           <div className="glass-panel p-space-sm flex items-center gap-space-sm">
-            <span className="text-[#FF0D7B] flex-shrink-0"><Printer className="size-5" aria-hidden /></span>
+            <span className="text-[#0EA5E9] flex-shrink-0"><Printer className="size-5" aria-hidden /></span>
             <div>
-              <p className="font-label-md text-label-md text-white">
+              <p className="font-label-md text-label-md text-slate-900">
                 Print area: {defaultPlacement.label} · {defaultPlacement.widthIn}″ × {defaultPlacement.heightIn}″
               </p>
-              <p className="font-body-sm text-body-sm text-white/50">
+              <p className="font-body-sm text-body-sm text-slate-500">
                 Print charge {formatINR(printCost)} · {product.printPricing.ratePerSqIn > 0
                   ? `₹${product.printPricing.ratePerSqIn.toFixed(2)}/in² · min ₹${product.printPricing.minimum}`
                   : "flat placement rate"} · studio prices your artwork&apos;s exact area.
@@ -412,7 +446,7 @@ export function ProductDetailClient({ product }: { product: SerializedProductDet
             </div>
             <Link
               href={`/design/${product.id}`}
-              className="ml-auto inline-flex items-center gap-1 px-4 h-9 rounded-full bg-white/[0.06] border border-white/15 font-label-md text-label-md text-white hover:bg-white/[0.12] transition-all"
+              className="ml-auto inline-flex items-center gap-1 px-4 h-9 rounded-full bg-slate-900/[0.05] border border-slate-900/[0.1] font-label-md text-label-md text-slate-900 hover:bg-slate-900/[0.09] transition-all"
             >
               <Check className="size-3.5" /> Open studio
             </Link>

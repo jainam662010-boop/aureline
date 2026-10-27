@@ -79,7 +79,7 @@ export default async function AdminOrdersPage({
       <header className="flex items-end justify-between gap-space-sm flex-wrap">
         <div>
           <span className="label-tech">{totalCount} total</span>
-          <h1 className="font-headline-xl text-headline-xl text-white font-bold tracking-tight">Orders</h1>
+          <h1 className="font-headline-xl text-headline-xl text-slate-900 font-bold tracking-tight">Orders</h1>
         </div>
       </header>
 
@@ -91,9 +91,9 @@ export default async function AdminOrdersPage({
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead>
-              <tr className="border-b border-white/[0.08]">
+              <tr className="border-b border-slate-900/[0.08]">
                 {["Order", "Customer", "Placed", "Items", "Total", "Status", ""].map((head) => (
-                  <th key={head} className="px-space-md py-3 font-label-technical text-[9px] uppercase tracking-widest text-white/40">
+                  <th key={head} className="px-space-md py-3 font-label-technical text-[9px] uppercase tracking-widest text-slate-500">
                     {head}
                   </th>
                 ))}
@@ -101,23 +101,23 @@ export default async function AdminOrdersPage({
             </thead>
             <tbody>
               {orders.map((order) => (
-                <tr key={order.id} className="border-b border-white/[0.05] hover:bg-white/[0.03] transition-colors">
+                <tr key={order.id} className="border-b border-slate-900/[0.05] hover:bg-slate-900/[0.03] transition-colors">
                   <td className="px-space-md py-3">
-                    <Link href={`/admin/orders/${order.id}`} className="font-label-lg text-label-lg text-white hover:text-[#FF6BC0]">
+                    <Link href={`/admin/orders/${order.id}`} className="font-label-lg text-label-lg text-slate-900 hover:text-[#0284C7]">
                       {order.orderNumber}
                     </Link>
                   </td>
                   <td className="px-space-md py-3">
-                    <p className="font-body-sm text-body-sm text-white/75 truncate max-w-44">{order.shippingFullName}</p>
-                    <p className="font-body-sm text-body-sm text-white/40 truncate max-w-44">{order.email}</p>
+                    <p className="font-body-sm text-body-sm text-slate-700 truncate max-w-44">{order.shippingFullName}</p>
+                    <p className="font-body-sm text-body-sm text-slate-500 truncate max-w-44">{order.email}</p>
                   </td>
-                  <td className="px-space-md py-3 font-body-sm text-body-sm text-white/55 whitespace-nowrap">
+                  <td className="px-space-md py-3 font-body-sm text-body-sm text-slate-600 whitespace-nowrap">
                     {formatDateTime(order.createdAt)}
                   </td>
-                  <td className="px-space-md py-3 font-body-sm text-body-sm text-white/55 tabular-nums">
+                  <td className="px-space-md py-3 font-body-sm text-body-sm text-slate-600 tabular-nums">
                     {order.items.reduce((sum, item) => sum + item.quantity, 0)}
                   </td>
-                  <td className="px-space-md py-3 font-label-md text-label-md text-white tabular-nums">
+                  <td className="px-space-md py-3 font-label-md text-label-md text-slate-900 tabular-nums">
                     {formatINR(num(order.total), true)}
                   </td>
                   <td className="px-space-md py-3">
@@ -126,7 +126,7 @@ export default async function AdminOrdersPage({
                   <td className="px-space-md py-3 text-right">
                     <Link
                       href={`/admin/orders/${order.id}`}
-                      className="inline-flex items-center h-8 px-3 rounded-full bg-white/[0.06] border border-white/10 font-label-md text-label-md text-white/80 hover:bg-white/[0.12] transition-all"
+                      className="inline-flex items-center h-8 px-3 rounded-full bg-slate-900/[0.05] border border-slate-900/[0.1] font-label-md text-label-md text-slate-800 hover:bg-slate-900/[0.09] transition-all"
                     >
                       Open
                     </Link>
@@ -135,7 +135,7 @@ export default async function AdminOrdersPage({
               ))}
               {orders.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-space-md py-10 text-center font-body-sm text-body-sm text-white/40">
+                  <td colSpan={7} className="px-space-md py-10 text-center font-body-sm text-body-sm text-slate-500">
                     No orders match these filters.
                   </td>
                 </tr>
@@ -152,7 +152,7 @@ export default async function AdminOrdersPage({
               ← Prev
             </Link>
           ) : null}
-          <span className="font-label-technical text-[9px] uppercase tracking-widest text-white/45 px-space-sm">
+          <span className="font-label-technical text-[9px] uppercase tracking-widest text-slate-500 px-space-sm">
             Page {pageNum} of {totalPages}
           </span>
           {pageNum < totalPages ? (

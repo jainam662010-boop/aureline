@@ -34,7 +34,7 @@ export function OrderFilters({ statuses, active, query }: { statuses: string[]; 
   return (
     <div className="flex flex-col gap-space-sm">
       <form onSubmit={submitSearch} className="relative max-w-sm">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-white/40 pointer-events-none" />
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-slate-500 pointer-events-none" />
         <Input
           value={term}
           onChange={(e) => setTerm(e.target.value)}
@@ -42,7 +42,7 @@ export function OrderFilters({ statuses, active, query }: { statuses: string[]; 
           aria-label="Search orders"
           className="h-10 pl-11 rounded-full text-body-sm"
         />
-        {busy ? <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 size-4 text-white/50 animate-spin" /> : null}
+        {busy ? <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 size-4 text-slate-500 animate-spin" /> : null}
       </form>
 
       <div className="flex gap-1.5 overflow-x-auto hide-scrollbar pb-1" role="group" aria-label="Filter by status">
@@ -55,8 +55,8 @@ export function OrderFilters({ statuses, active, query }: { statuses: string[]; 
             className={cn(
               "px-3 py-1.5 rounded-full font-label-technical text-[10px] uppercase tracking-widest whitespace-nowrap border transition-all",
               active === status
-                ? "border-[#FF0D7B]/60 bg-[#FF0D7B]/15 text-[#FF6BC0]"
-                : "border-white/10 bg-white/[0.03] text-white/50 hover:text-white hover:border-white/25",
+                ? "border-[#0EA5E9]/60 bg-[#0EA5E9]/15 text-[#0284C7]"
+                : "border-slate-900/[0.1] bg-slate-900/[0.03] text-slate-500 hover:text-slate-900 hover:border-slate-900/[0.1]",
             )}
           >
             {status === "ALL" ? "All" : status.replace(/_/g, " ")}

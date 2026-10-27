@@ -3,6 +3,7 @@ import type { Prisma, Product, ProductVariant, PrintPlacement, Coupon, ShippingM
 import { prisma } from "@/lib/prisma";
 import { computePricing, validateCoupon, type PriceBreakdown, type QuantityTier, type CouponInput, type ShippingInput, type PrintPricingInput } from "@/lib/pricing";
 import { designPrintArea } from "@/lib/print-area";
+import { blankUnitPrice } from "@/lib/price-list";
 import { num, parseJson } from "@/lib/utils";
 import type { DesignDocument, PrintSideKey } from "@/lib/editor-types";
 
@@ -142,7 +143,7 @@ export async function resolveShipping(
 /* -------------------------------------------------------------------------- */
 
 export interface ItemPricingInput {
-  product: { basePrice: Prisma.Decimal | number | string; gstRate: Prisma.Decimal | number | string };
+  product: { basePrice: Prisma.Decimal | number | string; gstRate: Prisma.Decimal | number | string; slug?: string | null };
   variant?: { priceDelta: Prisma.Decimal | number | string } | null;
   placement?: PrintPlacement | null;
   /** Design document attached to the line (drives per-square-inch pricing). */
@@ -197,6 +198,9 @@ export async function priceItem(input: ItemPricingInput): Promise<PriceBreakdown
   return computePricing(
     {
       basePrice: num(input.product.basePrice),
+      blankPriceForQty: input.product.slug
+        ? blankUnitPrice(input.product.slug, input.quantity, num(input.product.basePrice))
+        : null,
       priceDelta: num(input.variant?.priceDelta ?? 0),
       placementBaseCost: num(input.placement?.baseCost ?? 0),
       placementSurcharge: num(input.placement?.surcharge ?? 0),

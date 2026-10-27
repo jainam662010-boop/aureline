@@ -97,14 +97,14 @@ export default async function ProductDetailPage({ params }: Props) {
   return (
     <div className="max-w-7xl mx-auto px-gutter lg:px-gutter-lg py-space-xl">
       <nav aria-label="Breadcrumb" className="mb-space-md">
-        <ol className="flex items-center gap-space-xs font-label-technical text-label-technical uppercase tracking-widest text-white/40">
-          <li><Link href="/" className="hover:text-white transition-colors">Home</Link></li>
+        <ol className="flex items-center gap-space-xs font-label-technical text-label-technical uppercase tracking-widest text-slate-500">
+          <li><Link href="/" className="hover:text-slate-900 transition-colors">Home</Link></li>
           <li aria-hidden>/</li>
-          <li><Link href="/products" className="hover:text-white transition-colors">Blanks</Link></li>
+          <li><Link href="/products" className="hover:text-slate-900 transition-colors">Blanks</Link></li>
           <li aria-hidden>/</li>
-          <li><Link href={`/products?category=${product.category.slug}`} className="hover:text-white transition-colors">{product.category.name}</Link></li>
+          <li><Link href={`/products?category=${product.category.slug}`} className="hover:text-slate-900 transition-colors">{product.category.name}</Link></li>
           <li aria-hidden>/</li>
-          <li className="text-white/80 truncate max-w-[14ch]">{product.name}</li>
+          <li className="text-slate-800 truncate max-w-[14ch]">{product.name}</li>
         </ol>
       </nav>
 
@@ -112,7 +112,7 @@ export default async function ProductDetailPage({ params }: Props) {
 
       {related.length > 0 ? (
         <section className="mt-space-xl" aria-labelledby="related-heading">
-          <h2 id="related-heading" className="font-headline-xl text-headline-xl text-white font-bold tracking-tight mb-space-md">
+          <h2 id="related-heading" className="font-headline-xl text-headline-xl text-slate-900 font-bold tracking-tight mb-space-md">
             Related blanks
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md">

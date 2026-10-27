@@ -25,20 +25,20 @@ interface Enquiry {
 }
 
 const STATUS_TONE: Record<Enquiry["status"], string> = {
-  NEW: "border-[#FF0D7B]/50 bg-[#FF0D7B]/15 text-[#FF6BC0]",
-  CONTACTED: "border-[#00E0F2]/40 bg-[#00E0F2]/10 text-[#66EFFA]",
-  QUOTED: "border-[#8026F2]/40 bg-[#8026F2]/15 text-[#B08CFF]",
-  CONVERTED: "border-[#22c55e]/40 bg-[#22c55e]/10 text-[#7ef0a8]",
-  CLOSED: "border-white/15 bg-white/[0.05] text-white/50",
+  NEW: "border-[#0EA5E9]/50 bg-[#0EA5E9]/15 text-[#0284C7]",
+  CONTACTED: "border-[#0891B2]/40 bg-[#0891B2]/10 text-[#0E7490]",
+  QUOTED: "border-[#7C3AED]/40 bg-[#7C3AED]/15 text-[#6D28D9]",
+  CONVERTED: "border-[#22c55e]/40 bg-[#22c55e]/10 text-[#047857]",
+  CLOSED: "border-slate-900/[0.1] bg-slate-900/[0.05] text-slate-500",
 };
 
 export function EnquiriesManager({ enquiries }: { enquiries: Enquiry[] }) {
   if (enquiries.length === 0) {
     return (
       <div className="glass-panel p-space-xl text-center">
-        <MessageSquare className="size-7 text-white/30 mx-auto mb-space-sm" />
-        <p className="font-label-lg text-label-lg text-white">No bulk enquiries yet</p>
-        <p className="font-body-sm text-body-sm text-white/50 mt-1">
+        <MessageSquare className="size-7 text-slate-400 mx-auto mb-space-sm" />
+        <p className="font-label-lg text-label-lg text-slate-900">No bulk enquiries yet</p>
+        <p className="font-body-sm text-body-sm text-slate-500 mt-1">
           Enquiries from Instagram @aureline.tm are logged here with a 12-hour SLA reminder.
         </p>
       </div>
@@ -82,7 +82,7 @@ function EnquiryCard({ enquiry }: { enquiry: Enquiry }) {
       <div className="flex items-start justify-between gap-space-sm flex-wrap mb-space-sm">
         <div className="min-w-0">
           <div className="flex items-center gap-space-xs flex-wrap">
-            <h2 className="font-headline-md text-headline-md font-bold text-white">{enquiry.name}</h2>
+            <h2 className="font-headline-md text-headline-md font-bold text-slate-900">{enquiry.name}</h2>
             <span
               className={cn(
                 "rounded-full border px-2.5 py-0.5 font-label-technical text-[9px] uppercase tracking-widest",
@@ -92,17 +92,17 @@ function EnquiryCard({ enquiry }: { enquiry: Enquiry }) {
               {status.replace(/_/g, " ")}
             </span>
             {overdue ? (
-              <span className="rounded-full border border-[#ff5545]/40 bg-[#93000a]/25 px-2.5 py-0.5 font-label-technical text-[9px] uppercase tracking-widest text-[#ff9d95]">
+              <span className="rounded-full border border-[#F43F5E]/40 bg-[#E11D48]/25 px-2.5 py-0.5 font-label-technical text-[9px] uppercase tracking-widest text-[#BE123C]">
                 SLA overdue
               </span>
             ) : null}
           </div>
 
-          <div className="flex flex-wrap items-center gap-x-space-sm gap-1 mt-1 font-body-sm text-body-sm text-white/55">
-            <a href={`mailto:${enquiry.email}`} className="inline-flex items-center gap-1 hover:text-[#00E0F2] transition-colors">
+          <div className="flex flex-wrap items-center gap-x-space-sm gap-1 mt-1 font-body-sm text-body-sm text-slate-600">
+            <a href={`mailto:${enquiry.email}`} className="inline-flex items-center gap-1 hover:text-[#0891B2] transition-colors">
               <Mail className="size-3.5" /> {enquiry.email}
             </a>
-            <a href={`tel:${enquiry.phone}`} className="inline-flex items-center gap-1 hover:text-[#00E0F2] transition-colors">
+            <a href={`tel:${enquiry.phone}`} className="inline-flex items-center gap-1 hover:text-[#0891B2] transition-colors">
               <Phone className="size-3.5" /> {enquiry.phone}
             </a>
             {enquiry.company ? (
@@ -111,7 +111,7 @@ function EnquiryCard({ enquiry }: { enquiry: Enquiry }) {
               </span>
             ) : null}
             {enquiry.deadline ? (
-              <span className="inline-flex items-center gap-1 text-[#FFC084]">
+              <span className="inline-flex items-center gap-1 text-[#B45309]">
                 <CalendarClock className="size-3.5" /> Needed by {formatDate(enquiry.deadline)}
               </span>
             ) : null}
@@ -119,15 +119,15 @@ function EnquiryCard({ enquiry }: { enquiry: Enquiry }) {
         </div>
 
         <div className="text-right">
-          <p className="font-headline-md text-headline-md font-bold text-white tabular-nums">{enquiry.quantity} pcs</p>
-          <p className="font-label-technical text-[9px] uppercase tracking-widest text-white/40">
+          <p className="font-headline-md text-headline-md font-bold text-slate-900 tabular-nums">{enquiry.quantity} pcs</p>
+          <p className="font-label-technical text-[9px] uppercase tracking-widest text-slate-500">
             {enquiry.productName ?? "mixed blanks"}
           </p>
         </div>
       </div>
 
       {enquiry.message ? (
-        <p className="font-body-md text-body-md text-white/65 leading-relaxed mb-space-sm whitespace-pre-line">
+        <p className="font-body-md text-body-md text-slate-600 leading-relaxed mb-space-sm whitespace-pre-line">
           {enquiry.message}
         </p>
       ) : null}
@@ -137,7 +137,7 @@ function EnquiryCard({ enquiry }: { enquiry: Enquiry }) {
           href={enquiry.artworkUrl}
           target="_blank"
           rel="noreferrer noopener"
-          className="inline-flex items-center gap-1.5 mb-space-sm px-3 h-8 rounded-full bg-white/[0.06] border border-white/10 font-label-md text-label-md text-white/80 hover:bg-white/[0.12] transition-all"
+          className="inline-flex items-center gap-1.5 mb-space-sm px-3 h-8 rounded-full bg-slate-900/[0.05] border border-slate-900/[0.1] font-label-md text-label-md text-slate-800 hover:bg-slate-900/[0.09] transition-all"
         >
           <Paperclip className="size-3.5" /> Artwork file
         </a>
@@ -168,7 +168,7 @@ function EnquiryCard({ enquiry }: { enquiry: Enquiry }) {
                 "px-3 h-9 rounded-full border font-label-technical text-[9px] uppercase tracking-widest transition-all",
                 status === value
                   ? STATUS_TONE[value]
-                  : "border-white/10 bg-white/[0.03] text-white/45 hover:text-white hover:border-white/25",
+                  : "border-slate-900/[0.1] bg-slate-900/[0.03] text-slate-500 hover:text-slate-900 hover:border-slate-900/[0.1]",
                 busy && "opacity-50",
               )}
             >

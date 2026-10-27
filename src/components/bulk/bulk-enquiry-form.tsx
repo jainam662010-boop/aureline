@@ -98,14 +98,14 @@ export function BulkEnquiryForm({ isLoggedIn, userName }: { isLoggedIn: boolean;
   if (submitted) {
     return (
       <div className="glass-panel p-space-lg text-center flex flex-col items-center gap-space-sm">
-        <span className="w-14 h-14 rounded-full bg-gradient-to-br from-[#22c55e]/30 to-[#00E0F2]/30 border border-[#22c55e]/50 flex items-center justify-center">
-          <CheckCircle2 className="size-7 text-[#7ef0a8]" />
+        <span className="w-14 h-14 rounded-full bg-gradient-to-br from-[#22c55e]/30 to-[#0891B2]/30 border border-[#22c55e]/50 flex items-center justify-center">
+          <CheckCircle2 className="size-7 text-[#047857]" />
         </span>
-        <h3 className="font-headline-md text-headline-md font-bold text-white">Enquiry received</h3>
-        <p className="font-headline-lg text-headline-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#FF3B30] to-[#FF0D7B]">
+        <h3 className="font-headline-md text-headline-md font-bold text-slate-900">Enquiry received</h3>
+        <p className="font-headline-lg text-headline-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#2563EB] to-[#0EA5E9]">
           {submitted}
         </p>
-        <p className="font-body-md text-body-md text-white/60 max-w-md">
+        <p className="font-body-md text-body-md text-slate-600 max-w-md">
           Our bulk team will email you a firm quote — including any volume slabs, artwork fixes and delivery windows —
           within 12 working hours.
         </p>
@@ -141,9 +141,9 @@ export function BulkEnquiryForm({ isLoggedIn, userName }: { isLoggedIn: boolean;
           <Input type="date" {...register("deadline")} />
         </Field>
         <Field label="Upload artwork (optional)">
-          <label className="flex items-center gap-space-xs h-11 px-space-sm rounded-2xl border border-white/[0.14] bg-white/[0.04] cursor-pointer hover:border-white/30 transition-all">
-            <Upload className="size-4 text-white/60" />
-            <span className="font-body-sm text-body-sm text-white/60 truncate">
+          <label className="flex items-center gap-space-xs h-11 px-space-sm rounded-2xl border border-slate-900/[0.1] bg-slate-900/[0.04] cursor-pointer hover:border-slate-900/[0.1] transition-all">
+            <Upload className="size-4 text-slate-600" />
+            <span className="font-body-sm text-body-sm text-slate-600 truncate">
               {artwork ? `${artwork.name} · ${bytesToMb(artwork.size)} MB` : "PNG, SVG or PDF up to 10 MB"}
             </span>
             <input
@@ -165,10 +165,10 @@ export function BulkEnquiryForm({ isLoggedIn, userName }: { isLoggedIn: boolean;
       </Field>
 
       {/* Live discount calculator */}
-      <div className="rounded-2xl border border-white/[0.1] bg-white/[0.03] p-space-sm">
+      <div className="rounded-2xl border border-slate-900/[0.08] bg-slate-900/[0.03] p-space-sm">
         <div className="flex items-center justify-between mb-space-xs">
           <span className="label-tech mb-0">Live volume estimate</span>
-          <span className="font-label-lg text-label-lg text-white tabular-nums">
+          <span className="font-label-lg text-label-lg text-slate-900 tabular-nums">
             {Number(quantity) > 0 ? `${Number(quantity)} pcs` : "—"}
           </span>
         </div>
@@ -181,8 +181,8 @@ export function BulkEnquiryForm({ isLoggedIn, userName }: { isLoggedIn: boolean;
                 className={cn(
                   "px-3 py-1 rounded-full font-label-technical text-[10px] uppercase tracking-widest border transition-all",
                   active
-                    ? "border-[#FF0D7B]/60 bg-[#FF0D7B]/15 text-[#FF6BC0]"
-                    : "border-white/10 bg-white/[0.03] text-white/45",
+                    ? "border-[#0EA5E9]/60 bg-[#0EA5E9]/15 text-[#0284C7]"
+                    : "border-slate-900/[0.1] bg-slate-900/[0.03] text-slate-500",
                 )}
               >
                 {tier.from}
@@ -191,10 +191,10 @@ export function BulkEnquiryForm({ isLoggedIn, userName }: { isLoggedIn: boolean;
             );
           })}
         </div>
-        <p className="font-body-sm text-body-sm text-white/55">
+        <p className="font-body-sm text-body-sm text-slate-600">
           {pct > 0 ? (
             <>
-              You qualify for <b className="text-[#7ef0a8]">−{pct}%</b> off print charges
+              You qualify for <b className="text-[#047857]">−{pct}%</b> off print charges
               {quantity >= 500 ? " plus free standard shipping across India." : "."}
             </>
           ) : (
@@ -209,7 +209,7 @@ export function BulkEnquiryForm({ isLoggedIn, userName }: { isLoggedIn: boolean;
       </Button>
 
       {!isLoggedIn ? (
-        <p className="font-body-sm text-body-sm text-white/40 text-center">
+        <p className="font-body-sm text-body-sm text-slate-500 text-center">
           No account needed — we&apos;ll reply by email within 12 working hours.
         </p>
       ) : null}
@@ -230,7 +230,7 @@ function Field({
     <div className="flex flex-col gap-space-xs">
       <Label>{label}</Label>
       {children}
-      {error ? <span className="font-body-sm text-body-sm text-[#ff9d95]">{error}</span> : null}
+      {error ? <span className="font-body-sm text-body-sm text-[#BE123C]">{error}</span> : null}
     </div>
   );
 }

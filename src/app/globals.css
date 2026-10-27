@@ -3,21 +3,30 @@
 @tailwind utilities;
 
 /* ==========================================================================
-   Aureline Studio design system — global styles
+   Aureline Studio — "Glacier" light design system
+   Cool porcelain surfaces, ink-navy type, electric blue → cyan accents.
    ========================================================================== */
 
 @layer base {
   :root {
     --mouse-x: 50%;
     --mouse-y: 40%;
+    --ink: #0b1524;
+    --ink-soft: #526175;
+    --line: rgba(11, 21, 36, 0.1);
+    --paper: #f4f7fb;
+    --card: #ffffff;
+    --accent: #2563eb;
+    --accent-2: #0ea5e9;
+    --accent-3: #7c3aed;
   }
 
   html,
   body {
     margin: 0;
     padding: 0;
-    background: #08080a;
-    color: #e5e1e4;
+    background: #f4f7fb;
+    color: #0b1524;
     overscroll-behavior-y: none;
   }
 
@@ -25,6 +34,11 @@
     font-family: var(--font-inter), Inter, sans-serif;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    background-image:
+      radial-gradient(900px circle at 12% -8%, rgba(37, 99, 235, 0.08), transparent 60%),
+      radial-gradient(760px circle at 92% 4%, rgba(6, 182, 212, 0.08), transparent 62%);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
   }
 
   main > :first-child {
@@ -35,8 +49,8 @@
   }
 
   ::selection {
-    background: #ff5545;
-    color: #690003;
+    background: #2563eb;
+    color: #ffffff;
   }
 
   ::-webkit-scrollbar {
@@ -44,19 +58,19 @@
     height: 10px;
   }
   ::-webkit-scrollbar-track {
-    background: #08080a;
+    background: #eef3fa;
   }
   ::-webkit-scrollbar-thumb {
-    background: #2a2a2c;
+    background: #c3d3e6;
     border-radius: 9999px;
-    border: 2px solid #08080a;
+    border: 2px solid #eef3fa;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #474649;
+    background: #94a8c0;
   }
 
   :focus-visible {
-    outline: 2px solid #ff5545;
+    outline: 2px solid #2563eb;
     outline-offset: 2px;
   }
 
@@ -92,12 +106,14 @@
 }
 
 @layer components {
-  /* ---- Glass panels ---- */
+  /* ---- Glass panels (frosted porcelain) ---- */
   .glass-panel {
-    @apply backdrop-blur-2xl bg-white/[0.04] border border-white/[0.12] rounded-3xl;
+    @apply backdrop-blur-2xl bg-white/75 border border-slate-900/[0.08] rounded-3xl;
+    box-shadow: 0 18px 50px -24px rgba(15, 23, 42, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.85);
   }
   .glass-panel-sm {
-    @apply backdrop-blur-xl bg-white/[0.03] border border-white/[0.1] rounded-2xl;
+    @apply backdrop-blur-xl bg-white/80 border border-slate-900/[0.08] rounded-2xl;
+    box-shadow: 0 12px 32px -22px rgba(15, 23, 42, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.8);
   }
   .glass-card-hover {
     position: relative;
@@ -111,63 +127,65 @@
     padding: 1px;
     background: linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.18),
-      rgba(255, 59, 48, 0.3),
-      rgba(128, 38, 242, 0.2),
-      rgba(0, 224, 242, 0.15),
-      rgba(255, 255, 255, 0.03)
+      rgba(255, 255, 255, 0.9),
+      rgba(37, 99, 235, 0.35),
+      rgba(124, 58, 237, 0.22),
+      rgba(6, 182, 212, 0.28),
+      rgba(255, 255, 255, 0.6)
     );
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
     pointer-events: none;
-    opacity: 0.35;
+    opacity: 0.45;
     transition: opacity 0.4s ease;
   }
   .glass-card-hover:hover::before {
-    opacity: 0.9;
+    opacity: 1;
   }
   .glass-card-hover:hover {
-    transform: translateY(-4px) scale(1.008);
-    box-shadow: 0 20px 40px -15px rgba(255, 59, 48, 0.22), 0 0 35px 2px rgba(128, 38, 242, 0.16);
+    transform: translateY(-4px) scale(1.006);
+    box-shadow: 0 26px 50px -26px rgba(37, 99, 235, 0.32), 0 0 40px -6px rgba(6, 182, 212, 0.2);
   }
 
   /* ---- Buttons ---- */
   .btn-gradient {
-    @apply inline-flex items-center justify-center gap-space-xs rounded-full font-label-lg text-label-lg text-white 
-      bg-gradient-to-r from-volt-red via-volt-pink to-volt-violet 
-      shadow-[0_0_28px_rgba(255,13,123,0.45)] hover:shadow-[0_0_40px_rgba(0,224,242,0.5)] hover:brightness-110 
+    @apply inline-flex items-center justify-center gap-space-xs rounded-full font-label-lg text-label-lg text-white
+      bg-gradient-to-r from-volt-red via-volt-pink to-volt-violet
+      shadow-[0_10px_28px_-10px_rgba(37,99,235,0.6)] hover:shadow-[0_14px_34px_-10px_rgba(6,182,212,0.6)] hover:brightness-105
       active:scale-95 transition-all duration-300 disabled:opacity-50 disabled:pointer-events-none;
   }
   .btn-glass {
-    @apply inline-flex items-center justify-center gap-space-xs rounded-full font-label-lg text-label-lg text-white
-      backdrop-blur-2xl bg-white/[0.05] border border-white/[0.14] hover:bg-white/[0.1] hover:border-white/30
+    @apply inline-flex items-center justify-center gap-space-xs rounded-full font-label-lg text-label-lg text-slate-900
+      backdrop-blur-2xl bg-white/80 border border-slate-900/[0.1] hover:bg-white hover:border-[#2563EB]/40
+      shadow-[0_10px_28px_-18px_rgba(15,23,42,0.45)]
       active:scale-95 transition-all duration-300 disabled:opacity-50 disabled:pointer-events-none;
   }
   .btn-outline {
-    @apply inline-flex items-center justify-center gap-space-xs rounded-full font-label-lg text-label-lg text-white/80
-      bg-white/[0.06] border border-white/15 hover:bg-white/[0.12] hover:text-white
+    @apply inline-flex items-center justify-center gap-space-xs rounded-full font-label-lg text-label-lg text-slate-700
+      bg-white/70 border border-slate-900/10 hover:bg-white hover:text-slate-900 hover:border-[#2563EB]/40
+      shadow-[0_8px_22px_-18px_rgba(15,23,42,0.4)]
       active:scale-95 transition-all disabled:opacity-50 disabled:pointer-events-none;
   }
 
   /* ---- Technical labels / chips ---- */
   .pill-tech {
     @apply font-label-technical text-label-technical uppercase tracking-widest inline-flex items-center gap-space-xs
-      px-3 py-1 rounded-full bg-white/[0.06] border border-white/10 backdrop-blur-md;
+      px-3 py-1 rounded-full bg-white/80 border border-slate-900/10 backdrop-blur-md text-slate-600;
   }
   .chip {
-    @apply font-label-technical text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full bg-white/[0.06]
-      border border-white/10 text-white/75;
+    @apply font-label-technical text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full bg-white/80
+      border border-slate-900/10 text-slate-600;
   }
   .text-gradient-fire {
-    background: linear-gradient(90deg, #ff3b30, #ff0d7b, #8026f2, #00e0f2);
+    background: linear-gradient(90deg, #2563eb, #0ea5e9, #7c3aed, #06b6d4);
     background-size: 250% 250%;
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
   }
   .text-gradient-warm {
-    background: linear-gradient(90deg, #ff3b30, #ff0d7b);
+    background: linear-gradient(90deg, #2563eb, #0ea5e9);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -175,17 +193,17 @@
 
   /* ---- Form controls ---- */
   .input-glass {
-    @apply w-full bg-white/[0.04] border border-white/[0.12] rounded-2xl px-4 py-3 text-body-md text-on-surface
-      placeholder:text-secondary/60 backdrop-blur-md transition-all
-      focus:outline-none focus:ring-2 focus:ring-[#FF3B30] focus:border-transparent;
+    @apply w-full bg-white/80 border border-slate-900/10 rounded-2xl px-4 py-3 text-body-md text-slate-900
+      placeholder:text-slate-400 backdrop-blur-md transition-all
+      focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent;
   }
   .label-tech {
-    @apply font-label-technical text-label-technical uppercase tracking-widest text-white/50 block mb-space-xs;
+    @apply font-label-technical text-label-technical uppercase tracking-widest text-slate-500 block mb-space-xs;
   }
 
   /* ---- Decorative ---- */
   .noise-grid {
-    background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-image: radial-gradient(rgba(15, 23, 42, 0.06) 1px, transparent 1px);
     background-size: 24px 24px;
   }
   .hide-scrollbar::-webkit-scrollbar {
@@ -201,7 +219,7 @@
     animation: marquee 24s linear infinite;
   }
   .skeleton-shimmer {
-    background: linear-gradient(90deg, #131315 25%, #201f22 50%, #131315 75%);
+    background: linear-gradient(90deg, #eef3fa 25%, #ffffff 50%, #eef3fa 75%);
     background-size: 200% 100%;
     animation: shimmer 2s infinite;
   }
@@ -213,9 +231,9 @@
     z-index: 1;
     background: radial-gradient(
       750px circle at var(--mouse-x, 50%) var(--mouse-y, 40%),
-      rgba(255, 59, 48, 0.08),
-      rgba(128, 38, 242, 0.045),
-      rgba(0, 224, 242, 0.02) 40%,
+      rgba(37, 99, 235, 0.05),
+      rgba(124, 58, 237, 0.03),
+      rgba(6, 182, 212, 0.02) 40%,
       transparent 70%
     );
   }
@@ -244,7 +262,7 @@
     transition: opacity 0.35s ease;
     background: radial-gradient(
       420px circle at var(--card-x, 50%) var(--card-y, 50%),
-      rgba(255, 255, 255, 0.07),
+      rgba(37, 99, 235, 0.06),
       transparent 60%
     );
   }
@@ -266,6 +284,23 @@
     background: inherit;
     animation: ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
   }
+
+  /* ---- Design studio ---- */
+  .studio-shell {
+    background:
+      radial-gradient(1100px circle at 18% 0%, rgba(37, 99, 235, 0.08), transparent 55%),
+      radial-gradient(900px circle at 85% 100%, rgba(6, 182, 212, 0.08), transparent 55%),
+      #eef3fa;
+  }
+  .studio-canvas-grid {
+    background-image:
+      linear-gradient(rgba(15, 23, 42, 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(15, 23, 42, 0.045) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+  .studio-pop {
+    animation: studio-pop 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
 }
 
 @layer utilities {
@@ -275,6 +310,10 @@
   }
   @keyframes shimmer {
     100% { transform: translateX(100%); }
+  }
+  @keyframes studio-pop {
+    0% { opacity: 0; transform: translateY(8px) scale(0.985); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
   }
   .animate-marquee {
     display: flex;

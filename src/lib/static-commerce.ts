@@ -14,6 +14,7 @@ import {
 } from "@/lib/static-catalog";
 import { computePricing, round2 } from "@/lib/pricing";
 import { designPrintArea } from "@/lib/print-area";
+import { blankUnitPrice } from "@/lib/price-list";
 import type { DesignDocument, PrintSideKey } from "@/lib/editor-types";
 
 export interface CommerceSettings {
@@ -94,7 +95,7 @@ export async function findCoupon(code: string | null | undefined) {
  * prices with exactly the same math (tiers, GST, free-shipping) as production.
  */
 export async function priceItem(input: {
-  product?: { basePrice: number | string | { toNumber(): number }; gstRate: number | string | { toNumber(): number }; priceDelta?: number | string | { toNumber(): number } };
+  product?: { basePrice: number | string | { toNumber(): number }; gstRate: number | string | { toNumber(): number }; slug?: string; priceDelta?: number | string | { toNumber(): number } };
   placement?: { baseCost: number | string | { toNumber(): number }; surcharge: number | string | { toNumber(): number }; widthIn?: number; heightIn?: number };
   variant?: { priceDelta: number | string | { toNumber(): number } };
   /** Design attached to the line — drives per-square-inch pricing. */
@@ -128,6 +129,9 @@ export async function priceItem(input: {
   return computePricing(
     {
       basePrice: round2(Number(input.product?.basePrice ?? input.basePrice ?? 0)),
+      blankPriceForQty: input.product?.slug
+        ? blankUnitPrice(input.product.slug, input.quantity, Number(input.product.basePrice ?? 0))
+        : null,
       priceDelta: round2(Number(input.variant?.priceDelta ?? input.priceDelta ?? 0)),
       placementBaseCost: round2(Number(input.placement?.baseCost ?? input.placementBaseCost ?? 0)),
       placementSurcharge: round2(Number(input.placement?.surcharge ?? input.placementSurcharge ?? 0)),

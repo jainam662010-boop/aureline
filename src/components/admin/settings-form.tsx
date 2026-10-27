@@ -60,11 +60,11 @@ export function SettingsForm({ settings }: { settings: SiteSettings }) {
           onChange={(e) => setForm((f) => ({ ...f, [key]: e.target.value }))}
           className="pr-10"
         />
-        <span className="absolute right-4 top-1/2 -translate-y-1/2 font-label-technical text-[9px] uppercase tracking-widest text-white/40 pointer-events-none">
+        <span className="absolute right-4 top-1/2 -translate-y-1/2 font-label-technical text-[9px] uppercase tracking-widest text-slate-500 pointer-events-none">
           {suffix}
         </span>
       </div>
-      <p className="font-body-sm text-body-sm text-white/45">{hint}</p>
+      <p className="font-body-sm text-body-sm text-slate-500">{hint}</p>
     </div>
   );
 
@@ -76,8 +76,8 @@ export function SettingsForm({ settings }: { settings: SiteSettings }) {
         {field("freeShippingThreshold", "Free shipping threshold", "Orders at or above this subtotal ship free.", "₹")}
       </div>
 
-      <div className="mt-space-md pt-space-md border-t border-white/[0.06]">
-        <p className="font-label-technical text-[9px] uppercase tracking-widest text-white/45 mb-space-sm">
+      <div className="mt-space-md pt-space-md border-t border-slate-900/[0.06]">
+        <p className="font-label-technical text-[9px] uppercase tracking-widest text-slate-500 mb-space-sm">
           Per-square-inch print pricing
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-space-md">
@@ -90,7 +90,7 @@ export function SettingsForm({ settings }: { settings: SiteSettings }) {
           )}
           {field("printMinimum", "Minimum print charge", "Floor for a single print, however small the artwork.", "₹")}
         </div>
-        <p className="font-body-sm text-body-sm text-white/45 mt-space-sm">
+        <p className="font-body-sm text-body-sm text-slate-500 mt-space-sm">
           Studio lines are priced on the actual artwork area, clipped to the placement. Catalogue quick-adds with no
           design keep the placement&apos;s flat fee.
         </p>

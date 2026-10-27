@@ -72,12 +72,12 @@ export function RegisterForm() {
   if (done) {
     return (
       <div className="glass-panel p-space-lg text-center flex flex-col items-center gap-space-sm">
-        <span className="w-14 h-14 rounded-full bg-gradient-to-br from-[#22c55e]/30 to-[#00E0F2]/30 border border-[#22c55e]/50 flex items-center justify-center">
-          <CheckCircle2 className="size-7 text-[#7ef0a8]" />
+        <span className="w-14 h-14 rounded-full bg-gradient-to-br from-[#22c55e]/30 to-[#0891B2]/30 border border-[#22c55e]/50 flex items-center justify-center">
+          <CheckCircle2 className="size-7 text-[#047857]" />
         </span>
-        <h1 className="font-headline-lg text-headline-lg font-bold text-white">Account created</h1>
-        <p className="font-body-md text-body-md text-white/60">
-          We sent a welcome note to <span className="text-white">{done}</span>. Sign in to start designing.
+        <h1 className="font-headline-lg text-headline-lg font-bold text-slate-900">Account created</h1>
+        <p className="font-body-md text-body-md text-slate-600">
+          We sent a welcome note to <span className="text-slate-900">{done}</span>. Sign in to start designing.
         </p>
         <Button asChild className="mt-space-xs h-12 px-space-lg">
           <Link href="/login">
@@ -90,11 +90,11 @@ export function RegisterForm() {
 
   return (
     <div className="glass-panel p-space-lg">
-      <span className="font-label-technical text-label-technical uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-[#FF3B30] to-[#FF0D7B] block mb-space-xs font-black">
+      <span className="font-label-technical text-label-technical uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-[#2563EB] to-[#0EA5E9] block mb-space-xs font-black">
         Create account
       </span>
-      <h1 className="font-headline-lg text-headline-lg font-bold text-white">Design without limits</h1>
-      <p className="font-body-sm text-body-sm text-white/55 mt-1 mb-space-md">
+      <h1 className="font-headline-lg text-headline-lg font-bold text-slate-900">Design without limits</h1>
+      <p className="font-body-sm text-body-sm text-slate-600 mt-1 mb-space-md">
         Free forever. Save unlimited designs, track production and reorder instantly.
       </p>
 
@@ -102,19 +102,19 @@ export function RegisterForm() {
         <div className="flex flex-col gap-space-xs">
           <Label htmlFor="name">Full name</Label>
           <Input id="name" placeholder="Priya Sharma" autoComplete="name" {...register("name")} />
-          {errors.name ? <span className="font-body-sm text-body-sm text-[#ff9d95]">{errors.name.message}</span> : null}
+          {errors.name ? <span className="font-body-sm text-body-sm text-[#BE123C]">{errors.name.message}</span> : null}
         </div>
 
         <div className="flex flex-col gap-space-xs">
           <Label htmlFor="email">Email</Label>
           <Input id="email" type="email" placeholder="you@example.com" autoComplete="email" {...register("email")} />
-          {errors.email ? <span className="font-body-sm text-body-sm text-[#ff9d95]">{errors.email.message}</span> : null}
+          {errors.email ? <span className="font-body-sm text-body-sm text-[#BE123C]">{errors.email.message}</span> : null}
         </div>
 
         <div className="flex flex-col gap-space-xs">
           <Label htmlFor="phone">Mobile (optional, for WhatsApp updates)</Label>
           <Input id="phone" inputMode="numeric" placeholder="9876543210" autoComplete="tel" {...register("phone")} />
-          {errors.phone ? <span className="font-body-sm text-body-sm text-[#ff9d95]">{errors.phone.message}</span> : null}
+          {errors.phone ? <span className="font-body-sm text-body-sm text-[#BE123C]">{errors.phone.message}</span> : null}
         </div>
 
         <div className="flex flex-col gap-space-xs">
@@ -132,13 +132,13 @@ export function RegisterForm() {
               type="button"
               onClick={() => setShowPassword((v) => !v)}
               aria-label={showPassword ? "Hide password" : "Show password"}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/45 hover:text-white transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-900 transition-colors"
             >
               {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
             </button>
           </div>
           {errors.password ? (
-            <span className="font-body-sm text-body-sm text-[#ff9d95]">{errors.password.message}</span>
+            <span className="font-body-sm text-body-sm text-[#BE123C]">{errors.password.message}</span>
           ) : null}
         </div>
 
@@ -148,9 +148,9 @@ export function RegisterForm() {
         </Button>
       </form>
 
-      <p className="font-body-sm text-body-sm text-white/55 text-center mt-space-md">
+      <p className="font-body-sm text-body-sm text-slate-600 text-center mt-space-md">
         Already registered?{" "}
-        <Link href={`/login?callbackUrl=${encodeURIComponent(callbackUrl)}`} className="text-[#00E0F2] hover:underline">
+        <Link href={`/login?callbackUrl=${encodeURIComponent(callbackUrl)}`} className="text-[#0891B2] hover:underline">
           Sign in
         </Link>
       </p>

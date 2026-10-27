@@ -58,22 +58,22 @@ export function OrdersList({ orders }: { orders: SerializedOrder[] }) {
               <div className="flex items-center gap-space-sm flex-wrap">
                 <Link
                   href={`/orders/${order.id}`}
-                  className="font-headline-md text-headline-md font-bold text-white hover:text-primary transition-colors"
+                  className="font-headline-md text-headline-md font-bold text-slate-900 hover:text-primary transition-colors"
                 >
                   {order.orderNumber}
                 </Link>
                 <StatusBadge status={order.status} />
               </div>
-              <p className="font-body-sm text-body-sm text-white/50 mt-1">
+              <p className="font-body-sm text-body-sm text-slate-500 mt-1">
                 Placed {formatDate(order.createdAt)} · {order.items.length} item(s) ·{" "}
                 {order.shippingMethod.toLowerCase()} shipping
               </p>
             </div>
             <div className="text-right">
-              <span className="font-headline-md text-headline-md font-bold text-white tabular-nums">
+              <span className="font-headline-md text-headline-md font-bold text-slate-900 tabular-nums">
                 {formatINR(order.total, true)}
               </span>
-              <p className="font-label-technical text-[9px] uppercase tracking-widest text-white/40">
+              <p className="font-label-technical text-[9px] uppercase tracking-widest text-slate-500">
                 {order.paymentStatus ?? "unpaid"}
               </p>
             </div>
@@ -84,7 +84,7 @@ export function OrdersList({ orders }: { orders: SerializedOrder[] }) {
               {order.items.slice(0, 4).map((item) => (
                 <span
                   key={item.id}
-                  className="w-12 h-14 rounded-xl bg-white/[0.04] border border-white/10 flex items-center justify-center overflow-hidden flex-shrink-0"
+                  className="w-12 h-14 rounded-xl bg-slate-900/[0.04] border border-slate-900/[0.1] flex items-center justify-center overflow-hidden flex-shrink-0"
                   title={`${item.productName} (${item.variantSize})`}
                 >
                   <GarmentMockup
@@ -102,7 +102,7 @@ export function OrdersList({ orders }: { orders: SerializedOrder[] }) {
                 </span>
               ))}
               {order.items.length > 4 ? (
-                <span className="w-12 h-14 rounded-xl bg-white/[0.04] border border-white/10 flex items-center justify-center font-label-technical text-[10px] text-white/60 flex-shrink-0">
+                <span className="w-12 h-14 rounded-xl bg-slate-900/[0.04] border border-slate-900/[0.1] flex items-center justify-center font-label-technical text-[10px] text-slate-600 flex-shrink-0">
                   +{order.items.length - 4}
                 </span>
               ) : null}
@@ -127,7 +127,7 @@ export function OrdersList({ orders }: { orders: SerializedOrder[] }) {
             </p>
           ) : null}
           {STATUS_META[order.status] && ["ARTWORK_REVIEW", "IN_PRODUCTION"].includes(order.status) ? (
-            <p className="mt-space-sm font-body-sm text-body-sm text-white/50">
+            <p className="mt-space-sm font-body-sm text-body-sm text-slate-500">
               {STATUS_META[order.status]?.description}
             </p>
           ) : null}

@@ -43,7 +43,7 @@ export default async function AdminProductsPage() {
     <div className="flex flex-col gap-space-md">
       <header>
         <span className="label-tech">{products.length} blanks</span>
-        <h1 className="font-headline-xl text-headline-xl text-white font-bold tracking-tight">Products</h1>
+        <h1 className="font-headline-xl text-headline-xl text-slate-900 font-bold tracking-tight">Products</h1>
       </header>
 
       <ProductsTable products={serialized} />

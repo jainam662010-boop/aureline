@@ -16,7 +16,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   // the session role so a stale token can never render staff-only data.
   if (process.env.STATIC_EXPORT === "1") {
     return (
-      <div className="min-h-screen bg-[#08080a] w-full">
+      <div className="min-h-screen bg-[#F4F7FB] w-full">
         <main className="max-w-4xl mx-auto px-gutter lg:px-gutter-lg py-space-lg">
           <StaticNotice
             title="The admin console needs the live backend"
@@ -35,7 +35,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   }
 
   return (
-    <div className="min-h-screen bg-[#08080a] w-full">
+    <div className="min-h-screen bg-[#F4F7FB] w-full">
       <div className="max-w-[1600px] mx-auto flex flex-col lg:flex-row">
         <AdminNav user={{ name: admin.name ?? "Staff", role: admin.role, email: admin.email ?? "" }} />
         <main className="flex-1 min-w-0 px-gutter lg:px-gutter-lg py-space-lg">{children}</main>

@@ -123,7 +123,7 @@ export function createClipartLayer(canvas: { width: number; height: number }, cl
     id: newLayerId(),
     type: "CLIPART",
     clipartKey,
-    fill: "#FF3B30",
+    fill: "#2563EB",
     x: canvas.width / 2,
     y: canvas.height / 2,
     width: size,

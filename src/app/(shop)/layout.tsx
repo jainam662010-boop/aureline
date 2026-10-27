@@ -7,7 +7,7 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
     <>
       <MouseSpotlight />
       <SiteHeader />
-      <main id="main" className="w-full pt-16 sm:pt-20 bg-[#08080a] min-h-screen relative">
+      <main id="main" className="w-full pt-16 sm:pt-20 bg-[#F4F7FB] min-h-screen relative">
         {children}
       </main>
       <SiteFooter />

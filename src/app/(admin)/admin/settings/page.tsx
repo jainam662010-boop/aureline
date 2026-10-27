@@ -24,8 +24,8 @@ export default async function AdminSettingsPage() {
     <div className="flex flex-col gap-space-lg">
       <header>
         <span className="label-tech">Pricing engine inputs</span>
-        <h1 className="font-headline-xl text-headline-xl text-white font-bold tracking-tight">Settings</h1>
-        <p className="font-body-md text-body-md text-white/55 mt-space-xs max-w-2xl">
+        <h1 className="font-headline-xl text-headline-xl text-slate-900 font-bold tracking-tight">Settings</h1>
+        <p className="font-body-md text-body-md text-slate-600 mt-space-xs max-w-2xl">
           These values feed the pricing engine directly: base price + print (actual artwork area × rate, floored at the
           minimum) + quantity tier − coupon + shipping + GST. Edits take effect on the next request.
         </p>
@@ -35,13 +35,13 @@ export default async function AdminSettingsPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-space-md">
         <section className="glass-panel p-space-md">
-          <h2 className="font-headline-md text-headline-md font-bold text-white mb-space-sm">Print placements</h2>
+          <h2 className="font-headline-md text-headline-md font-bold text-slate-900 mb-space-sm">Print placements</h2>
           <div className="overflow-x-auto">
             <table className="w-full text-left">
               <thead>
-                <tr className="border-b border-white/[0.08]">
+                <tr className="border-b border-slate-900/[0.08]">
                   {["Key", "Label", "Side", "Size", "Base", "₹/in²"].map((head) => (
-                    <th key={head} className="py-2 pr-space-sm font-label-technical text-[9px] uppercase tracking-widest text-white/40">
+                    <th key={head} className="py-2 pr-space-sm font-label-technical text-[9px] uppercase tracking-widest text-slate-500">
                       {head}
                     </th>
                   ))}
@@ -49,19 +49,19 @@ export default async function AdminSettingsPage() {
               </thead>
               <tbody>
                 {placements.map((placement) => (
-                  <tr key={placement.id} className="border-b border-white/[0.05]">
-                    <td className="py-2 pr-space-sm font-body-sm text-body-sm text-white/70">{placement.key}</td>
-                    <td className="py-2 pr-space-sm font-body-sm text-body-sm text-white/70">{placement.label}</td>
-                    <td className="py-2 pr-space-sm font-label-technical text-[9px] uppercase tracking-widest text-white/45">
+                  <tr key={placement.id} className="border-b border-slate-900/[0.05]">
+                    <td className="py-2 pr-space-sm font-body-sm text-body-sm text-slate-700">{placement.key}</td>
+                    <td className="py-2 pr-space-sm font-body-sm text-body-sm text-slate-700">{placement.label}</td>
+                    <td className="py-2 pr-space-sm font-label-technical text-[9px] uppercase tracking-widest text-slate-500">
                       {placement.side}
                     </td>
-                    <td className="py-2 pr-space-sm font-body-sm text-body-sm text-white/55 tabular-nums">
+                    <td className="py-2 pr-space-sm font-body-sm text-body-sm text-slate-600 tabular-nums">
                       {Number(placement.widthIn)}″ × {Number(placement.heightIn)}″
                     </td>
-                    <td className="py-2 pr-space-sm font-body-sm text-body-sm text-[#7ef0a8] tabular-nums">
+                    <td className="py-2 pr-space-sm font-body-sm text-body-sm text-[#047857] tabular-nums">
                       ₹{Number(placement.baseCost)}
                     </td>
-                    <td className="py-2 pr-space-sm font-body-sm text-body-sm text-white/45 tabular-nums">
+                    <td className="py-2 pr-space-sm font-body-sm text-body-sm text-slate-500 tabular-nums">
                       ₹
                       {placementRatePerSqIn(
                         Number(placement.baseCost),
@@ -74,7 +74,7 @@ export default async function AdminSettingsPage() {
                 ))}
                 {placements.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="py-5 text-center font-body-sm text-body-sm text-white/40">
+                    <td colSpan={6} className="py-5 text-center font-body-sm text-body-sm text-slate-500">
                       No placements — run the seed script.
                     </td>
                   </tr>
@@ -85,13 +85,13 @@ export default async function AdminSettingsPage() {
         </section>
 
         <section className="glass-panel p-space-md">
-          <h2 className="font-headline-md text-headline-md font-bold text-white mb-space-sm">Quantity tiers</h2>
+          <h2 className="font-headline-md text-headline-md font-bold text-slate-900 mb-space-sm">Quantity tiers</h2>
           <div className="overflow-x-auto">
             <table className="w-full text-left">
               <thead>
-                <tr className="border-b border-white/[0.08]">
+                <tr className="border-b border-slate-900/[0.08]">
                   {["Range", "Discount", "Applied to"].map((head) => (
-                    <th key={head} className="py-2 pr-space-sm font-label-technical text-[9px] uppercase tracking-widest text-white/40">
+                    <th key={head} className="py-2 pr-space-sm font-label-technical text-[9px] uppercase tracking-widest text-slate-500">
                       {head}
                     </th>
                   ))}
@@ -99,22 +99,22 @@ export default async function AdminSettingsPage() {
               </thead>
               <tbody>
                 {tiers.map((tier) => (
-                  <tr key={tier.id} className="border-b border-white/[0.05]">
-                    <td className="py-2 pr-space-sm font-body-sm text-body-sm text-white/70 tabular-nums">
+                  <tr key={tier.id} className="border-b border-slate-900/[0.05]">
+                    <td className="py-2 pr-space-sm font-body-sm text-body-sm text-slate-700 tabular-nums">
                       {tier.minQty}
                       {tier.maxQty !== null ? ` – ${tier.maxQty}` : "+"}
                     </td>
-                    <td className="py-2 pr-space-sm font-body-sm text-body-sm text-[#7ef0a8] tabular-nums">
+                    <td className="py-2 pr-space-sm font-body-sm text-body-sm text-[#047857] tabular-nums">
                       −{Number(tier.percentOff)}%
                     </td>
-                    <td className="py-2 pr-space-sm font-body-sm text-body-sm text-white/55">
+                    <td className="py-2 pr-space-sm font-body-sm text-body-sm text-slate-600">
                       Print charges
                     </td>
                   </tr>
                 ))}
                 {tiers.length === 0 ? (
                   <tr>
-                    <td colSpan={3} className="py-5 text-center font-body-sm text-body-sm text-white/40">
+                    <td colSpan={3} className="py-5 text-center font-body-sm text-body-sm text-slate-500">
                       No tiers — run the seed script.
                     </td>
                   </tr>

@@ -173,7 +173,7 @@ export function OrderManagePanel({
       {/* Status */}
       <section className="glass-panel p-space-md">
         <div className="flex items-center justify-between mb-space-sm">
-          <h2 className="font-headline-md text-headline-md font-bold text-white">Status</h2>
+          <h2 className="font-headline-md text-headline-md font-bold text-slate-900">Status</h2>
           <StatusBadge status={currentStatus} />
         </div>
 
@@ -181,10 +181,10 @@ export function OrderManagePanel({
         <select
           id="status-select"
           defaultValue={currentStatus}
-          className="w-full h-11 px-space-sm rounded-2xl bg-white/[0.05] border border-white/[0.14] text-body-md text-white focus:outline-none focus:ring-2 focus:ring-[#FF3B30] mt-1"
+          className="w-full h-11 px-space-sm rounded-2xl bg-slate-900/[0.05] border border-slate-900/[0.1] text-body-md text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#2563EB] mt-1"
         >
           {NEXT_STATUSES.map((value) => (
-            <option key={value} value={value} className="bg-[#101014] text-white">
+            <option key={value} value={value} className="bg-[#FFFFFF] text-slate-900">
               {value.replace(/_/g, " ")}
             </option>
           ))}
@@ -215,7 +215,7 @@ export function OrderManagePanel({
         <Button
           variant="outline"
           size="sm"
-          className="w-full h-10 mt-space-xs border-[#22c55e]/40 text-[#7ef0a8] hover:bg-[#22c55e]/12"
+          className="w-full h-10 mt-space-xs border-[#22c55e]/40 text-[#047857] hover:bg-[#22c55e]/12"
           onClick={openWhatsapp}
         >
           <MessageCircle className="size-4" />
@@ -225,8 +225,8 @@ export function OrderManagePanel({
 
       {/* Tracking */}
       <section className="glass-panel p-space-md">
-        <h2 className="font-headline-md text-headline-md font-bold text-white mb-space-sm flex items-center gap-space-xs">
-          <Truck className="size-4 text-[#00E0F2]" /> Shipping
+        <h2 className="font-headline-md text-headline-md font-bold text-slate-900 mb-space-sm flex items-center gap-space-xs">
+          <Truck className="size-4 text-[#0891B2]" /> Shipping
         </h2>
         <form onSubmit={saveTracking} className="flex flex-col gap-space-sm">
           <div>
@@ -268,8 +268,8 @@ export function OrderManagePanel({
 
       {/* Notes */}
       <section className="glass-panel p-space-md">
-        <h2 className="font-headline-md text-headline-md font-bold text-white mb-space-sm flex items-center gap-space-xs">
-          <StickyNote className="size-4 text-[#FF6BC0]" /> Notes
+        <h2 className="font-headline-md text-headline-md font-bold text-slate-900 mb-space-sm flex items-center gap-space-xs">
+          <StickyNote className="size-4 text-[#0284C7]" /> Notes
         </h2>
 
         <form onSubmit={addNote} className="flex flex-col gap-space-xs mb-space-sm">
@@ -284,9 +284,9 @@ export function OrderManagePanel({
               type="checkbox"
               checked={noteInternal}
               onChange={(e) => setNoteInternal(e.target.checked)}
-              className="accent-[#FF3B30] w-4 h-4"
+              className="accent-[#2563EB] w-4 h-4"
             />
-            <span className="font-body-sm text-body-sm text-white/60">Internal only (hidden from the customer)</span>
+            <span className="font-body-sm text-body-sm text-slate-600">Internal only (hidden from the customer)</span>
           </label>
           <Button type="submit" variant="glass" size="sm" className="h-9" disabled={busy === "note"}>
             {busy === "note" ? <Loader2 className="size-4 animate-spin" /> : null}
@@ -300,22 +300,22 @@ export function OrderManagePanel({
               key={note.id}
               className={cn(
                 "rounded-2xl p-space-sm border",
-                note.isInternal ? "border-white/10 bg-white/[0.03]" : "border-[#00E0F2]/30 bg-[#00E0F2]/[0.07]",
+                note.isInternal ? "border-slate-900/[0.1] bg-slate-900/[0.03]" : "border-[#0891B2]/30 bg-[#0891B2]/[0.07]",
               )}
             >
               <div className="flex items-center justify-between gap-space-xs mb-1">
-                <span className="font-label-technical text-[9px] uppercase tracking-widest text-white/45">
+                <span className="font-label-technical text-[9px] uppercase tracking-widest text-slate-500">
                   {note.author} {note.isInternal ? "· internal" : "· customer"}
                 </span>
-                <span className="font-label-technical text-[9px] text-white/30">
+                <span className="font-label-technical text-[9px] text-slate-400">
                   {new Date(note.createdAt).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" })}
                 </span>
               </div>
-              <p className="font-body-sm text-body-sm text-white/75 leading-relaxed">{note.body}</p>
+              <p className="font-body-sm text-body-sm text-slate-700 leading-relaxed">{note.body}</p>
             </li>
           ))}
           {noteList.length === 0 ? (
-            <li className="font-body-sm text-body-sm text-white/40">No notes yet.</li>
+            <li className="font-body-sm text-body-sm text-slate-500">No notes yet.</li>
           ) : null}
         </ul>
       </section>

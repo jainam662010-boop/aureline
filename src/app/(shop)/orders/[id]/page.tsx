@@ -56,20 +56,20 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
   return (
     <div className="max-w-6xl mx-auto px-gutter lg:px-gutter-lg py-space-xl">
       <nav aria-label="Breadcrumb" className="mb-space-md">
-        <ol className="flex items-center gap-space-xs font-label-technical text-label-technical uppercase tracking-widest text-white/40">
-          <li><Link href="/orders" className="hover:text-white transition-colors">Orders</Link></li>
+        <ol className="flex items-center gap-space-xs font-label-technical text-label-technical uppercase tracking-widest text-slate-500">
+          <li><Link href="/orders" className="hover:text-slate-900 transition-colors">Orders</Link></li>
           <li aria-hidden>/</li>
-          <li className="text-white/80">{order.orderNumber}</li>
+          <li className="text-slate-800">{order.orderNumber}</li>
         </ol>
       </nav>
 
       <div className="flex items-start justify-between gap-space-md flex-wrap mb-space-lg">
         <div>
           <div className="flex items-center gap-space-sm flex-wrap">
-            <h1 className="font-headline-xl text-headline-xl text-white font-bold tracking-tight">{order.orderNumber}</h1>
+            <h1 className="font-headline-xl text-headline-xl text-slate-900 font-bold tracking-tight">{order.orderNumber}</h1>
             <StatusBadge status={order.status} />
           </div>
-          <p className="font-body-md text-body-md text-white/60 mt-space-xs">
+          <p className="font-body-md text-body-md text-slate-600 mt-space-xs">
             Placed {formatDateTime(order.createdAt)} · {order.items.length} item(s) ·{" "}
             {order.paymentStatus === "CAPTURED"
               ? "Paid via Razorpay"
@@ -83,7 +83,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
           <ReorderButton orderId={order.id} />
           <a
             href={`mailto:support@aureline.in?subject=${encodeURIComponent(`Order ${order.orderNumber}`)}`}
-            className="inline-flex items-center gap-2 rounded-full font-label-lg text-label-lg text-white/85 bg-white/[0.06] border border-white/15 px-4 h-11 hover:bg-white/[0.12] transition-all"
+            className="inline-flex items-center gap-2 rounded-full font-label-lg text-label-lg text-slate-800 bg-slate-900/[0.05] border border-slate-900/[0.1] px-4 h-11 hover:bg-slate-900/[0.09] transition-all"
           >
             <MessageCircle className="size-4" /> Support
           </a>
@@ -106,15 +106,15 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
               <CardHeader>
                 <CardTitle>Shipping address</CardTitle>
               </CardHeader>
-              <CardContent className="font-body-md text-body-md text-white/70 leading-relaxed">
-                <p className="text-white font-label-lg text-label-lg">{order.shippingFullName}</p>
+              <CardContent className="font-body-md text-body-md text-slate-700 leading-relaxed">
+                <p className="text-slate-900 font-label-lg text-label-lg">{order.shippingFullName}</p>
                 <p>{order.shippingLine1}</p>
                 {order.shippingLine2 ? <p>{order.shippingLine2}</p> : null}
                 <p>
                   {order.shippingCity}, {order.shippingState} {order.shippingPincode}
                 </p>
-                <p className="mt-2 text-white/50">{order.phone}</p>
-                <p className="text-white/50">{order.email}</p>
+                <p className="mt-2 text-slate-500">{order.phone}</p>
+                <p className="text-slate-500">{order.email}</p>
               </CardContent>
             </Card>
 
@@ -130,9 +130,9 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
                   ) : null}
                   <Row label={`Shipping (${order.shippingMethod.toLowerCase()})`} value={order.shippingAmount > 0 ? formatINR(order.shippingAmount, true) : "Free"} />
                   <Row label="GST" value={formatINR(order.taxAmount, true)} />
-                  <div className="flex items-center justify-between pt-space-sm mt-space-xs border-t border-white/[0.08]">
-                    <dt className="font-label-lg text-label-lg text-white">Total</dt>
-                    <dd className="font-headline-md text-headline-md font-bold text-white tabular-nums">
+                  <div className="flex items-center justify-between pt-space-sm mt-space-xs border-t border-slate-900/[0.08]">
+                    <dt className="font-label-lg text-label-lg text-slate-900">Total</dt>
+                    <dd className="font-headline-md text-headline-md font-bold text-slate-900 tabular-nums">
                       {formatINR(order.total, true)}
                     </dd>
                   </div>
@@ -149,8 +149,8 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
               <CardContent className="flex flex-col gap-space-sm">
                 {notes.map((note) => (
                   <div key={note.id} className="glass-panel-sm p-space-sm">
-                    <p className="font-body-md text-body-md text-white/80">{note.body}</p>
-                    <p className="font-label-technical text-[9px] text-white/40 mt-1">{formatDateTime(note.createdAt)}</p>
+                    <p className="font-body-md text-body-md text-slate-800">{note.body}</p>
+                    <p className="font-label-technical text-[9px] text-slate-500 mt-1">{formatDateTime(note.createdAt)}</p>
                   </div>
                 ))}
               </CardContent>
@@ -163,8 +163,8 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
             <CardHeader>
               <CardTitle>Tracking timeline</CardTitle>
               {order.etaDate ? (
-                <p className="font-body-sm text-body-sm text-white/50">
-                  Estimated delivery: <span className="text-white">{formatDate(order.etaDate)}</span>
+                <p className="font-body-sm text-body-sm text-slate-500">
+                  Estimated delivery: <span className="text-slate-900">{formatDate(order.etaDate)}</span>
                 </p>
               ) : null}
             </CardHeader>
@@ -174,13 +174,13 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
               {order.trackingNumber ? (
                 <div className="mt-space-md glass-panel-sm p-space-sm">
                   <p className="label-tech mb-0">{order.courier ?? "Courier"}</p>
-                  <p className="font-label-lg text-label-lg text-white">{order.trackingNumber}</p>
+                  <p className="font-label-lg text-label-lg text-slate-900">{order.trackingNumber}</p>
                   {trackingHref ? (
                     <a
                       href={trackingHref}
                       target="_blank"
                       rel="noreferrer noopener"
-                      className="font-label-md text-label-md text-[#00E0F2] hover:underline"
+                      className="font-label-md text-label-md text-[#0891B2] hover:underline"
                     >
                       Track on courier site →
                     </a>
@@ -198,8 +198,8 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
 function Row({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
   return (
     <div className="flex items-center justify-between">
-      <dt className="text-white/60">{label}</dt>
-      <dd className={`tabular-nums ${accent ? "text-[#7ef0a8]" : "text-white/85"}`}>{value}</dd>
+      <dt className="text-slate-600">{label}</dt>
+      <dd className={`tabular-nums ${accent ? "text-[#047857]" : "text-slate-800"}`}>{value}</dd>
     </div>
   );
 }

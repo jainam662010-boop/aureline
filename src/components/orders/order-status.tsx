@@ -32,14 +32,14 @@ export const STATUS_META: Record<
 };
 
 const TONE_CLASS: Record<string, string> = {
-  brand: "text-[#FF6B62] border-[#FF3B30]/40 bg-[#FF3B30]/10",
-  pink: "text-[#FF6BC0] border-[#FF0D7B]/40 bg-[#FF0D7B]/10",
-  violet: "text-[#B08CFF] border-[#8026F2]/40 bg-[#8026F2]/10",
-  cyan: "text-[#66EFFA] border-[#00E0F2]/40 bg-[#00E0F2]/10",
-  success: "text-[#7ef0a8] border-[#22c55e]/40 bg-[#22c55e]/10",
-  warning: "text-[#FFC084] border-[#FF8C26]/40 bg-[#FF8C26]/10",
-  danger: "text-[#ff9d95] border-[#ff5545]/40 bg-[#93000a]/25",
-  muted: "text-white/60 border-white/15 bg-white/[0.05]",
+  brand: "text-[#2563EB] border-[#2563EB]/40 bg-[#2563EB]/10",
+  pink: "text-[#0284C7] border-[#0EA5E9]/40 bg-[#0EA5E9]/10",
+  violet: "text-[#6D28D9] border-[#7C3AED]/40 bg-[#7C3AED]/10",
+  cyan: "text-[#0E7490] border-[#0891B2]/40 bg-[#0891B2]/10",
+  success: "text-[#047857] border-[#22c55e]/40 bg-[#22c55e]/10",
+  warning: "text-[#B45309] border-[#D97706]/40 bg-[#D97706]/10",
+  danger: "text-[#BE123C] border-[#F43F5E]/40 bg-[#E11D48]/25",
+  muted: "text-slate-600 border-slate-900/[0.1] bg-slate-900/[0.05]",
 };
 
 export function StatusBadge({ status, className }: { status: string; className?: string }) {
@@ -71,11 +71,11 @@ export function StatusTimeline({
 
   if (terminal) {
     return (
-      <div className={cn("glass-panel-sm p-space-md flex items-center gap-space-sm", status === "CANCELLED" && "border-[#93000a]/50")}>
-        <XCircle className="size-5 text-[#ff9d95]" />
+      <div className={cn("glass-panel-sm p-space-md flex items-center gap-space-sm", status === "CANCELLED" && "border-[#E11D48]/50")}>
+        <XCircle className="size-5 text-[#BE123C]" />
         <div>
-          <p className="font-label-lg text-label-lg text-white">{STATUS_META[status]?.label ?? status}</p>
-          <p className="font-body-sm text-body-sm text-white/55">{STATUS_META[status]?.description}</p>
+          <p className="font-label-lg text-label-lg text-slate-900">{STATUS_META[status]?.label ?? status}</p>
+          <p className="font-body-sm text-body-sm text-slate-600">{STATUS_META[status]?.description}</p>
         </div>
       </div>
     );
@@ -97,7 +97,7 @@ export function StatusTimeline({
                 aria-hidden
                 className={cn(
                   "absolute left-[15px] top-8 bottom-0 w-px",
-                  done ? "bg-gradient-to-b from-[#FF3B30] to-[#FF0D7B]" : "bg-white/10",
+                  done ? "bg-gradient-to-b from-[#2563EB] to-[#0EA5E9]" : "bg-slate-900/[0.05]",
                 )}
               />
             ) : null}
@@ -105,21 +105,21 @@ export function StatusTimeline({
               className={cn(
                 "relative z-10 flex size-8 flex-shrink-0 items-center justify-center rounded-full border",
                 done
-                  ? "border-transparent bg-gradient-to-br from-[#FF3B30] to-[#FF0D7B] text-white"
+                  ? "border-transparent bg-gradient-to-br from-[#2563EB] to-[#0EA5E9] text-white"
                   : active
-                    ? "border-[#FF0D7B] bg-[#FF0D7B]/15 text-[#FF6BC0] animate-pulse"
-                    : "border-white/15 bg-white/[0.03] text-white/30",
+                    ? "border-[#0EA5E9] bg-[#0EA5E9]/15 text-[#0284C7] animate-pulse"
+                    : "border-slate-900/[0.1] bg-slate-900/[0.03] text-slate-400",
               )}
             >
               <Icon className="size-4" />
             </span>
             <div className="pt-1 min-w-0">
-              <p className={cn("font-label-lg text-label-lg", done || active ? "text-white" : "text-white/40")}>
+              <p className={cn("font-label-lg text-label-lg", done || active ? "text-slate-900" : "text-slate-500")}>
                 {STATUS_META[step]?.label ?? step}
-                {active ? <span className="ml-2 font-label-technical text-[9px] text-[#FF0D7B] uppercase">Current</span> : null}
+                {active ? <span className="ml-2 font-label-technical text-[9px] text-[#0EA5E9] uppercase">Current</span> : null}
               </p>
-              <p className="font-body-sm text-body-sm text-white/50">{STATUS_META[step]?.description}</p>
-              {stamp ? <p className="font-label-technical text-[9px] text-white/40 mt-1">{stamp}</p> : null}
+              <p className="font-body-sm text-body-sm text-slate-500">{STATUS_META[step]?.description}</p>
+              {stamp ? <p className="font-label-technical text-[9px] text-slate-500 mt-1">{stamp}</p> : null}
             </div>
           </li>
         );
@@ -130,7 +130,7 @@ export function StatusTimeline({
 
 export function ReorderHint() {
   return (
-    <span className="inline-flex items-center gap-1 font-body-sm text-body-sm text-white/50">
+    <span className="inline-flex items-center gap-1 font-body-sm text-body-sm text-slate-500">
       <RotateCcw className="size-3.5" /> Reorder adds the same designs back to your cart.
     </span>
   );

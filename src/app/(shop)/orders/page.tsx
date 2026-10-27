@@ -18,10 +18,10 @@ export default async function OrdersPage() {
     return (
       <div className="max-w-5xl mx-auto px-gutter lg:px-gutter-lg py-space-xl">
         <div className="mb-space-lg">
-          <span className="font-label-technical text-label-technical uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-[#FF3B30] to-[#FF0D7B] block mb-space-xs font-black">
+          <span className="font-label-technical text-label-technical uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-[#2563EB] to-[#0EA5E9] block mb-space-xs font-black">
             Production history
           </span>
-          <h1 className="font-headline-xl text-headline-xl text-white font-bold tracking-tight">Your orders</h1>
+          <h1 className="font-headline-xl text-headline-xl text-slate-900 font-bold tracking-tight">Your orders</h1>
         </div>
         <StaticNotice
           title="Order history needs the live backend"
@@ -39,11 +39,11 @@ export default async function OrdersPage() {
   return (
     <div className="max-w-5xl mx-auto px-gutter lg:px-gutter-lg py-space-xl">
       <div className="mb-space-lg">
-        <span className="font-label-technical text-label-technical uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-[#FF3B30] to-[#FF0D7B] block mb-space-xs font-black">
+        <span className="font-label-technical text-label-technical uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-[#2563EB] to-[#0EA5E9] block mb-space-xs font-black">
           Production history
         </span>
-        <h1 className="font-headline-xl text-headline-xl text-white font-bold tracking-tight">Your orders</h1>
-        <p className="font-body-md text-body-md text-white/60 mt-space-xs">
+        <h1 className="font-headline-xl text-headline-xl text-slate-900 font-bold tracking-tight">Your orders</h1>
+        <p className="font-body-md text-body-md text-slate-600 mt-space-xs">
           Track every order from payment through artwork review, production and delivery.
         </p>
       </div>

@@ -28,8 +28,8 @@ export function OrderItemsTable({ items }: { items: OrderItemShape[] }) {
   return (
     <ul className="flex flex-col gap-space-sm">
       {items.map((item) => (
-        <li key={item.id} className="flex items-center gap-space-sm pb-space-sm border-b border-white/[0.06] last:border-0 last:pb-0">
-          <span className="w-16 h-20 rounded-xl bg-white/[0.04] border border-white/10 flex items-center justify-center overflow-hidden flex-shrink-0">
+        <li key={item.id} className="flex items-center gap-space-sm pb-space-sm border-b border-slate-900/[0.06] last:border-0 last:pb-0">
+          <span className="w-16 h-20 rounded-xl bg-slate-900/[0.04] border border-slate-900/[0.1] flex items-center justify-center overflow-hidden flex-shrink-0">
             <GarmentMockup
               type={garmentTypeFromCategory(item.productName.toLowerCase())}
               color={item.colorHex}
@@ -44,15 +44,15 @@ export function OrderItemsTable({ items }: { items: OrderItemShape[] }) {
             />
           </span>
           <div className="flex-1 min-w-0">
-            <p className="font-label-lg text-label-lg text-white truncate">{item.productName}</p>
-            <p className="font-body-sm text-body-sm text-white/50">
+            <p className="font-label-lg text-label-lg text-slate-900 truncate">{item.productName}</p>
+            <p className="font-body-sm text-body-sm text-slate-500">
               {item.variantColor} · Size {item.variantSize} · {item.side.toLowerCase()} print · ×{item.quantity}
             </p>
-            <p className="font-label-technical text-[9px] uppercase tracking-widest text-[#00E0F2] mt-0.5">
+            <p className="font-label-technical text-[9px] uppercase tracking-widest text-[#0891B2] mt-0.5">
               Custom design · {formatINR(item.unitPrice)} each
             </p>
           </div>
-          <span className="font-label-lg text-label-lg text-white tabular-nums whitespace-nowrap">
+          <span className="font-label-lg text-label-lg text-slate-900 tabular-nums whitespace-nowrap">
             {formatINR(item.lineTotal)}
           </span>
         </li>
@@ -83,7 +83,7 @@ export function ReorderButton({ orderId }: { orderId: string }) {
       type="button"
       onClick={handle}
       disabled={busy}
-      className="inline-flex items-center gap-2 rounded-full font-label-lg text-label-lg text-white backdrop-blur-2xl bg-white/[0.05] border border-white/[0.14] px-4 h-11 hover:bg-white/[0.1] transition-all disabled:opacity-50"
+      className="inline-flex items-center gap-2 rounded-full font-label-lg text-label-lg text-slate-900 backdrop-blur-2xl bg-slate-900/[0.05] border border-slate-900/[0.1] px-4 h-11 hover:bg-slate-900/[0.08] transition-all disabled:opacity-50"
     >
       <RotateCcw className="size-4" /> {busy ? "Adding…" : "Reorder"}
     </button>
@@ -96,7 +96,7 @@ export function InvoiceButton({ order }: { order: { id: string; orderNumber: str
       href={`/api/invoice/${order.id}`}
       target="_blank"
       rel="noreferrer noopener"
-      className="inline-flex items-center gap-2 rounded-full font-label-lg text-label-lg text-white bg-white/[0.06] border border-white/15 px-4 h-11 hover:bg-white/[0.12] transition-all"
+      className="inline-flex items-center gap-2 rounded-full font-label-lg text-label-lg text-slate-900 bg-slate-900/[0.05] border border-slate-900/[0.1] px-4 h-11 hover:bg-slate-900/[0.09] transition-all"
     >
       <Download className="size-4" /> Invoice
     </Link>

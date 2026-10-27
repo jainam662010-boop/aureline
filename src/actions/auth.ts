@@ -57,7 +57,7 @@ export async function registerUser(input: z.infer<typeof registerSchema>): Promi
       subject: `Welcome to ${APP_NAME}`,
       html: emailShell(
         "Welcome to the atelier",
-        `<p style="color:#cfc9cd;">Hi ${parsed.data.name.trim().split(" ")[0]}, your account is ready. Start with a single-piece sample — no minimums, ever.</p>`,
+        `<p style="color:#475569;">Hi ${parsed.data.name.trim().split(" ")[0]}, your account is ready. Start with a single-piece sample — no minimums, ever.</p>`,
       ),
       text: `Welcome to ${APP_NAME}, ${parsed.data.name}.`,
     });

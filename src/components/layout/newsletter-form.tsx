@@ -48,13 +48,13 @@ export function NewsletterForm() {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         placeholder="you@example.com"
-        className="flex-1 h-11 px-space-sm rounded-full bg-white/[0.05] border border-white/[0.12] text-body-sm text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#FF3B30]"
+        className="flex-1 h-11 px-space-sm rounded-full bg-slate-900/[0.05] border border-slate-900/[0.1] text-body-sm text-slate-900 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
       />
       <button
         type="submit"
         disabled={busy}
         aria-label="Subscribe"
-        className="h-11 w-11 rounded-full bg-gradient-to-tr from-[#FF3B30] to-[#FF0D7B] flex items-center justify-center text-white hover:brightness-110 active:scale-95 transition-all disabled:opacity-50 flex-shrink-0"
+        className="h-11 w-11 rounded-full bg-gradient-to-tr from-[#2563EB] to-[#0EA5E9] flex items-center justify-center text-white hover:brightness-110 active:scale-95 transition-all disabled:opacity-50 flex-shrink-0"
       >
         {busy ? <Loader2 className="size-4 animate-spin" /> : <ArrowRight className="size-4" />}
       </button>

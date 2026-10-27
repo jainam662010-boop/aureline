@@ -21,14 +21,12 @@ import {
   PanelRight,
   X,
 } from "lucide-react";
-import { GarmentMockup } from "@/components/shared/garment-mockup";
+import { GarmentMockup, type GarmentType } from "@/components/shared/garment-mockup";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { LeftPanel, PropertiesPanel, type LeftTab } from "@/components/editor/editor-panels";
 import { useImages } from "@/components/editor/use-image";
 import {
-  PX_PER_INCH,
-  EXPORT_SCALE,
   canvasSize,
   clampLayer,
   cloneDoc,
@@ -42,6 +40,8 @@ import {
 } from "@/components/editor/editor-utils";
 import { createEmptyDesign, type DesignDocument, type DesignLayerState } from "@/lib/editor-types";
 import { designPrintArea, resolvePrintCost, type PrintPricing } from "@/lib/print-area";
+import { blankUnitPrice, hasBlankPriceLadder, PRINT_QTY_BREAKS, qtyBreakIndex } from "@/lib/price-list";
+import { placementsFor } from "@/lib/garment";
 import { EDITOR_FONT_FAMILIES, CLIPART } from "@/lib/constants";
 import { saveDesign } from "@/actions/design";
 import { addToCart } from "@/actions/cart";
@@ -69,6 +69,8 @@ export function DesignStudio({ product, initialDoc, initialDesignId, isLoggedIn,
   const stageRef = React.useRef<Konva.Stage>(null);
   const transformerRef = React.useRef<Konva.Transformer>(null);
   const guideRectRef = React.useRef<Konva.Rect>(null);
+  const vGuideRef = React.useRef<Konva.Line>(null);
+  const hGuideRef = React.useRef<Konva.Line>(null);
   const groupRefs = React.useRef<Record<string, Konva.Group | null>>({});
   const nodeRefs = React.useRef<Record<string, Konva.Node | null>>({});
   const fileRef = React.useRef<HTMLInputElement>(null);
@@ -295,6 +297,14 @@ export function DesignStudio({ product, initialDoc, initialDesignId, isLoggedIn,
         hidden.push(guideRectRef.current);
         guideRectRef.current.visible(false);
       }
+      if (vGuideRef.current) {
+        hidden.push(vGuideRef.current);
+        vGuideRef.current.visible(false);
+      }
+      if (hGuideRef.current) {
+        hidden.push(hGuideRef.current);
+        hGuideRef.current.visible(false);
+      }
       const tr = transformerRef.current;
       if (tr) {
         hidden.push(tr);
@@ -348,7 +358,7 @@ export function DesignStudio({ product, initialDoc, initialDesignId, isLoggedIn,
     return () => {
       if (previewTimer.current) clearTimeout(previewTimer.current);
     };
-  }, [doc, activeSide, exportSide]);
+  }, [doc, activeSide, exportSide, images]);
 
   /* Tools --------------------------------------------------------------------- */
   const addText = () => {
@@ -511,8 +521,9 @@ export function DesignStudio({ product, initialDoc, initialDesignId, isLoggedIn,
     areaSqIn: billedAreaSqIn,
     pricing: printPricing,
   });
+  const blankPrice = blankUnitPrice(product.slug, cartQty, product.basePrice);
   const unitPrice =
-    product.basePrice +
+    blankPrice +
     (selectedVariant?.priceDelta ?? 0) +
     printCost;
 
@@ -542,13 +553,6 @@ export function DesignStudio({ product, initialDoc, initialDesignId, isLoggedIn,
         });
         if (saved.ok) savedId = saved.data.id;
       }
-
-      // Print-ready exports for production (only sides with content)
-      const printReady: Record<string, string> = {};
-      STUDIO_SIDES.forEach((side) => {
-        const url = exportSide(side, EXPORT_SCALE);
-        if (url) printReady[side] = url;
-      });
 
       const result = await addToCart({
         productId: product.id,
@@ -640,7 +644,7 @@ export function DesignStudio({ product, initialDoc, initialDesignId, isLoggedIn,
         key={layer.id}
         {...common}
         data={clip.path}
-        fill={layer.fill ?? "#FF3B30"}
+        fill={layer.fill ?? "#2563EB"}
         fillRule={clip.fillRule ?? "nonzero"}
         scaleX={layer.width / 100}
         scaleY={layer.height / 100}
@@ -652,25 +656,44 @@ export function DesignStudio({ product, initialDoc, initialDesignId, isLoggedIn,
 
   const totalLayers = layersForSide("FRONT").length + layersForSide("BACK").length;
 
+  // Print rectangle as a percentage of the garment drawing (used by the mockup
+  // overlay). Width/height come from the studio's canonical placement geometry;
+  // the database only stores the physical size + top/left position.
+  const previewBox = React.useMemo(() => {
+    const defaults = placementsFor(product.categorySlug as GarmentType);
+    const match =
+      defaults.find((p) => p.key === activePlacement.key && p.side === activePlacement.side) ??
+      defaults.find((p) => p.key === activePlacement.key);
+    return {
+      topPct: activePlacement.topPct,
+      leftPct: activePlacement.leftPct,
+      widthPct: match?.widthPct ?? (activePlacement.widthIn / 20) * 100,
+      heightPct: match?.heightPct ?? (activePlacement.heightIn / 26) * 100,
+    };
+  }, [activePlacement, product.categorySlug]);
+
   return (
-    <div className="h-[calc(100vh-0px)] flex flex-col bg-[#08080a]">
+    <div className="h-[100dvh] flex flex-col studio-shell">
       {/* Top bar */}
-      <header className="h-16 flex-shrink-0 flex items-center justify-between gap-space-sm px-space-md border-b border-white/[0.08] bg-[#0a0a0d]/80 backdrop-blur-xl">
+      <header className="h-16 flex-shrink-0 flex items-center justify-between gap-space-sm px-space-md border-b border-slate-900/[0.08] bg-white/85 backdrop-blur-xl shadow-[0_10px_30px_-26px_rgba(15,23,42,0.5)]">
         <div className="flex items-center gap-space-sm min-w-0">
           <Link
             href={`/products/${product.slug}`}
-            className="w-9 h-9 rounded-full bg-white/[0.05] border border-white/10 flex items-center justify-center text-white/70 hover:text-white hover:bg-white/[0.1] transition-all"
+            className="w-9 h-9 rounded-full bg-white border border-slate-900/10 flex items-center justify-center text-slate-600 hover:text-slate-900 hover:border-[#2563EB]/40 transition-all shadow-sm"
             aria-label="Back to product"
           >
             <ArrowLeft className="size-4" />
           </Link>
           <div className="min-w-0">
-            <p className="font-label-lg text-label-lg text-white truncate">{product.name}</p>
-            <p className="font-label-technical text-[9px] uppercase tracking-widest text-white/40 truncate">
-              {activePlacement.label} · {activePlacement.widthIn}&quot; × {activePlacement.heightIn}&quot; · {canvas.width}×
-              {canvas.height}px @ {PX_PER_INCH}ppi
+            <p className="font-label-technical text-[9px] uppercase tracking-[0.18em] text-[#2563EB] font-bold">
+              Design studio
             </p>
+            <p className="font-label-lg text-label-lg text-slate-900 truncate leading-tight">{product.name}</p>
           </div>
+          <span className="hidden md:inline-flex items-center gap-1.5 ml-1 rounded-full bg-[#047857]/[0.08] border border-[#047857]/20 px-2.5 py-1 font-label-technical text-[9px] uppercase tracking-widest text-[#047857]">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#047857] animate-pulse" />
+            Live preview
+          </span>
         </div>
 
         <div className="flex items-center gap-space-xs">
@@ -683,13 +706,13 @@ export function DesignStudio({ product, initialDoc, initialDesignId, isLoggedIn,
             }}
             aria-expanded={leftOpen}
             aria-label={leftOpen ? "Close tools panel" : "Open tools panel"}
-            className="lg:hidden w-9 h-9 rounded-full bg-white/[0.05] border border-white/10 flex items-center justify-center text-white/70 hover:text-white hover:bg-white/[0.1] transition-all"
+            className="lg:hidden w-9 h-9 rounded-full bg-slate-900/[0.05] border border-slate-900/[0.1] flex items-center justify-center text-slate-700 hover:text-slate-900 hover:bg-slate-900/[0.08] transition-all"
           >
             {leftOpen ? <X className="size-4" /> : <SlidersHorizontal className="size-4" />}
           </button>
 
           {/* Side switch */}
-          <div className="flex items-center rounded-full bg-white/[0.05] border border-white/10 p-0.5">
+          <div className="flex items-center rounded-full bg-slate-900/[0.05] border border-slate-900/[0.1] p-0.5">
             {STUDIO_SIDES.map((side) => (
               <button
                 key={side}
@@ -698,25 +721,25 @@ export function DesignStudio({ product, initialDoc, initialDesignId, isLoggedIn,
                 aria-pressed={activeSide === side}
                 className={cn(
                   "relative px-3 sm:px-4 h-9 rounded-full font-label-md text-label-md transition-all",
-                  activeSide === side ? "bg-white/[0.14] text-white" : "text-white/50 hover:text-white",
+                  activeSide === side ? "bg-slate-900/[0.1] text-slate-900" : "text-slate-500 hover:text-slate-900",
                 )}
               >
                 {side}
                 {(doc[side]?.layers?.length ?? 0) > 0 ? (
-                  <span className="absolute top-1 right-1.5 w-1.5 h-1.5 rounded-full bg-[#FF0D7B]" />
+                  <span className="absolute top-1 right-1.5 w-1.5 h-1.5 rounded-full bg-[#0EA5E9]" />
                 ) : null}
               </button>
             ))}
           </div>
 
           {/* Undo/redo stay available on phones; zoom group is desktop-only */}
-          <div className="flex items-center rounded-full bg-white/[0.05] border border-white/10 p-0.5">
+          <div className="flex items-center rounded-full bg-slate-900/[0.05] border border-slate-900/[0.1] p-0.5">
             <BarBtn label="Undo" disabled={!canUndo} onClick={undo}><Undo2 className="size-4" /></BarBtn>
             <BarBtn label="Redo" disabled={!canRedo} onClick={redo}><Redo2 className="size-4" /></BarBtn>
-            <span className="hidden sm:inline w-px h-5 bg-white/10" />
+            <span className="hidden sm:inline w-px h-5 bg-slate-900/[0.05]" />
             <span className="hidden sm:flex items-center">
               <BarBtn label="Zoom out" onClick={() => setZoom((z) => Math.max(0.25, z / 1.15))}><ZoomOut className="size-4" /></BarBtn>
-              <span className="px-1 font-label-technical text-[10px] text-white/60 tabular-nums w-10 text-center">
+              <span className="px-1 font-label-technical text-[10px] text-slate-600 tabular-nums w-10 text-center">
                 {Math.round(zoom * 100)}%
               </span>
               <BarBtn label="Zoom in" onClick={() => setZoom((z) => Math.min(4, z * 1.15))}><ZoomIn className="size-4" /></BarBtn>
@@ -739,7 +762,7 @@ export function DesignStudio({ product, initialDoc, initialDesignId, isLoggedIn,
             }}
             aria-expanded={rightOpen}
             aria-label={rightOpen ? "Close preview panel" : "Open preview panel"}
-            className="lg:hidden w-9 h-9 rounded-full bg-white/[0.05] border border-white/10 flex items-center justify-center text-white/70 hover:text-white hover:bg-white/[0.1] transition-all"
+            className="lg:hidden w-9 h-9 rounded-full bg-slate-900/[0.05] border border-slate-900/[0.1] flex items-center justify-center text-slate-700 hover:text-slate-900 hover:bg-slate-900/[0.08] transition-all"
           >
             {rightOpen ? <X className="size-4" /> : <PanelRight className="size-4" />}
           </button>
@@ -770,16 +793,24 @@ export function DesignStudio({ product, initialDoc, initialDesignId, isLoggedIn,
 
         {/* Canvas */}
         <main
-          className="flex-1 relative overflow-hidden flex items-center justify-center"
-          style={{
-            background:
-              "radial-gradient(circle at 30% 20%, rgba(128,38,242,0.08), transparent 45%), radial-gradient(circle at 80% 80%, rgba(255,13,123,0.08), transparent 45%), #0b0b0e",
-          }}
+          className="flex-1 relative overflow-hidden flex items-center justify-center studio-canvas-grid p-5 sm:p-8"
           onClick={(e) => {
             if (e.target === e.currentTarget) setSelectedId(null);
           }}
         >
-          <div className="relative shadow-[0_24px_80px_rgba(0,0,0,0.6)] rounded-lg overflow-hidden">
+          {/* Print-area badge */}
+          <div className="pointer-events-none absolute top-4 left-4 z-10 flex items-center gap-2 rounded-full bg-white/90 border border-slate-900/10 px-3 py-1.5 shadow-[0_10px_26px_-20px_rgba(15,23,42,0.6)]">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#0EA5E9]" />
+            <span className="font-label-technical text-[9px] uppercase tracking-widest text-slate-500">
+              {activeSide} print area
+            </span>
+            <span className="font-label-technical text-[9px] uppercase tracking-widest text-slate-900 font-bold tabular-nums">
+              {activePlacement.widthIn}&quot; × {activePlacement.heightIn}&quot;
+            </span>
+          </div>
+
+          <div className="relative rounded-3xl bg-white/95 border border-slate-900/[0.08] p-2 sm:p-3 shadow-[0_30px_70px_-34px_rgba(15,23,42,0.45)]">
+            <div className="relative rounded-2xl overflow-hidden ring-1 ring-slate-900/[0.06]">
             <Stage
               ref={stageRef}
               width={Math.max(200, canvas.width * zoom)}
@@ -798,8 +829,8 @@ export function DesignStudio({ product, initialDoc, initialDesignId, isLoggedIn,
                   ref={guideRectRef}
                   width={canvas.width}
                   height={canvas.height}
-                  fill="rgba(255,255,255,0.03)"
-                  stroke="#FF0D7B"
+                  fill={colorHex}
+                  stroke="#0EA5E9"
                   strokeWidth={1}
                   dash={[6, 4]}
                   listening={false}
@@ -819,8 +850,9 @@ export function DesignStudio({ product, initialDoc, initialDesignId, isLoggedIn,
 
                 {guides.v ? (
                   <Line
+                    ref={vGuideRef}
                     points={[canvas.width / 2, -20, canvas.width / 2, canvas.height + 20]}
-                    stroke="#00E0F2"
+                    stroke="#0891B2"
                     strokeWidth={1}
                     dash={[4, 4]}
                     listening={false}
@@ -828,8 +860,9 @@ export function DesignStudio({ product, initialDoc, initialDesignId, isLoggedIn,
                 ) : null}
                 {guides.h ? (
                   <Line
+                    ref={hGuideRef}
                     points={[-20, canvas.height / 2, canvas.width + 20, canvas.height / 2]}
-                    stroke="#00E0F2"
+                    stroke="#0891B2"
                     strokeWidth={1}
                     dash={[4, 4]}
                     listening={false}
@@ -852,9 +885,9 @@ export function DesignStudio({ product, initialDoc, initialDesignId, isLoggedIn,
                   ]}
                   anchorSize={10}
                   anchorCornerRadius={5}
-                  anchorFill="#FF0D7B"
+                  anchorFill="#0EA5E9"
                   anchorStroke="#ffffff"
-                  borderStroke="#FF0D7B"
+                  borderStroke="#0EA5E9"
                   borderDash={[4, 4]}
                   rotateAnchorOffset={26}
                   boundBoxFunc={(oldBox, newBox) => {
@@ -864,12 +897,13 @@ export function DesignStudio({ product, initialDoc, initialDesignId, isLoggedIn,
                 />
               </KLayer>
             </Stage>
+            </div>
           </div>
 
           {/* Canvas HUD */}
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-space-xs backdrop-blur-xl bg-black/60 border border-white/10 px-space-md py-space-xs rounded-full">
-            <span className="font-label-technical text-label-technical text-[#FF0D7B] font-bold">PRINT AREA:</span>
-            <span className="font-label-technical text-label-technical text-white uppercase tracking-widest">
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-space-xs backdrop-blur-xl bg-white/90 border border-slate-900/10 px-space-md py-space-xs rounded-full shadow-[0_14px_34px_-24px_rgba(15,23,42,0.6)]">
+            <span className="font-label-technical text-label-technical text-[#2563EB] font-bold">PRINT AREA</span>
+            <span className="font-label-technical text-label-technical text-slate-600 uppercase tracking-widest">
               {activePlacement.label} · {activePlacement.widthIn}&quot; × {activePlacement.heightIn}&quot;
               {printArea ? ` · used ${printArea.widthIn}″ × ${printArea.heightIn}″` : ""}
             </span>
@@ -879,22 +913,43 @@ export function DesignStudio({ product, initialDoc, initialDesignId, isLoggedIn,
         {/* Right panel: inline on desktop, drawer on phones */}
         <aside
           className={cn(
-            "w-[320px] flex-shrink-0 border-l border-white/[0.08] bg-[#0c0c0f]/80 flex flex-col overflow-y-auto hide-scrollbar",
+            "w-[340px] flex-shrink-0 border-l border-slate-900/[0.08] bg-white/85 backdrop-blur-xl flex flex-col overflow-y-auto hide-scrollbar",
             "max-lg:fixed max-lg:top-16 max-lg:bottom-0 max-lg:right-0 max-lg:z-40 max-lg:w-[86vw] max-lg:max-w-[320px]",
-            "max-lg:transition-transform max-lg:duration-300 max-lg:ease-out max-lg:shadow-[0_24px_60px_rgba(0,0,0,0.7)]",
+            "max-lg:transition-transform max-lg:duration-300 max-lg:ease-out max-lg:shadow-[0_24px_60px_rgba(15,23,42,0.16)]",
             rightOpen ? "max-lg:translate-x-0" : "max-lg:translate-x-[110%]",
           )}
         >
           {/* Live mockup preview */}
-          <div className="p-space-sm border-b border-white/[0.06]">
-            <span className="label-tech">Live product preview</span>
-            <div className="glass-panel-sm p-space-sm">
+          <div className="p-space-sm border-b border-slate-900/[0.06]">
+            <div className="flex items-center justify-between gap-2 mb-space-xs">
+              <span className="label-tech mb-0">Print preview</span>
+              <div className="flex gap-0.5 rounded-full bg-slate-900/[0.05] p-0.5">
+                {STUDIO_SIDES.map((side) => (
+                  <button
+                    key={side}
+                    type="button"
+                    onClick={() => setActiveSide(side)}
+                    className={cn(
+                      "px-2.5 py-1 rounded-full font-label-technical text-[9px] uppercase tracking-wider transition-all",
+                      activeSide === side
+                        ? "bg-white text-slate-900 shadow-sm"
+                        : "text-slate-500 hover:text-slate-800",
+                    )}
+                  >
+                    {side}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="relative rounded-2xl border border-slate-900/[0.08] bg-gradient-to-b from-[#f8fbff] to-[#eaf2fb] p-2 overflow-hidden">
               <GarmentMockup
                 type={product.categorySlug as never}
                 color={colorHex}
-                className="h-56 w-full"
+                side={activeSide}
+                className="h-60 w-full"
                 overlay={
-                  <div className="w-full h-full relative">
+                  <div className="w-full h-full relative flex items-center justify-center">
                     {previews[activeSide] ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
@@ -906,69 +961,111 @@ export function DesignStudio({ product, initialDoc, initialDesignId, isLoggedIn,
                     ) : null}
                   </div>
                 }
-                overlayBox={{
-                  topPct: activePlacement.topPct,
-                  leftPct: activePlacement.leftPct,
-                  widthPct: (activePlacement.widthIn / 20) * 100,
-                  heightPct: (activePlacement.heightIn / 26) * 100,
-                }}
+                overlayBox={previewBox}
               />
-
-              <div className="flex flex-wrap gap-1 mt-space-xs justify-center">
-                {product.colors.map((c) => (
-                  <button
-                    key={c.hex}
-                    type="button"
-                    title={c.name}
-                    aria-label={`Preview colour ${c.name}`}
-                    aria-pressed={colorHex === c.hex}
-                    onClick={() => {
-                      setColorHex(c.hex);
-                      setColorName(c.name);
-                    }}
-                    className={cn(
-                      "w-7 h-7 rounded-full border-2 transition-all",
-                      colorHex === c.hex ? "border-[#FF3B30] scale-110" : "border-white/20 hover:border-white/50",
-                    )}
-                    style={{ backgroundColor: c.hex }}
-                  />
-                ))}
-              </div>
-              <p className="text-center font-label-technical text-[9px] uppercase tracking-widest text-white/40 mt-1">
-                {colorName}
-              </p>
+              <span className="absolute top-2 left-2 rounded-full bg-white/90 border border-slate-900/10 px-2 py-0.5 font-label-technical text-[8px] uppercase tracking-widest text-slate-500">
+                {activeSide}
+              </span>
+              {!previews[activeSide] ? (
+                <span className="pointer-events-none absolute inset-x-8 bottom-2 rounded-full bg-white/90 border border-slate-900/10 px-2 py-1 text-center font-label-technical text-[8px] uppercase tracking-widest text-slate-500">
+                  Add artwork to see it here
+                </span>
+              ) : null}
             </div>
+
+            <div className="flex flex-wrap gap-1.5 mt-space-xs justify-center">
+              {product.colors.map((c) => (
+                <button
+                  key={c.hex}
+                  type="button"
+                  title={c.name}
+                  aria-label={`Preview colour ${c.name}`}
+                  aria-pressed={colorHex === c.hex}
+                  onClick={() => {
+                    setColorHex(c.hex);
+                    setColorName(c.name);
+                  }}
+                  className={cn(
+                    "w-7 h-7 rounded-full border-2 transition-all shadow-sm",
+                    colorHex === c.hex
+                      ? "border-[#2563EB] scale-110 ring-2 ring-[#2563EB]/20"
+                      : "border-white hover:border-slate-400",
+                  )}
+                  style={{ backgroundColor: c.hex }}
+                />
+              ))}
+            </div>
+            <p className="text-center font-label-technical text-[9px] uppercase tracking-widest text-slate-500 mt-1">
+              {colorName} · {activePlacement.label}
+            </p>
           </div>
 
           {/* Quick price */}
-          <div className="px-space-sm py-space-xs border-b border-white/[0.06] flex items-start justify-between gap-space-sm">
-            <span className="flex flex-col">
-              <span className="font-label-technical text-label-technical uppercase tracking-widest text-white/50">
-                Est. per piece
-              </span>
-              <span className="font-headline-md text-headline-md font-bold text-white">{formatINR(unitPrice)}</span>
-              <span className="font-label-technical text-[9px] text-white/40 mt-0.5">
-                {printArea
-                  ? `${printArea.widthIn}″ × ${printArea.heightIn}″ printed`
-                  : `Full ${activePlacement.widthIn}″ × ${activePlacement.heightIn}″ placement`}
-              </span>
-            </span>
-            <span className="font-label-technical text-[9px] text-white/40 text-right leading-4">
-              Blank {formatINR(product.basePrice)}
-              <br />
-              Print {formatINR(printCost)}
-              <br />
-              {printPricing.ratePerSqIn > 0 ? (
-                <span className={billedAreaSqIn * printPricing.ratePerSqIn < printPricing.minimum ? "text-[#FF8C26]" : "text-[#7ef0a8]"}>
-                  {billedAreaSqIn.toFixed(1)} in² @ ₹{printPricing.ratePerSqIn.toFixed(2)}/in²
-                  {billedAreaSqIn * printPricing.ratePerSqIn < printPricing.minimum
-                    ? ` · min ₹${printPricing.minimum}`
-                    : ""}
+          <div className="px-space-sm py-space-sm border-b border-slate-900/[0.06]">
+            <div className="flex items-start justify-between gap-space-sm">
+              <span className="flex flex-col">
+                <span className="font-label-technical text-label-technical uppercase tracking-widest text-slate-500">
+                  Est. per piece
                 </span>
-              ) : (
-                <span>{activePlacement.label} · flat rate</span>
-              )}
-            </span>
+                <span className="font-headline-md text-headline-md font-bold text-slate-900 tabular-nums">
+                  {formatINR(unitPrice)}
+                </span>
+                <span className="font-label-technical text-[9px] text-slate-500 mt-0.5">
+                  {printArea
+                    ? `${printArea.widthIn}″ × ${printArea.heightIn}″ printed`
+                    : `Full ${activePlacement.widthIn}″ × ${activePlacement.heightIn}″ placement`}
+                </span>
+              </span>
+              <span className="font-label-technical text-[9px] text-slate-500 text-right leading-4">
+                Blank {formatINR(blankPrice)}
+                <br />
+                Print {formatINR(printCost)}
+                <br />
+                {printPricing.ratePerSqIn > 0 ? (
+                  <span className={billedAreaSqIn * printPricing.ratePerSqIn < printPricing.minimum ? "text-[#B45309]" : "text-[#047857]"}>
+                    {billedAreaSqIn.toFixed(1)} in² @ ₹{printPricing.ratePerSqIn.toFixed(2)}/in²
+                    {billedAreaSqIn * printPricing.ratePerSqIn < printPricing.minimum
+                      ? ` · min ₹${printPricing.minimum}`
+                      : ""}
+                  </span>
+                ) : (
+                  <span>{activePlacement.label} · flat rate</span>
+                )}
+              </span>
+            </div>
+
+            {hasBlankPriceLadder(product.slug) ? (
+              <div className="mt-space-sm rounded-xl border border-slate-900/[0.08] bg-slate-900/[0.02] p-1.5">
+                <div className="flex items-center justify-between px-1 pb-1">
+                  <span className="font-label-technical text-[8px] uppercase tracking-widest text-slate-500">
+                    Blank price by qty
+                  </span>
+                  <span className="font-label-technical text-[8px] uppercase tracking-widest text-[#2563EB] font-bold">
+                    print separate
+                  </span>
+                </div>
+                <div className="grid grid-cols-7 gap-0.5">
+                  {PRINT_QTY_BREAKS.map((row, index) => (
+                    <div
+                      key={row.label}
+                      className={cn(
+                        "rounded-lg px-0.5 py-1 text-center border",
+                        index === qtyBreakIndex(cartQty)
+                          ? "border-[#2563EB]/45 bg-white"
+                          : "border-transparent",
+                      )}
+                    >
+                      <span className="block font-label-technical text-[7px] uppercase tracking-wide text-slate-500">
+                        {row.label.replace(" pcs", "").replace(" pc", "")}
+                      </span>
+                      <span className="block font-label-technical text-[9px] font-bold text-slate-900 tabular-nums">
+                        ₹{blankUnitPrice(product.slug, row.minQty, product.basePrice)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : null}
           </div>
 
           <PropertiesPanel
@@ -979,10 +1076,10 @@ export function DesignStudio({ product, initialDoc, initialDesignId, isLoggedIn,
             priceHint={null}
           />
 
-          <div className="p-space-sm mt-auto border-t border-white/[0.06]">
-            <p className="font-body-sm text-body-sm text-white/40">
+          <div className="p-space-sm mt-auto border-t border-slate-900/[0.06]">
+            <p className="font-body-sm text-body-sm text-slate-500">
               Designs are stored as JSON so you can reopen and edit them any time from{" "}
-              <Link href="/account?tab=designs" className="text-[#00E0F2] hover:underline">
+              <Link href="/account?tab=designs" className="text-[#0891B2] hover:underline">
                 your account
               </Link>
               .
@@ -995,7 +1092,7 @@ export function DesignStudio({ product, initialDoc, initialDesignId, isLoggedIn,
           <button
             type="button"
             aria-label="Close panel"
-            className="lg:hidden fixed inset-0 top-16 z-30 bg-black/60 backdrop-blur-sm"
+            className="lg:hidden fixed inset-0 top-16 z-30 bg-slate-900/40 backdrop-blur-sm"
             onClick={() => {
               setLeftOpen(false);
               setRightOpen(false);
@@ -1036,7 +1133,7 @@ export function DesignStudio({ product, initialDoc, initialDesignId, isLoggedIn,
           <DialogHeader>
             <DialogTitle>Add your design to cart</DialogTitle>
             <DialogDescription>
-              Pick the garment colour and size. Quantity discounts apply automatically from 10 pieces.
+              Pick the garment colour and size. The blank price drops at 2, 3, 4–5, 6–8, 9–22 and 23+ pieces.
             </DialogDescription>
           </DialogHeader>
 
@@ -1057,7 +1154,7 @@ export function DesignStudio({ product, initialDoc, initialDesignId, isLoggedIn,
                     }}
                     className={cn(
                       "w-9 h-9 rounded-full border-2 transition-all",
-                      colorHex === c.hex ? "border-[#FF3B30] scale-110" : "border-white/20 hover:border-white/50",
+                      colorHex === c.hex ? "border-[#2563EB] scale-110" : "border-slate-900/[0.1] hover:border-slate-900/[0.1]",
                     )}
                     style={{ backgroundColor: c.hex }}
                   />
@@ -1078,8 +1175,8 @@ export function DesignStudio({ product, initialDoc, initialDesignId, isLoggedIn,
                     className={cn(
                       "min-w-12 h-11 px-3 rounded-2xl font-label-lg text-label-lg border transition-all",
                       cartSize === v.size
-                        ? "bg-white/[0.14] border-white/30 text-white"
-                        : "bg-white/[0.04] border-white/10 text-white/70 hover:border-white/30",
+                        ? "bg-slate-900/[0.1] border-slate-900/[0.1] text-slate-900"
+                        : "bg-slate-900/[0.04] border-slate-900/[0.1] text-slate-700 hover:border-slate-900/[0.1]",
                       v.stock <= 0 && "opacity-30 line-through cursor-not-allowed",
                     )}
                   >
@@ -1096,16 +1193,16 @@ export function DesignStudio({ product, initialDoc, initialDesignId, isLoggedIn,
                   type="button"
                   aria-label="Decrease quantity"
                   onClick={() => setCartQty((q) => Math.max(1, q - 1))}
-                  className="w-9 h-9 rounded-full bg-white/[0.06] border border-white/10 text-white hover:bg-white/[0.12]"
+                  className="w-9 h-9 rounded-full bg-slate-900/[0.05] border border-slate-900/[0.1] text-slate-900 hover:bg-slate-900/[0.09]"
                 >
                   −
                 </button>
-                <span className="w-10 text-center font-label-lg text-label-lg text-white tabular-nums">{cartQty}</span>
+                <span className="w-10 text-center font-label-lg text-label-lg text-slate-900 tabular-nums">{cartQty}</span>
                 <button
                   type="button"
                   aria-label="Increase quantity"
                   onClick={() => setCartQty((q) => Math.min(500, q + 1))}
-                  className="w-9 h-9 rounded-full bg-white/[0.06] border border-white/10 text-white hover:bg-white/[0.12]"
+                  className="w-9 h-9 rounded-full bg-slate-900/[0.05] border border-slate-900/[0.1] text-slate-900 hover:bg-slate-900/[0.09]"
                 >
                   +
                 </button>
@@ -1113,15 +1210,20 @@ export function DesignStudio({ product, initialDoc, initialDesignId, isLoggedIn,
             </div>
 
             <div className="glass-panel-sm p-space-sm flex items-center justify-between">
-              <span className="font-label-technical text-label-technical uppercase tracking-widest text-white/50">
-                Estimated total
+              <span className="flex flex-col">
+                <span className="font-label-technical text-label-technical uppercase tracking-widest text-slate-500">
+                  Estimated total
+                </span>
+                <span className="font-label-technical text-[9px] text-slate-500">
+                  {formatINR(blankPrice)} blank + {formatINR(printCost)} print × {cartQty}
+                </span>
               </span>
-              <span className="font-headline-lg text-headline-lg font-bold text-white">
+              <span className="font-headline-lg text-headline-lg font-bold text-slate-900">
                 {formatINR(unitPrice * cartQty)}
               </span>
             </div>
 
-            <div className="flex items-center justify-between font-label-technical text-[9px] uppercase tracking-widest text-white/40">
+            <div className="flex items-center justify-between font-label-technical text-[9px] uppercase tracking-widest text-slate-500">
               <span>
                 Print {formatINR(printCost)} / piece
                 {printArea ? ` · ${printArea.areaSqIn.toFixed(1)} in²` : ""}
@@ -1132,7 +1234,7 @@ export function DesignStudio({ product, initialDoc, initialDesignId, isLoggedIn,
             </div>
 
             {totalLayers === 0 ? (
-              <p className="flex items-center gap-space-xs font-body-sm text-body-sm text-[#FF8C26]">
+              <p className="flex items-center gap-space-xs font-body-sm text-body-sm text-[#D97706]">
                 <AlertTriangle className="size-4" /> Add text or artwork before checkout.
               </p>
             ) : null}
@@ -1165,7 +1267,7 @@ function BarBtn({
       aria-label={label}
       onClick={onClick}
       disabled={disabled}
-      className="w-9 h-9 rounded-full flex items-center justify-center text-white/70 hover:text-white hover:bg-white/[0.1] transition-all disabled:opacity-30 disabled:hover:bg-transparent"
+      className="w-9 h-9 rounded-full flex items-center justify-center text-slate-700 hover:text-slate-900 hover:bg-slate-900/[0.08] transition-all disabled:opacity-30 disabled:hover:bg-transparent"
     >
       {children}
     </button>

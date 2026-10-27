@@ -92,17 +92,17 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
   return (
     <div className="max-w-7xl mx-auto px-gutter lg:px-gutter-lg py-space-xl">
       <div className="mb-space-xl">
-        <span className="font-label-technical text-label-technical uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-[#FF3B30] to-[#FF0D7B] block mb-space-xs font-black">
+        <span className="font-label-technical text-label-technical uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-[#2563EB] to-[#0EA5E9] block mb-space-xs font-black">
           Blanks repertoire
         </span>
-        <h1 className="font-headline-xl text-headline-xl text-white font-bold tracking-tight">
+        <h1 className="font-headline-xl text-headline-xl text-slate-900 font-bold tracking-tight">
           {params.category
             ? params.category.replace(/-/g, " ")
             : params.q
               ? `Results for “${params.q}”`
               : `All garments · ${APP_NAME}`}
         </h1>
-        <p className="font-body-md text-body-md text-white/60 mt-space-xs max-w-2xl">
+        <p className="font-body-md text-body-md text-slate-600 mt-space-xs max-w-2xl">
           Every blank below prints from a single piece with zero minimum order quantity. Prices shown are base blanks —
           add your design in the studio for the final per-piece quote.
         </p>

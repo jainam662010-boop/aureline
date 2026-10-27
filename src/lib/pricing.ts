@@ -21,6 +21,12 @@ import { num } from "@/lib/utils";
 
 export interface PricingItemInput {
   basePrice: number;
+  /**
+   * Per-piece blank price already resolved from the quantity price sheet.
+   * When provided it replaces basePrice and the percentage quantity tiers are
+   * skipped (the ladder itself is the volume discount).
+   */
+  blankPriceForQty?: number | null;
   priceDelta: number;
   placementBaseCost: number;
   placementSurcharge: number;
@@ -144,7 +150,8 @@ export function validateCoupon(
 export function computePricing(item: PricingItemInput, ctx: PricingContext = {}): PriceBreakdown {
   const qty = Math.max(1, Math.floor(item.quantity));
 
-  const unitBase = round2(item.basePrice + item.priceDelta);
+  const usePriceLadder = item.blankPriceForQty != null && Number.isFinite(item.blankPriceForQty);
+  const unitBase = round2((usePriceLadder ? item.blankPriceForQty! : item.basePrice) + item.priceDelta);
   const flatPrint = round2(item.placementBaseCost + item.placementSurcharge);
 
   // Area pricing: charge for the artwork's actual bounding box, with a floor.
@@ -162,7 +169,7 @@ export function computePricing(item: PricingItemInput, ctx: PricingContext = {})
   const unitPrice = round2(unitBase + unitPrint);
   const gross = round2(unitPrice * qty);
 
-  const tier = resolveQuantityTier(ctx.tiers ?? [], qty);
+  const tier = usePriceLadder ? null : resolveQuantityTier(ctx.tiers ?? [], qty);
   const quantityDiscountPercent = tier ? Number(tier.percentOff) : 0;
   const quantityDiscount = round2((gross * quantityDiscountPercent) / 100);
   const afterQty = round2(gross - quantityDiscount);
@@ -199,7 +206,11 @@ export function computePricing(item: PricingItemInput, ctx: PricingContext = {})
   const total = round2(subtotal + shipping + tax);
 
   const lines: PriceBreakdownLine[] = [
-    { label: "Base product", amount: round2(unitBase * qty), hint: `₹${unitBase.toFixed(0)} × ${qty}` },
+    {
+      label: usePriceLadder ? "Blank garment" : "Base product",
+      amount: round2(unitBase * qty),
+      hint: `₹${unitBase.toFixed(0)} × ${qty}`,
+    },
   ];
   if (unitPrint > 0) {
     lines.push({

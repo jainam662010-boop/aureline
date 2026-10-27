@@ -19,12 +19,12 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
   return (
     <SheenCard
       as="article"
-      className="glass-panel glass-card-hover p-space-md flex flex-col justify-between shadow-[0_8px_32px_0_rgba(0,0,0,0.5)]"
+      className="glass-panel glass-card-hover p-space-md flex flex-col justify-between shadow-[0_8px_32px_0_rgba(15,23,42,0.12)]"
     >
       <div>
         <Link
           href={`/products/${product.slug}`}
-          className="relative block w-full h-72 rounded-2xl overflow-hidden bg-white/[0.02] mb-space-md group"
+          className="relative block w-full h-72 rounded-2xl overflow-hidden bg-slate-900/[0.02] mb-space-md group"
         >
           {product.image ? (
             <Image
@@ -42,34 +42,34 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
           )}
 
           <div className="absolute top-3 left-3 flex flex-col gap-1.5 items-start">
-            <span className="backdrop-blur-xl bg-black/60 border border-white/15 px-2.5 py-1 rounded-full font-label-technical text-label-technical text-[#FF3B30] font-bold">
+            <span className="backdrop-blur-xl bg-white/90 border border-slate-900/10 px-2.5 py-1 rounded-full font-label-technical text-label-technical text-slate-900 font-bold shadow-sm">
               {product.gsm} GSM
             </span>
             {product.isBestseller ? (
-              <span className="backdrop-blur-xl bg-black/60 border border-white/15 px-2.5 py-1 rounded-full font-label-technical text-label-technical text-white">
+              <span className="backdrop-blur-xl bg-[#2563EB] border border-[#2563EB] px-2.5 py-1 rounded-full font-label-technical text-label-technical text-white shadow-sm">
                 Bestseller
               </span>
             ) : null}
           </div>
           {product.isNewArrival ? (
-            <span className="absolute top-3 right-3 backdrop-blur-xl bg-black/60 border border-white/15 px-2.5 py-1 rounded-full font-label-technical text-label-technical text-[#00E0F2] font-bold">
+            <span className="absolute top-3 right-3 backdrop-blur-xl bg-white/90 border border-slate-900/10 px-2.5 py-1 rounded-full font-label-technical text-label-technical text-[#0891B2] font-bold shadow-sm">
               New
             </span>
           ) : null}
         </Link>
 
         <div className="flex items-center justify-between mb-1 gap-space-xs">
-          <h3 className="font-headline-md text-headline-md font-bold text-white truncate">{product.name}</h3>
+          <h3 className="font-headline-md text-headline-md font-bold text-slate-900 truncate">{product.name}</h3>
           <div className="text-right flex-shrink-0">
-            <span className="font-label-lg text-label-lg font-bold text-[#FF3B30]">{formatINR(product.basePrice)}</span>
+            <span className="font-label-lg text-label-lg font-bold text-[#2563EB]">{formatINR(product.basePrice)}</span>
             {product.compareAtPrice ? (
-              <span className="block font-label-technical text-label-technical text-white/40 line-through">
+              <span className="block font-label-technical text-label-technical text-slate-500 line-through">
                 {formatINR(product.compareAtPrice)}
               </span>
             ) : null}
           </div>
         </div>
-        <p className="font-body-sm text-body-sm text-white/60 mb-space-sm line-clamp-2">
+        <p className="font-body-sm text-body-sm text-slate-600 mb-space-sm line-clamp-2">
           {product.tagline ?? `${product.fabric}. Zero minimum order quantity.`}
         </p>
 
@@ -87,12 +87,12 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
             <span
               key={color.hex}
               title={color.name}
-              className="w-4 h-4 rounded-full border border-white/20"
+              className="w-4 h-4 rounded-full border border-slate-900/[0.1]"
               style={{ backgroundColor: color.hex }}
             />
           ))}
           {product.colors.length > 5 ? (
-            <span className="font-label-technical text-[9px] text-white/40">+{product.colors.length - 5}</span>
+            <span className="font-label-technical text-[9px] text-slate-500">+{product.colors.length - 5}</span>
           ) : null}
         </div>
       </div>
@@ -100,13 +100,13 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
       <div className="flex items-center gap-space-xs">
         <Link
           href={`/products/${product.slug}`}
-          className="flex-1 py-space-sm rounded-full bg-white/[0.08] border border-white/15 hover:bg-white/[0.14] text-white font-label-md text-label-md text-center transition-all"
+          className="flex-1 py-space-sm rounded-full bg-slate-900/[0.06] border border-slate-900/[0.1] hover:bg-slate-900/[0.1] text-slate-900 font-label-md text-label-md text-center transition-all"
         >
           Details
         </Link>
         <Link
           href={`/design/${product.id}`}
-          className="flex-1 py-space-sm rounded-full bg-gradient-to-r from-[#FF3B30] to-[#FF0D7B] hover:brightness-110 text-white font-label-md text-label-md text-center transition-all flex items-center justify-center gap-1 shadow-[0_0_18px_rgba(255,13,123,0.35)]"
+          className="flex-1 py-space-sm rounded-full bg-gradient-to-r from-[#2563EB] to-[#0EA5E9] hover:brightness-110 text-white font-label-md text-label-md text-center transition-all flex items-center justify-center gap-1 shadow-[0_0_18px_rgba(14,165,233,0.35)]"
         >
           Customize
           <ArrowRight className="size-3.5" aria-hidden />
@@ -119,10 +119,10 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
 export function ProductCardSkeleton() {
   return (
     <div className="glass-panel p-space-md animate-pulse">
-      <div className="h-72 rounded-2xl bg-white/[0.04] mb-space-md skeleton-shimmer" />
-      <div className="h-5 w-2/3 rounded-full bg-white/[0.06] mb-2 skeleton-shimmer" />
-      <div className="h-3 w-1/2 rounded-full bg-white/[0.04] mb-4 skeleton-shimmer" />
-      <div className="h-9 w-full rounded-full bg-white/[0.06] skeleton-shimmer" />
+      <div className="h-72 rounded-2xl bg-slate-900/[0.04] mb-space-md skeleton-shimmer" />
+      <div className="h-5 w-2/3 rounded-full bg-slate-900/[0.05] mb-2 skeleton-shimmer" />
+      <div className="h-3 w-1/2 rounded-full bg-slate-900/[0.04] mb-4 skeleton-shimmer" />
+      <div className="h-9 w-full rounded-full bg-slate-900/[0.05] skeleton-shimmer" />
     </div>
   );
 }

@@ -20,6 +20,8 @@ export interface GarmentMockupProps {
    * sleeves/background.
    */
   overlayBox?: { topPct: number; leftPct: number; widthPct: number; heightPct: number };
+  /** Which face of the garment is shown (back hides the front neckline shadow). */
+  side?: "FRONT" | "BACK";
   showGuides?: boolean;
   /** Rendered behind the garment (glow). */
   glow?: boolean;
@@ -50,6 +52,7 @@ export function GarmentMockup({
   overlay,
   overlayStyle,
   overlayBox,
+  side = "FRONT",
   showGuides = false,
   glow = false,
   flat = false,
@@ -62,20 +65,20 @@ export function GarmentMockup({
   const softBlur = `${uid}-blur`;
   const hardBlur = `${uid}-blur-hard`;
   const gradientId = `${uid}-grad`;
-  const stitchColor = isLight ? "rgba(0,0,0,0.28)" : "rgba(255,255,255,0.20)";
-  const seamColor = isLight ? "rgba(0,0,0,0.14)" : "rgba(0,0,0,0.30)";
+  const stitchColor = isLight ? "rgba(15,23,42,0.28)" : "rgba(255,255,255,0.20)";
+  const seamColor = isLight ? "rgba(15,23,42,0.14)" : "rgba(15,23,42,0.30)";
   const isTote = type === "tote";
 
   return (
     <div className={cn("relative aspect-[400/460] w-full select-none", className)}>
       {glow ? (
-        <div className="absolute inset-x-1/4 bottom-4 h-10 -translate-x-1/2 rounded-full bg-gradient-to-r from-[#FF0D7B]/40 to-[#00E0F2]/40 blur-xl" />
+        <div className="absolute inset-x-1/4 bottom-4 h-10 -translate-x-1/2 rounded-full bg-gradient-to-r from-[#0EA5E9]/40 to-[#0891B2]/40 blur-xl" />
       ) : null}
 
       {/* ---------------------------------------------------------------- 1. BASE SVG */}
       <svg
         viewBox={`0 0 ${GARMENT_VIEWBOX.width} ${GARMENT_VIEWBOX.height}`}
-        className="relative h-full w-full drop-shadow-[0_18px_30px_rgba(0,0,0,0.55)]"
+        className="relative h-full w-full drop-shadow-[0_18px_30px_rgba(15,23,42,0.13)]"
         role="img"
         aria-hidden
       >
@@ -125,8 +128,8 @@ export function GarmentMockup({
           {/* main chest sheen */}
           <path d={body} fill={`url(#${gradientId}-sheen)`} />
 
-          {/* neckline interior shadow */}
-          {!isTote ? (
+          {/* neckline interior shadow (front only) */}
+          {!isTote && side === "FRONT" ? (
             <ellipse cx="200" cy={type === "hoodie" ? 96 : 58} rx="76" ry="30" fill={`url(#${gradientId}-neck)`} />
           ) : null}
 
@@ -187,14 +190,14 @@ export function GarmentMockup({
         <path
           d={body}
           fill="none"
-          stroke={isLight ? "rgba(0,0,0,0.18)" : "rgba(255,255,255,0.14)"}
+          stroke={isLight ? "rgba(15,23,42,0.18)" : "rgba(255,255,255,0.14)"}
           strokeWidth="2"
         />
         {extras && !isTote ? (
           <path
             d={extras}
             fill="none"
-            stroke={isLight ? "rgba(0,0,0,0.22)" : "rgba(255,255,255,0.16)"}
+            stroke={isLight ? "rgba(15,23,42,0.07)" : "rgba(255,255,255,0.16)"}
             strokeWidth="2.5"
             strokeLinejoin="round"
           />
@@ -289,7 +292,7 @@ export function GarmentMockup({
       ) : null}
 
       {showGuides ? (
-        <div className="pointer-events-none absolute inset-0 rounded-2xl border border-dashed border-[#FF0D7B]/50" />
+        <div className="pointer-events-none absolute inset-0 rounded-2xl border border-dashed border-[#0EA5E9]/50" />
       ) : null}
     </div>
   );

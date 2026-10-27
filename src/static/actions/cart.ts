@@ -10,6 +10,7 @@
 import { PRODUCTS, PLACEMENTS, COUPONS, QUANTITY_TIERS, SETTINGS } from "@/lib/static-catalog";
 import { computePricing, sumBreakdowns, couponDiscountFor, validateCoupon } from "@/lib/pricing";
 import { designPrintArea } from "@/lib/print-area";
+import { blankUnitPrice } from "@/lib/price-list";
 import type { DesignDocument } from "@/lib/editor-types";
 import { STATIC_SHIPPING } from "@/lib/static-shipping";
 
@@ -34,6 +35,7 @@ export interface SerializedCartItem {
   side: PrintSideAlias;
   designId: string | null;
   thumbnailUrl: string | null;
+  hasDesign: boolean;
   garmentType: string;
   priceBreakdown: { label: string; amount: number; hint?: string }[];
 }
@@ -149,6 +151,7 @@ function buildItem(stored: StoredItem) {
   const breakdown = computePricing(
     {
       basePrice: product.basePrice,
+      blankPriceForQty: blankUnitPrice(product.slug, stored.quantity, product.basePrice),
       priceDelta: variant.priceDelta,
       placementBaseCost: placement.baseCost,
       placementSurcharge: placement.surcharge,
@@ -182,6 +185,7 @@ function buildItem(stored: StoredItem) {
     side: stored.side,
     designId: stored.designId,
     thumbnailUrl: stored.thumbnailUrl,
+    hasDesign: Boolean(stored.designJson),
     garmentType: product.category.slug,
     priceBreakdown: breakdown.lines.map((l) => ({ label: l.label, amount: l.amount, hint: l.hint })),
   };

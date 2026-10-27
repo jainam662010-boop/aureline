@@ -19,10 +19,10 @@ export default async function CheckoutPage() {
     return (
       <div className="max-w-7xl mx-auto px-gutter lg:px-gutter-lg py-space-xl">
         <div className="mb-space-lg">
-          <span className="font-label-technical text-label-technical uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-[#FF3B30] to-[#FF0D7B] block mb-space-xs font-black">
+          <span className="font-label-technical text-label-technical uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-[#2563EB] to-[#0EA5E9] block mb-space-xs font-black">
             Secure · Razorpay
           </span>
-          <h1 className="font-headline-xl text-headline-xl text-white font-bold tracking-tight">Checkout</h1>
+          <h1 className="font-headline-xl text-headline-xl text-slate-900 font-bold tracking-tight">Checkout</h1>
         </div>
         <StaticNotice
           title="Payments are switched off in the demo"
@@ -58,11 +58,11 @@ export default async function CheckoutPage() {
   return (
     <div className="max-w-7xl mx-auto px-gutter lg:px-gutter-lg py-space-xl">
       <div className="mb-space-lg">
-        <span className="font-label-technical text-label-technical uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-[#FF3B30] to-[#FF0D7B] block mb-space-xs font-black">
+        <span className="font-label-technical text-label-technical uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-[#2563EB] to-[#0EA5E9] block mb-space-xs font-black">
           Secure · Razorpay
         </span>
-        <h1 className="font-headline-xl text-headline-xl text-white font-bold tracking-tight">Checkout</h1>
-        <p className="font-body-md text-body-md text-white/60 mt-space-xs">
+        <h1 className="font-headline-xl text-headline-xl text-slate-900 font-bold tracking-tight">Checkout</h1>
+        <p className="font-body-md text-body-md text-slate-600 mt-space-xs">
           Nothing prints until our team approves your artwork. You&apos;ll get an email at every stage.
         </p>
       </div>

@@ -52,7 +52,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#08080a",
+  themeColor: "#F4F7FB",
   width: "device-width",
   initialScale: 1,
 };
@@ -61,10 +61,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`dark ${inter.variable} ${jakarta.variable} ${mono.variable}`}
+      className={`${inter.variable} ${jakarta.variable} ${mono.variable}`}
       suppressHydrationWarning
     >
-      <body className="bg-[#08080a] text-on-surface font-body-md antialiased selection:bg-primary-container selection:text-on-primary overflow-x-hidden relative">
+      <body className="bg-[#F4F7FB] text-slate-900 font-body-md antialiased selection:bg-primary-container selection:text-on-primary overflow-x-hidden relative">
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[200] focus:rounded-full focus:bg-white focus:px-4 focus:py-2 focus:text-black"
@@ -73,13 +73,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </a>
         {children}
         <Toaster
-          theme="dark"
+          theme="light"
           position="bottom-right"
           toastOptions={{
             style: {
-              background: "rgba(19,19,21,0.95)",
-              border: "1px solid rgba(255,255,255,0.14)",
-              color: "#e5e1e4",
+              background: "rgba(255,255,255,0.96)",
+              border: "1px solid rgba(11,21,36,0.1)",
+              color: "#0B1524",
+              boxShadow: "0 18px 44px -22px rgba(15,23,42,0.09)",
               backdropFilter: "blur(20px)",
               borderRadius: "1rem",
             },
