@@ -38,10 +38,10 @@ jobs:
       - name: Resolve Pages config
         id: pages
         uses: actions/configure-pages@v5
-        with:
-          # Turns Pages on (source: GitHub Actions) on the first run so the
-          # repo needs no manual Settings → Pages step.
-          enablement: true
+        # Pages must already be enabled with the "GitHub Actions" source.
+        # configure-pages can't create the site itself — GITHUB_TOKEN lacks the
+        # admin scope, so `enablement: true` fails with
+        # "Resource not accessible by integration".
 
       - name: Build static export
         run: node scripts/build-pages.mjs
