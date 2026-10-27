@@ -185,7 +185,7 @@ const SHOWCASE: ShowcaseEntry[] = SHOWCASE_BASE.map((item) => ({
 
 export function ShowcaseGallery() {
   return (
-    <section id="showcase" className="w-full bg-[#FFFFFF] py-space-xl relative">
+    <section id="showcase" className="w-full bg-[#FFFFFF] py-space-xl relative overflow-hidden">
       <div className="absolute top-1/4 -left-1/4 w-[500px] h-[500px] bg-[#7C3AED]/10 blur-[140px] rounded-full pointer-events-none" />
       <div className="max-w-7xl mx-auto px-gutter lg:px-gutter-lg relative z-10">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-space-xl gap-space-md">

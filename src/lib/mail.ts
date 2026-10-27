@@ -61,7 +61,7 @@ export function emailShell(title: string, bodyHtml: string, cta?: { label: strin
       </tr>
       <tr>
         <td style="padding:28px;color:#0B1524;">
-          <h1 style="font-size:20px;margin:0 0 16px;color:#fff;">${title}</h1>
+          <h1 style="font-size:20px;margin:0 0 16px;color:#0B1524;">${title}</h1>
           ${bodyHtml}
           ${
             cta
@@ -97,7 +97,7 @@ export function orderConfirmationEmail(input: {
       `
       <p style="color:#475569;">Thanks for your order. Our team is reviewing your artwork before it goes to print.</p>
       <ul style="padding-left:18px;">${rows}</ul>
-      <p style="font-size:16px;color:#fff;"><strong>Order total: ${input.total}</strong></p>
+      <p style="font-size:16px;color:#0B1524;"><strong>Order total: ${input.total}</strong></p>
       <p style="color:#64748B;font-size:13px;">Status: Payment confirmed → Artwork review (within 12h).</p>
       `,
       input.trackingUrl ? { label: "Track your order", href: input.trackingUrl } : undefined,

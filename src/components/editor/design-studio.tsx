@@ -672,8 +672,25 @@ export function DesignStudio({ product, initialDoc, initialDesignId, isLoggedIn,
     };
   }, [activePlacement, product.categorySlug]);
 
+  // On phones the zoom controls are hidden, so keep the artboard inside the
+  // viewport automatically — full-front / large-back boards are wider than a
+  // 390px screen at 100%.
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    const fit = () => {
+      if (window.innerWidth >= 640) return;
+      const availableW = window.innerWidth - 48;
+      const availableH = window.innerHeight - 64 - 96;
+      const next = Math.min(1, availableW / canvas.width, availableH / canvas.height);
+      setZoom(Math.max(0.4, Number(next.toFixed(2))));
+    };
+    fit();
+    window.addEventListener("resize", fit);
+    return () => window.removeEventListener("resize", fit);
+  }, [canvas.width, canvas.height]);
+
   return (
-    <div className="h-[100dvh] flex flex-col studio-shell">
+    <div className="h-[100dvh] flex flex-col studio-shell overflow-hidden">
       {/* Top bar */}
       <header className="h-16 flex-shrink-0 flex items-center justify-between gap-space-sm px-space-md border-b border-slate-900/[0.08] bg-white/85 backdrop-blur-xl shadow-[0_10px_30px_-26px_rgba(15,23,42,0.5)]">
         <div className="flex items-center gap-space-sm min-w-0">
@@ -712,7 +729,7 @@ export function DesignStudio({ product, initialDoc, initialDesignId, isLoggedIn,
           </button>
 
           {/* Side switch */}
-          <div className="flex items-center rounded-full bg-slate-900/[0.05] border border-slate-900/[0.1] p-0.5">
+          <div className="hidden sm:flex items-center rounded-full bg-slate-900/[0.05] border border-slate-900/[0.1] p-0.5">
             {STUDIO_SIDES.map((side) => (
               <button
                 key={side}
@@ -747,7 +764,7 @@ export function DesignStudio({ product, initialDoc, initialDesignId, isLoggedIn,
             </span>
           </div>
 
-          <Button variant="glass" size="sm" onClick={handleSave} disabled={saving || totalLayers === 0} className="max-sm:px-3">
+          <Button variant="glass" size="sm" onClick={handleSave} disabled={saving || totalLayers === 0} className="hidden sm:inline-flex">
             <Save className="size-4" /> <span className="hidden sm:inline">{saving ? "Saving…" : "Save design"}</span>
           </Button>
           <Button size="sm" onClick={() => setCartOpen(true)} disabled={totalLayers === 0} className="max-sm:px-3">
@@ -807,6 +824,24 @@ export function DesignStudio({ product, initialDoc, initialDesignId, isLoggedIn,
             <span className="font-label-technical text-[9px] uppercase tracking-widest text-slate-900 font-bold tabular-nums">
               {activePlacement.widthIn}&quot; × {activePlacement.heightIn}&quot;
             </span>
+          </div>
+
+          {/* Phone-only side switch (the desktop switch lives in the top bar) */}
+          <div className="sm:hidden absolute top-16 left-4 z-10 flex items-center rounded-full bg-white/90 border border-slate-900/10 p-0.5 shadow-[0_10px_26px_-20px_rgba(15,23,42,0.6)]">
+            {STUDIO_SIDES.map((side) => (
+              <button
+                key={side}
+                type="button"
+                onClick={() => setActiveSide(side)}
+                aria-pressed={activeSide === side}
+                className={cn(
+                  "px-3 h-7 rounded-full font-label-technical text-[9px] uppercase tracking-widest transition-all",
+                  activeSide === side ? "bg-slate-900 text-white" : "text-slate-500",
+                )}
+              >
+                {side}
+              </button>
+            ))}
           </div>
 
           <div className="relative rounded-3xl bg-white/95 border border-slate-900/[0.08] p-2 sm:p-3 shadow-[0_30px_70px_-34px_rgba(15,23,42,0.45)]">

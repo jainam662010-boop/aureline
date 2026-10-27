@@ -53,7 +53,7 @@ export default async function HomePage() {
             </span>
           </div>
 
-          <h1 className="font-display-hero text-display-hero text-slate-900 max-w-5xl tracking-tight leading-[1.04] mb-space-md drop-shadow-[0_4px_20px_rgba(15,23,42,0.18)] animate-bounce-in [animation-delay:180ms]">
+          <h1 className="font-display-hero-mobile sm:font-display-hero text-display-hero-mobile sm:text-display-hero text-slate-900 max-w-5xl tracking-tight leading-[1.04] mb-space-md drop-shadow-[0_4px_20px_rgba(15,23,42,0.18)] animate-bounce-in [animation-delay:180ms]">
             Architectural cuts. Heavyweight blanks. <br />
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#2563EB] via-[#0EA5E9] via-[#7C3AED] to-[#0891B2] animate-gradient-flow font-black inline-block drop-shadow-[0_0_35px_rgba(14,165,233,0.35)]">
               Zero minimum.

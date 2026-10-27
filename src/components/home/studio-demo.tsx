@@ -31,7 +31,7 @@ export function StudioDemo() {
   const preset = PRESETS.find((p) => p.key === active)!;
 
   return (
-    <section className="w-full bg-[#FFFFFF] py-space-xl relative">
+    <section className="w-full bg-[#FFFFFF] py-space-xl relative overflow-hidden">
       <div className="absolute top-1/2 left-10 w-96 h-96 bg-[#7C3AED]/10 blur-[120px] rounded-full pointer-events-none" />
       <div className="max-w-7xl mx-auto px-gutter lg:px-gutter-lg relative z-10">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-space-xl gap-space-md">
