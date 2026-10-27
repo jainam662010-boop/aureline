@@ -38,6 +38,10 @@ jobs:
       - name: Resolve Pages config
         id: pages
         uses: actions/configure-pages@v5
+        with:
+          # Turns Pages on (source: GitHub Actions) on the first run so the
+          # repo needs no manual Settings → Pages step.
+          enablement: true
 
       - name: Build static export
         run: node scripts/build-pages.mjs
